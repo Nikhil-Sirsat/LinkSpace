@@ -1,0 +1,13 @@
+.containerr {
+    max-width: 90vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-x: scroll;
+    margin: auto;
+}
+
+.alert {
+    margin: auto;
+    overflow-x: scroll;
+}
