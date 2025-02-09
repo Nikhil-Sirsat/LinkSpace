@@ -1,6 +1,4 @@
 
-
-
 import { userSchema, PostSchema, commentSchema, storySchema } from './Schema.js';
 import Post from '../models/posts.js';
 import Story from '../models/story.js';
