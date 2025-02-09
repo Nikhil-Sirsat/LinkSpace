@@ -1,7 +1,7 @@
 
 import { useEffect, useState, useContext } from 'react';
 import { useParams, useNavigate, Link, Outlet } from 'react-router-dom';
-import { Modal, Box, Typography, Avatar, IconButton, Button, Menu, MenuItem, Tooltip, TextField } from '@mui/material';
+import { Modal, Box, Typography, Avatar, IconButton, Button, Menu, MenuItem, Tooltip, TextField, Alert } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import axiosInstance from '../../AxiosInstance.jsx';
 import DeletePostBTN from './DeletePostBTN';
@@ -32,6 +32,7 @@ export default function ViewPost() {
     const [commentAnchorEl, setCommentAnchorEl] = useState(null);
     const [selectedCommentId, setSelectedCommentId] = useState(null);
     const [sharePostUsers, setSharePostUsers] = useState(false);
+    const [error, setError] = useState('');
     const showSnackbar = useSnackbar();
 
     useEffect(() => {
@@ -102,12 +103,16 @@ export default function ViewPost() {
     const handleAddComment = async () => {
         try {
             const response = await axiosInstance.post(`/api/comment/post/${id}`, { comment: commentText });
-            setComments([...comments, response.data.comment]);
-            handleSendNotification();
-            setCommentText('');
-            showSnackbar('comment Added successfully !');
+            if (response.data) {
+                setComments([...comments, response.data.comment]);
+                handleSendNotification();
+                setCommentText('');
+                setError('');
+                showSnackbar('comment Added successfully !');
+            }
         } catch (error) {
             console.error('Error adding comment:', error);
+            setError(error.response?.data?.error || 'Something went wrong');
         }
     };
 
@@ -317,6 +322,7 @@ export default function ViewPost() {
                         </Menu>
 
                         {/* post comment */}
+                        {error && <Alert severity="error">{error}</Alert>}
                         <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, mt: { xs: 0, md: 2 } }}>
                             <TextField
                                 fullWidth

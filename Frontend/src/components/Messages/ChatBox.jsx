@@ -12,6 +12,7 @@ import MessageTimestamp from './MsgTimeStamp';
 import { encryptMessage, decryptMessage } from '../../Encryption-Utility-fns/encryptionUtility';
 import { ThemeContext } from "../../context/ThemeContext";
 import axiosInstance from '../../AxiosInstance.jsx';
+import leoProfanity from 'leo-profanity';
 
 export default function ChatBox() {
     const { mode } = useContext(ThemeContext);
@@ -159,6 +160,13 @@ export default function ChatBox() {
         if (!selectedUser?._id) return;
         if (!newMessage) return;
 
+        // Check Violent Words
+        if (leoProfanity.check(newMessage)) {
+            console.log("Profanity detected!");
+            setErrMsg('Inappropriate content detected!');
+            return
+        }
+
         // Encrypt the message
         const encryptedData = encryptMessage(newMessage);
 
@@ -177,7 +185,7 @@ export default function ChatBox() {
             }
         } catch (error) {
             console.error('An Error occure while saving and sending Message');
-            setErrMsg('Request Failed');
+            setErrMsg(error.response?.data?.error || 'Something went wrong');
             return;
         }
 
@@ -316,7 +324,7 @@ export default function ChatBox() {
             </Box>
 
             {/* Error Message */}
-            {errMsg && <Alert severity="error" sx={{ mt: 2, borderRadius: '8px' }}>{errMsg}</Alert>}
+            {errMsg && <Alert severity="error">{errMsg}</Alert>}
 
             {/* Input and Send Button */}
             <Box sx={{ display: 'flex', alignItems: 'center', p: 2 }}>

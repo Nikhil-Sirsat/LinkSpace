@@ -1,6 +1,7 @@
 
 import Post from '../models/posts.js';
 import Comment from '../models/comments.js';
+import leoProfanity from 'leo-profanity';
 
 export const postComment = async (req, res) => {
     try {
@@ -16,15 +17,22 @@ export const postComment = async (req, res) => {
         }
 
         const { comment } = req.body;
-        const newComment = new Comment({ comment });
-        newComment.author = req.user._id;
-        post.comments.push(newComment);
 
-        await newComment.save();
-        await post.save();
-        await newComment.populate('author');
+        if (leoProfanity.check(comment)) {
+            console.log("Profanity detected!");
+            return res.status(400).json({ error: 'inappropriate or violent statement' });
+        } else {
 
-        res.status(201).json({ comment: newComment, message: 'Comment created successfully' });
+            const newComment = new Comment({ comment });
+            newComment.author = req.user._id;
+            post.comments.push(newComment);
+
+            await newComment.save();
+            await post.save();
+            await newComment.populate('author');
+
+            res.status(201).json({ comment: newComment, message: 'Comment created successfully' });
+        }
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Internal Server Error' });
