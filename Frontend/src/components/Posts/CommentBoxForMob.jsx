@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Global } from '@emotion/react';
 import { styled } from '@mui/material/styles';
 import { grey } from '@mui/material/colors';
-import { Box, Typography, IconButton, SwipeableDrawer, Avatar, Menu, MenuItem } from '@mui/material';
+import { Box, Typography, IconButton, SwipeableDrawer, Avatar, Menu, MenuItem, Alert } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import MapsUgcOutlinedIcon from '@mui/icons-material/MapsUgcOutlined';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -33,6 +33,7 @@ const Puller = styled('div')(({ theme }) => ({
 
 export default function CommentBoxForMob({ caption, comments, user, setComments, post }) {
     const [open, setOpen] = useState(false);
+    const [errMsg, setErrMsg] = useState("");
 
     const [commentAnchorEl, setCommentAnchorEl] = useState(null);
     const [selectedCommentId, setSelectedCommentId] = useState(null);
@@ -53,11 +54,15 @@ export default function CommentBoxForMob({ caption, comments, user, setComments,
 
     const handleDeleteComment = async () => {
         try {
-            await axiosInstance.delete(`/api/comment/${selectedCommentId}`);
-            setComments(comments.filter(comment => comment._id !== selectedCommentId));
-            handleCommentMenuClose();
+            if (selectedCommentId) {
+                await axiosInstance.delete(`/api/comment/${post._id}/${selectedCommentId}`);
+                setComments(comments.filter(comment => comment._id !== selectedCommentId));
+                handleCommentMenuClose();
+                setErrMsg('');
+            }
         } catch (error) {
             console.error('Error deleting comment:', error);
+            setErrMsg(error.message);
         }
     };
 
@@ -148,6 +153,7 @@ export default function CommentBoxForMob({ caption, comments, user, setComments,
                             no Comments yet
                         </Typography>
                     )}
+                    {errMsg && <Alert severity="error">{errMsg}</Alert>}
                     <Menu
                         anchorEl={commentAnchorEl}
                         open={Boolean(commentAnchorEl)}
