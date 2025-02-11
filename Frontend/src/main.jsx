@@ -25,6 +25,7 @@ import UploadStory from './components/Story/UploadStory.jsx';
 import Inbox from './components/Messages/Inbox.jsx';
 import StartMsg from './components/Messages/StartMsg.jsx';
 import About from './components/About/About.jsx';
+import Search from './components/User/Search.jsx';
 
 import { AuthProvider } from './context/AuthContext.jsx';
 import { FollowProvider } from './context/IsFollowContext.jsx';
@@ -103,6 +104,10 @@ const router = createBrowserRouter([
       {
         path: '/Explore',
         element: <ProtectedRoute><Explore /></ProtectedRoute>
+      },
+      {
+        path: '/search',
+        element: <ProtectedRoute><Search /></ProtectedRoute>
       },
       {
         path: '/:username/create-post',

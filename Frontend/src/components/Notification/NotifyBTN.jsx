@@ -29,7 +29,7 @@ export default function NotifyBTN() {
         const fetchNotifications = async () => {
             try {
                 const response = await axiosInstance.get(`/api/notify/all-notifications`);
-                setAllNotifications(response.data.allNotifications || []);
+                setAllNotifications(response.data.allNotifications.reverse() || []);
                 // console.log("Notify Triggered");
             } catch (error) {
                 console.error('Error fetching Notifications:', error);
@@ -50,7 +50,7 @@ export default function NotifyBTN() {
 
                 if (NotificationData) {
                     if (NotificationData.receiverId === user._id) {
-                        setAllNotifications((prevNotify) => [...prevNotify, NotificationData]);
+                        setAllNotifications((prevNotify) => [NotificationData, ...prevNotify]);
                         unreadCount++;
                         // console.log(unreadCount);
                     }
