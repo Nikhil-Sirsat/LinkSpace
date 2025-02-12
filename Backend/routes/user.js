@@ -3,9 +3,10 @@ import express from 'express';
 const router = express.Router();
 import passport from 'passport';
 import multer from 'multer';
-import storage from '../Utils/cloudConfig.js';
+import storage from '../config/cloudConfig.js';
 const upload = multer({ storage });
-import { auth, validateUser, checkCacheData } from '../Utils/middlewares.js';
+import { auth } from '../Middlewares/AuthMid.js';
+import { validateUser, checkCacheData } from '../Middlewares/ValidationMid.js';
 import { signUp, Login, LogOut, protectedRoute, editUser, checkPass, search, suggested, getUserProfile } from '../controllers/user.js';
 
 //SignUp Route

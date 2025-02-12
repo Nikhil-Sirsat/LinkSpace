@@ -2,9 +2,10 @@
 import express from 'express';
 const router = express.Router();
 import multer from 'multer';
-import storage from '../Utils/cloudConfig.js';
+import storage from '../config/cloudConfig.js';
 const upload = multer({ storage });
-import { auth, validatePost, isOwner, checkCacheData } from '../Utils/middlewares.js';
+import { auth, isOwner } from '../Middlewares/AuthMid.js';
+import { validatePost, checkCacheData } from '../Middlewares/ValidationMid.js';
 import { createPost, getAllPosts, getHomePostFeed, getTaggedPosts, showPost, delPost } from '../controllers/post.js';
 
 // create post

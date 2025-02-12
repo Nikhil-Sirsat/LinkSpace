@@ -2,7 +2,8 @@
 
 import express from 'express';
 const router = express.Router();
-import { auth, validateComment, isCommentAuthor } from '../Utils/middlewares.js';
+import { auth, isCommentAuthor } from '../Middlewares/AuthMid.js';
+import { validateComment } from '../Middlewares/ValidationMid.js';
 import { postComment, deleteComment } from '../controllers/comment.js';
 
 // Post Comment Route

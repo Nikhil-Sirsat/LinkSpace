@@ -1,7 +1,7 @@
 
 import express from 'express';
 const router = express.Router();
-import { auth } from '../Utils/middlewares.js';
+import { auth } from '../Middlewares/AuthMid.js';
 import { getUserHistory, delMsg, delChatHistory, getUnreadMsg, getChatHistory, postMsg, markIsReadTrue } from '../controllers/messages.js';
 
 // get users with whom the current user has chat history

@@ -27,7 +27,7 @@ import storyRoutes from './routes/story.js';
 
 import { createServer } from 'http';
 import cors from 'cors';
-import initializeSocket from './Utils/socket.js';
+import initializeSocket from './sockets/socket.js';
 
 const app = express();
 const PORT = process.env.PORT || 5050;
@@ -61,6 +61,7 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+// Data Base set up
 const mongo_URL = process.env.MONGO_URL;
 connect(mongo_URL)
     .then(() => {

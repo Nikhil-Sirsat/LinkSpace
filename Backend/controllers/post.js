@@ -3,7 +3,7 @@ import Post from '../models/posts.js';
 import Follow from '../models/Follow.js';
 import User from '../models/user.js';
 import Notification from '../models/Notification.js';
-import redisClient from '../Utils/redisClient.js';
+import redisClient from '../config/redisClient.js';
 import axios from 'axios';
 import dotenv from 'dotenv';
 dotenv.config();

@@ -2,9 +2,10 @@
 import express from 'express';
 const router = express.Router();
 import multer from 'multer';
-import storage from '../Utils/cloudConfig.js';
+import storage from '../config/cloudConfig.js';
 const upload = multer({ storage });
-import { auth, validateStory, isStoryOwner, checkCacheData } from '../Utils/middlewares.js';
+import { auth, isStoryOwner } from '../Middlewares/AuthMid.js';
+import { checkCacheData, validateStory } from '../Middlewares/ValidationMid.js';
 import { postStory, getStoryList, markView, getStory, delStory } from '../controllers/story.js';
 
 // create/post story

@@ -1,7 +1,7 @@
 
 import express from 'express';
 const router = express.Router();
-import { auth } from '../Utils/middlewares.js';
+import { auth } from '../Middlewares/AuthMid.js';
 import { getNotify, markIsReadTrue, delNotify, postNotify } from '../controllers/Notification.js';
 
 // post notification

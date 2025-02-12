@@ -1,7 +1,8 @@
 
 import express from 'express';
 const router = express.Router();
-import { auth, checkCacheData } from '../Utils/middlewares.js';
+import { auth } from '../Middlewares/AuthMid.js';
+import { checkCacheData } from '../Middlewares/ValidationMid.js';
 import { like, unlike, isLike, getLikedUsers } from '../controllers/like.js';
 
 // Like

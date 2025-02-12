@@ -1,7 +1,7 @@
 
 import Post from '../models/posts.js';
 import Like from '../models/like.js';
-import redisClient from '../Utils/redisClient.js';
+import redisClient from '../config/redisClient.js';
 
 export const like = async (req, res) => {
     try {

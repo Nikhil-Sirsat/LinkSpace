@@ -1,7 +1,7 @@
 
 import User from '../models/user.js';
 import Follow from '../models/Follow.js';
-import redisClient from '../Utils/redisClient.js';
+import redisClient from '../config/redisClient.js';
 
 export const follow = async (req, res) => {
     try {

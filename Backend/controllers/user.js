@@ -2,7 +2,7 @@
 import User from '../models/user.js';
 import Post from '../models/posts.js';
 import Follow from '../models/Follow.js';
-import redisClient from '../Utils/redisClient.js';
+import redisClient from '../config/redisClient.js';
 
 export const signUp = async (req, res) => {
     try {

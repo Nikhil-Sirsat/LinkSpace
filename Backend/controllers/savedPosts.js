@@ -1,6 +1,6 @@
 
 import SavedPost from '../models/savedPosts.js';
-import redisClient from '../Utils/redisClient.js';
+import redisClient from '../config/redisClient.js';
 
 export const save = async (req, res) => {
     try {

@@ -1,7 +1,8 @@
 
 import express from 'express';
 const router = express.Router();
-import { auth, checkCacheData } from '../Utils/middlewares.js';
+import { auth } from '../Middlewares/AuthMid.js';
+import { checkCacheData } from '../Middlewares/ValidationMid.js';
 import { follow, unfollow, getFollowers, getFollowings } from '../controllers/Follow.js';
 
 // Follow a user

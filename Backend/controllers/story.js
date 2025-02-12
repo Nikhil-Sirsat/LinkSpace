@@ -2,7 +2,7 @@
 import Story from '../models/story.js';
 import Follow from '../models/Follow.js';
 import User from '../models/user.js';
-import redisClient from '../Utils/redisClient.js';
+import redisClient from '../config/redisClient.js';
 
 export const postStory = async (req, res) => {
     if (!req.file) {

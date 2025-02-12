@@ -1,7 +1,8 @@
 
 import express from 'express';
 const router = express.Router();
-import { auth, checkCacheData } from '../Utils/middlewares.js';
+import { auth } from '../Middlewares/AuthMid.js';
+import { checkCacheData } from '../Middlewares/ValidationMid.js';
 import { save, unSave, getSavedPosts, isSave } from '../controllers/savedPosts.js';
 
 // Save Post
