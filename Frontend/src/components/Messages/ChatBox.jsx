@@ -1,5 +1,5 @@
 
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext, useRef } from 'react';
 import { Box, Typography, TextField, Button, Avatar, AppBar, Toolbar, IconButton, Menu, MenuItem, Tooltip, Alert } from '@mui/material';
 import { Link, useParams, useOutletContext } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
@@ -28,6 +28,14 @@ export default function ChatBox() {
     const [msgToDelete, setMsgToDelete] = useState(null);
     const [loading, setLoading] = useState(true);
     const [errMsg, setErrMsg] = useState('');
+
+    // Ref for auto-scrolling
+    const messagesEndRef = useRef(null);
+
+    // Function to scroll to the latest message
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
 
     // fetch the data of the selected user
     useEffect(() => {
@@ -64,6 +72,7 @@ export default function ChatBox() {
                     content: msg.content ? decryptMessage(msg.content) : null,
                 }));
                 setMessages(decryptedMessages);
+                setTimeout(scrollToBottom, 100);
             } catch (error) {
                 console.error('Error fetching messages:', error.response ? error.response.data : error);
             }
@@ -108,6 +117,7 @@ export default function ChatBox() {
 
                     // mark the message true
                     markedAsRead(selectedUser._id);
+                    setTimeout(scrollToBottom, 100);
 
                     // console.log('Msg Received');
                 }
@@ -194,6 +204,7 @@ export default function ChatBox() {
             setMessages((prevMessages) => [...prevMessages, messageData]);
             setNewMessage('');
             setErrMsg('');
+            setTimeout(scrollToBottom, 100);
             // console.log('Msg Send');
         }
     };
@@ -282,28 +293,37 @@ export default function ChatBox() {
 
                         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: message.sender === user._id ? 'flex-end' : 'flex-start' }}>
                             {message.story && (
-                                <MessageBubble
-                                    sender={message.sender}
-                                    user={user}
-                                    owner={message.story.owner}
-                                    mediaUrl={message.story.mediaUrl}
-                                    content={message.content}
-                                    isStory
-                                />
+                                <>
+                                    <MessageBubble
+                                        sender={message.sender}
+                                        user={user}
+                                        owner={message.story.owner}
+                                        mediaUrl={message.story.mediaUrl}
+                                        content={message.content}
+                                        isStory
+                                    />
+                                    <div ref={messagesEndRef} /> {/* Auto-scroll target */}
+                                </>
                             )}
 
                             {message.content && !message.story && (
-                                <MessageBubble sender={message.sender} user={user} content={message.content} />
+                                <>
+                                    <MessageBubble sender={message.sender} user={user} content={message.content} />
+                                    <div ref={messagesEndRef} /> {/* Auto-scroll target */}
+                                </>
                             )}
 
                             {message.post && (
-                                <PostBubble
-                                    sender={message.sender}
-                                    user={user}
-                                    owner={message.post.owner}
-                                    imageUrl={message.post.imageUrl}
-                                    postId={message.post._id}
-                                />
+                                <>
+                                    <PostBubble
+                                        sender={message.sender}
+                                        user={user}
+                                        owner={message.post.owner}
+                                        imageUrl={message.post.imageUrl}
+                                        postId={message.post._id}
+                                    />
+                                    <div ref={messagesEndRef} /> {/* Auto-scroll target */}
+                                </>
                             )}
 
                             <MessageTimestamp timestamp={message.timestamp} isSender={message.sender === user._id} isRead={message.isRead} />
