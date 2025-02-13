@@ -4,56 +4,7 @@ import Follow from '../models/Follow.js';
 import User from '../models/user.js';
 import Notification from '../models/Notification.js';
 import redisClient from '../config/redisClient.js';
-import axios from 'axios';
-import dotenv from 'dotenv';
-dotenv.config();
-
-// Your Clarifai API CREDIANTIOLS : 
-const PAT = process.env.PAT;
-const USER_ID = process.env.USER_ID;
-const APP_ID = process.env.APP_ID;
-const MODEL_ID = process.env.MODEL_ID;
-const MODEL_VERSION_ID = process.env.MODEL_VERSION_ID;
-
-// Function to analyze the image
-async function analyzeImage(imageUrl) {
-    try {
-        const response = await axios.post(
-            `https://api.clarifai.com/v2/models/${MODEL_ID}/versions/${MODEL_VERSION_ID}/outputs`,
-            {
-                user_app_id: {
-                    user_id: USER_ID,
-                    app_id: APP_ID,
-                },
-                inputs: [
-                    {
-                        data: {
-                            image: {
-                                url: imageUrl,
-                            },
-                        },
-                    },
-                ],
-            },
-            {
-                headers: {
-                    'Authorization': `Key ${PAT}`,
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-            }
-        );
-
-        const concepts = response.data.outputs[0].data.concepts;
-        console.log(concepts);
-        const nsfwScore = concepts.find(concept => concept.name === 'nsfw')?.value;
-
-        return nsfwScore;
-    } catch (error) {
-        console.error('Error analyzing image:', error.response?.data || error.message);
-        throw new Error('Failed to analyze image.');
-    }
-}
+import analyzeImage from '../Utils/postAnalysis.js';
 
 export const createPost = async (req, res) => {
     if (!req.file) {
@@ -252,5 +203,23 @@ export const delPost = async (req, res) => {
     } catch (error) {
         console.error('An Error occured while deleting a post : ', error.message);
         res.status(500).json({ message: `Error Deleting Post : ${error.message}` });
+    }
+};
+
+export const postSuggestions = async (req, res) => {
+    try {
+        // Fetch random posts using aggregation
+        const suggPosts = await Post.aggregate([{ $sample: { size: 10 } }]);
+
+        // Manually populate the 'owner' and 'taggedUsers' fields
+        const populatedPosts = await Post.populate(suggPosts, [
+            { path: "owner", select: "image username" },
+            { path: "taggedUsers", select: "username" }
+        ]);
+
+        res.status(200).json({ posts: populatedPosts, message: 'got suggested posts successfully' });
+    } catch (error) {
+        console.error('Error Fetching Post Suggestion : ', error.message);
+        res.status(500).json({ message: `Error Fetching Suggested Posts : ${error.message}` });
     }
 };

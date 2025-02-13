@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { red } from '@mui/material/colors';
 import ShareIcon from '@mui/icons-material/Share';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
@@ -10,17 +10,26 @@ import SavedPostBTN from '../Posts/SavePostBTN';
 import SharePost from '../Posts/SharePost';
 import HomePostFeedSkeleton from '../Skeletons/HomePostFeedSkeleton';
 import axiosInstance from '../../AxiosInstance.jsx';
+import { AuthContext } from '../../context/AuthContext.jsx';
 
 export default function HomePostFeedCard() {
+    const { user } = useContext(AuthContext);
     const [postFeed, setPostFeed] = useState([]);
     const [loading, setLoading] = useState(true);
     const [sharePostUsers, setSharePostUsers] = useState(false);
     const [selectIdToShare, setSelectIdToShare] = useState(null);
 
     useEffect(() => {
+        if (!user) return;
         const fetchPostsFeed = async () => {
             try {
-                const response = await axiosInstance.get('/api/post/home-posts');
+
+                // Check if user.followingCount exists and is greater than 0
+                const url = user?.followingCount > 0 ? '/api/post/home-posts' : '/api/post/suggested-posts';
+                console.log(url);
+
+                const response = await axiosInstance.get(url);
+
                 const postsData = response.data.posts;
 
                 // Fetch isLiked and isSaved for each post asynchronously
@@ -47,7 +56,7 @@ export default function HomePostFeedCard() {
                 setPostFeed(updatedPosts);
                 setLoading(false);
             } catch (error) {
-                console.log('Error fetching home-posts-feed:', error);
+                console.log('Error fetching home-posts:', error);
                 setLoading(false);
             }
         };
@@ -66,6 +75,9 @@ export default function HomePostFeedCard() {
 
     return (
         <Box sx={{ padding: '10px', width: { xs: '99%', md: '50%' }, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+
+            {user.followingCount > 0 ? null : <Typography variant="body2" color="textSecondary" sx={{ m: 3 }}>Suggested Posts for you</Typography>}
+
             {postFeed.map((post) => (
                 <Card key={post._id} sx={{ width: { xs: '95vw', md: 450 }, mb: 5, boxShadow: 'none', borderRadius: 'none' }}>
                     <CardHeader
@@ -117,7 +129,7 @@ export default function HomePostFeedCard() {
                     <CardContent>
                         <Typography variant="body2">
                             {post.caption}
-                            {post.taggedUsers.map((tagUser) => (
+                            {post.taggedUsers?.map((tagUser) => (
                                 <Link key={tagUser._id} to={`/user/${tagUser.username}`} style={{ textDecoration: 'none', marginLeft: '10px', color: "#0073e6" }} >@{tagUser.username}</Link>
                             ))}
                         </Typography>

@@ -2,8 +2,11 @@ import StoryList from '../Story/StoryList';
 import HomePostFeedCard from "./HomePostsFeed";
 import HomeSuggest from '../Suggestions/HomeSuggest';
 import { Box } from '@mui/material';
+import { AuthContext } from '../../context/AuthContext';
+import { useContext } from 'react';
 
 export default function Home() {
+    const { user } = useContext(AuthContext);
     return (
         <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, width: '100%' }}>
             <Box sx={{ width: { xs: '100%', md: '50%' }, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
