@@ -172,7 +172,7 @@ export default function ChatBox() {
 
         // Check Violent Words
         if (leoProfanity.check(newMessage)) {
-            console.log("Profanity detected!");
+            // console.log("Profanity detected!");
             setErrMsg('Inappropriate content detected!');
             return
         }

@@ -26,7 +26,7 @@ export default function HomePostFeedCard() {
 
                 // Check if user.followingCount exists and is greater than 0
                 const url = user?.followingCount > 0 ? '/api/post/home-posts' : '/api/post/suggested-posts';
-                console.log(url);
+                // console.log(url);
 
                 const response = await axiosInstance.get(url);
 

@@ -84,7 +84,7 @@ export default function Messages() {
                 <Box
                     width={{ xs: '100%', md: '35%' }}
                     sx={{
-                        // backgroundColor: 'white',
+                        backgroundColor: mode === 'dark' ? 'black' : 'white',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
@@ -106,7 +106,7 @@ export default function Messages() {
                             display: { xs: 'flex', md: 'none' }
                         }}>
                         <NavigateBeforeIcon
-                            sx={{ fontSize: 27, color: 'black' }}
+                            sx={{ fontSize: 27 }}
                         />
                     </IconButton>
                     <List sx={{ mt: { xs: 4, md: 0 }, display: 'flex', flexDirection: { xs: 'row', md: 'column' }, alignItems: 'center', width: '100%', height: { xs: '70%', md: '100%' }, p: 2, backgroundColor: mode === "dark" ? 'transparent' : 'white' }}>
