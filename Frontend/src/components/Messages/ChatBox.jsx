@@ -191,6 +191,7 @@ export default function ChatBox() {
             const response = await axiosInstance.post('/api/messages/newMessage', messageData);
             if (response.data.newMsg) {
                 const messageWithId = { ...messageData, _id: response.data.newMsg._id };
+                messageData._id = response.data.newMsg._id;
                 socket.emit('sendMessage', messageWithId);
             }
         } catch (error) {

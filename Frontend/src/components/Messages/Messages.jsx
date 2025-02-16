@@ -26,6 +26,7 @@ export default function Messages() {
                 const response = await axiosInstance.get(`/api/messages/user-history`);
                 setUserList(response.data.chatHistory);
                 setLoading(false);
+                console.log("Messages Triggered");
             } catch (error) {
                 console.error('Error fetching users:', error);
                 setLoading(false);
