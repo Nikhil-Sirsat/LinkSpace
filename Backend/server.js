@@ -71,19 +71,8 @@ connect(mongo_URL)
         console.log(`Database connection error: ${err}`);
     });
 
-// Initialize socket.io
-const io = initializeSocket(server, sessionMiddleware, {
-    cors: {
-        origin: "http://localhost:5173",
-        methods: ["GET", "POST"],
-        credentials: true,
-    }
-});
-
-// Share session middleware with Socket.IO
-io.use((socket, next) => {
-    sessionMiddleware(socket.request, {}, next);
-});
+// Initialize socket.io with session-middleware
+const io = initializeSocket(server, sessionMiddleware);
 
 // Attach io to the app instance
 app.set('io', io);

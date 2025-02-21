@@ -1,5 +1,4 @@
 
-
 import { Server } from 'socket.io';
 import passport from 'passport';
 import Notification from '../models/Notification.js';
@@ -7,6 +6,7 @@ import Message from '../models/messages.js';
 
 function initializeSocket(server, sessionMiddleware) {
 
+    // Initialize Socket.IO with CORS configuration
     const io = new Server(server, {
         cors: {
             origin: "http://localhost:5173",
@@ -19,16 +19,13 @@ function initializeSocket(server, sessionMiddleware) {
     io.use((socket, next) => {
         sessionMiddleware(socket.request, {}, (err) => {
             if (err) return next(err);
-            passport.initialize()(socket.request, {}, (err) => {
+            passport.authenticate('session', (err, user) => {
                 if (err) return next(err);
-                passport.session()(socket.request, {}, (err) => {
-                    if (err) return next(err);
-                    if (socket.request.isAuthenticated()) {
-                        return next();
-                    }
-                    next(new Error('Unauthorized'));
-                });
-            });
+                if (!user) return next(new Error('Unauthorized'));
+
+                socket.request.user = user; // Attach the user to the socket request
+                next();
+            })(socket.request, {}, next);
         });
     });
 
@@ -47,37 +44,20 @@ function initializeSocket(server, sessionMiddleware) {
                     return;
                 }
 
-                // Check if the message has a post ID that needs to be populated
-                if (messageData.post) {
-                    const populatedPostMessage = await Message.findById(messageData._id)
-                        .populate({
+                if (messageData.post || messageData.story) {
+                    const populatedMessage = await Message.findById(messageData._id)
+                        .populate(messageData.post ? {
                             path: 'post',
                             select: 'imageUrl owner',
-                            populate: {
-                                path: 'owner',
-                                select: 'image username'
-                            }
-                        });
-
-                    // Emit the populated message to the receiver
-                    io.to(messageData.receiver).emit('receiveMessage', populatedPostMessage);
-
-                } else if (messageData.story) {
-                    const populatedStoryMessage = await Message.findById(messageData._id)
-                        .populate({
+                            populate: { path: 'owner', select: 'image username' }
+                        } : {
                             path: 'story',
                             select: 'mediaUrl owner',
-                            populate: {
-                                path: 'owner',
-                                select: 'username image'
-                            }
+                            populate: { path: 'owner', select: 'username image' }
                         });
 
-                    // Emit the populated message to the receiver
-                    io.to(messageData.receiver).emit('receiveMessage', populatedStoryMessage);
-
+                    io.to(messageData.receiver).emit('receiveMessage', populatedMessage);
                 } else {
-                    // Emit the original message if no post data is involved
                     io.to(messageData.receiver).emit('receiveMessage', messageData);
                 }
             } catch (error) {
@@ -88,8 +68,6 @@ function initializeSocket(server, sessionMiddleware) {
         // send MarkisRead Event
         socket.on('markAsRead', ({ senderId }) => {
             if (!senderId) return;
-            // console.log('Server: Marking messages as read for sender:', senderId);
-
             io.to(senderId).emit('messageRead', { senderId });
         });
 
