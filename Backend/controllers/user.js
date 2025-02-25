@@ -132,18 +132,56 @@ export const suggested = async (req, res) => {
         // Get a list of users the current user already follows
         const following = await Follow.find({ follower: currentUserId }).distinct('following');
 
-        // Find 5 users that the current user does not follow
-        const suggestions = await User.find({
-            _id: { $nin: [...following, currentUserId] } // Exclude followed users and the current user
-        })
-            .limit(5) // Limit to 5 users
-            .select('username name image followersCount');
+        // Find suggested users based on common followings
+        const suggestions = await User.aggregate([
+            // Exclude the current user and already followed users
+            {
+                $match: {
+                    _id: { $nin: [...following, currentUserId] }
+                }
+            },
+            // Calculate the number of common followings
+            {
+                $lookup: {
+                    from: 'follows',
+                    localField: '_id',
+                    foreignField: 'follower',
+                    as: 'followerData'
+                }
+            },
+            {
+                $addFields: {
+                    commonFollowings: {
+                        $size: {
+                            $setIntersection: [
+                                '$followerData.following',
+                                following
+                            ]
+                        }
+                    }
+                }
+            },
+            // Sort by the highest number of common followings
+            { $sort: { commonFollowings: -1 } },
+            // Limit to 5 suggestions
+            { $limit: 5 },
+            // Select the needed fields
+            {
+                $project: {
+                    username: 1,
+                    name: 1,
+                    image: 1,
+                    followersCount: 1,
+                    commonFollowings: 1
+                }
+            }
+        ]);
 
         // Cache the data in Redis
         const cacheKey = res.locals.cacheKey;
         await redisClient.setEx(cacheKey, 120, JSON.stringify(suggestions));
 
-        res.json({ suggestions: suggestions });
+        res.json({ suggestions });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server error' });
