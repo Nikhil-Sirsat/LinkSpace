@@ -25,5 +25,5 @@ A full-featured social media application built using the **MERN (MongoDB, Expres
 - Node.js & Express.js
 - MongoDB & Mongoose (Database & ODM)
 - Passport (for authentication)
-- Socket.io (for real-time messaging)
+- Socket.io (for real-time messaging and notifications)
 - Redis (for caching)
