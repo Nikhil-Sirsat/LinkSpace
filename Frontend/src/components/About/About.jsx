@@ -1,6 +1,7 @@
 import React from "react";
-import { Container, Typography, Grid, Card, CardContent, IconButton, Stack } from "@mui/material";
-import { LinkedIn, GitHub, Instagram, X } from "@mui/icons-material";
+import { Container, Typography, Grid, Card, CardContent, IconButton, Stack, Avatar } from "@mui/material";
+import { LinkedIn, GitHub, X } from "@mui/icons-material";
+import DeveloperImg from '../../assets/Developer-Img.jpg'
 
 export default function About() {
     return (
@@ -9,7 +10,7 @@ export default function About() {
                 About Our Social Media Platform
             </Typography>
             <Typography variant="body1" align="center" paragraph>
-                Welcome to our innovative social media platform, where users can connect, share, and engage in real-time. Built using the MERN stack, our platform ensures seamless interactions, robust performance, and a secure experience.
+                Welcome to our social media platform, where users can connect, share, and engage in real-time. Built using the MERN stack, our platform ensures seamless interactions, robust performance, and a secure experience.
             </Typography>
 
             {/* Features Section */}
@@ -18,7 +19,7 @@ export default function About() {
             </Typography>
             <Grid container spacing={3} justifyContent="center">
                 {[
-                    { title: "Real-Time Messaging", desc: "Chat with friends instantly using Socket.io-powered messaging, with end-to-end Encryption." },
+                    { title: "Real-Time Messaging & Notifications", desc: "Chat with friends instantly using Socket.io-powered messaging, with end-to-end Encryption." },
                     { title: "Post & Share", desc: "Create posts, like, comment, and share engaging content." },
                     { title: "Explore Page", desc: "Discover trending posts and new connections." },
                     { title: "Secure Authentication", desc: "Protected by Passport for a safe login experience." },
@@ -46,11 +47,12 @@ export default function About() {
             <Grid container spacing={3} justifyContent="center">
                 {[
                     { title: "Node.js & Express.js", desc: "Handles the backend logic and API routes efficiently." },
-                    { title: "MongoDB", desc: "A NoSQL database ensuring high performance and scalability." },
-                    { title: "React.js", desc: "Provides a seamless and interactive user experience." },
+                    { title: "MongoDB & MongoDB Atlas", desc: "A NoSQL database ensuring high performance and scalability with cloud integration." },
+                    { title: "React.js & Material-UI", desc: "Provides a seamless and interactive user experience." },
                     { title: "Socket.io", desc: "Enables real-time messaging and live updates." },
                     { title: "Redis", desc: "Used for caching to improve performance and reduce database load." },
                     { title: "Passport", desc: "Ensures secure authentication and authorization." },
+                    { title: "Clarifai NSFW Model", desc: "Implements AI-driven image moderation for safer content management." }
                 ].map((tech, index) => (
                     <Grid item xs={12} sm={6} md={6} key={index}>
                         <Card sx={{ height: "100%", boxShadow: 3 }}>
@@ -71,11 +73,21 @@ export default function About() {
             </Typography>
             <Card sx={{ maxWidth: "80vw", mx: "auto", boxShadow: 3 }}>
                 <CardContent>
+                    <Avatar
+                        src={DeveloperImg}
+                        sx={{
+                            width: { xs: 90, sm: 100, md: 160 }, // Avatar size
+                            height: { xs: 90, sm: 100, md: 160 },
+                            borderRadius: '50%', // Ensures the Avatar remains circular
+                            margin: "auto",
+                            mb: 3,
+                        }}
+                    />
                     <Typography variant="h5" align="center" gutterBottom>
                         Nikhil Sirsat
                     </Typography>
                     <Typography variant="body1" align="center">
-                        Hi, I'm <strong>Nikhil Sirsat</strong>, A passionate and forward-thinking MERN stack developer dedicated to crafting high-performance, scalable, and intuitive applications. With a deep interest in cutting-edge web technologies and real-time applications. My focus lies in enhancing user experience, and implementing efficient backend solutions. I am always exploring new advancements in full-stack development, cloud computing, and scalable infrastructures to create robust digital ecosystems that empower users and businesses alike.
+                        Hi, I'm <strong>Nikhil Sirsat</strong>, A passionate MERN stack developer dedicated to crafting high-performance, scalable, and intuitive applications. With a deep interest in cutting-edge web technologies and real-time applications. My focus lies in enhancing user experience, and implementing efficient backend solutions.
                     </Typography>
                 </CardContent>
             </Card>

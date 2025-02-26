@@ -13,6 +13,7 @@ A full-featured social media application built using the **MERN (MongoDB, Expres
 - **Story Replies** (Reply to stories via chat)
 - **User Search & Explore Page** (Find and follow users)
 - **Optimized Backend & Scalable Architecture**
+- **AI-driven image moderation for safer content management**
 
 ## 🛠️ Tech Stack
 
@@ -27,3 +28,4 @@ A full-featured social media application built using the **MERN (MongoDB, Expres
 - Passport (for authentication)
 - Socket.io (for real-time messaging and notifications)
 - Redis (for caching)
+- Clarifai NSFW AI model (for AI driven image moderation)
