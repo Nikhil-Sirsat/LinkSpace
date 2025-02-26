@@ -76,6 +76,7 @@ export default function SignUp() {
         username: '',
         email: '',
         password: '',
+        conformPass: '',
         age: '',
         gender: '',
         bio: '',
@@ -122,6 +123,7 @@ export default function SignUp() {
     };
 
     const handleSubmit = async (e) => {
+        setMessage('');
         e.preventDefault();
         const data = new FormData();
         data.append('name', formData.name);
@@ -132,6 +134,11 @@ export default function SignUp() {
         data.append('gender', formData.gender);
         data.append('bio', formData.bio);
         data.append('image', formData.image);
+
+        if (formData.password !== formData.conformPass) {
+            setMessage('password miss match');
+            return;
+        }
 
         try {
             await axiosInstance.post('/api/user/SignUp', data, {
@@ -267,6 +274,34 @@ export default function SignUp() {
                                                 label="Password"
                                                 name="password"
                                                 value={formData.password}
+                                                onChange={handleChange}
+                                                required
+                                            />
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        <FormControl sx={{ width: '25ch' }} variant="standard">
+                                            <CustomInputLabel htmlFor="standard-adornment-password" sx={{ color: 'white' }}>Conform Password</CustomInputLabel>
+                                            <CustomInput
+                                                id="standard-adornment-password"
+                                                type={showPassword ? 'text' : 'password'}
+                                                endAdornment={
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            aria-label={
+                                                                showPassword ? 'hide the password' : 'display the password'
+                                                            }
+                                                            onClick={handleClickShowPassword}
+                                                            onMouseDown={handleMouseDownPassword}
+                                                            onMouseUp={handleMouseUpPassword}
+                                                        >
+                                                            {showPassword ? <VisibilityOff sx={{ color: 'gray' }} /> : <Visibility sx={{ color: 'gray' }} />}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                }
+                                                label="Conform Password"
+                                                name="conformPass"
+                                                value={formData.conformPass}
                                                 onChange={handleChange}
                                                 required
                                             />
