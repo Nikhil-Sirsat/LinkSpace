@@ -50,7 +50,7 @@ export const unSave = async (req, res) => {
 export const getSavedPosts = async (req, res) => {
     try {
         const userId = req.user._id;
-        const savedPosts = await SavedPost.find({ user: userId }).populate('post', 'imageUrl');
+        const savedPosts = await SavedPost.find({ user: userId }).populate('post', 'imageUrl likeCount');
 
         // Cache the data in Redis
         const cacheKey = res.locals.cacheKey;

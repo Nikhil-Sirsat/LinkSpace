@@ -1,7 +1,7 @@
 
-import './PostGreed.css';
 import { Link } from 'react-router-dom';
 import { Typography, Box } from '@mui/material';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 export default function SavedPostGrid({ posts }) {
 
@@ -16,7 +16,7 @@ export default function SavedPostGrid({ posts }) {
         >
             {posts.length > 0 ? (
                 posts.map((post) => (
-                    <Box className='onPost'
+                    <Box
                         component={Link}
                         to={`/post/${post.post._id}`}
                         key={post.post._id}
@@ -26,8 +26,16 @@ export default function SavedPostGrid({ posts }) {
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            // margin: '3px', 
-                            overflow: 'hidden'
+                            overflow: 'hidden',
+                            position: 'relative',
+                            borderRadius: '9px',
+                            '&:hover .postOverlay': {
+                                opacity: 1,
+                            },
+                            '&:hover img': {
+                                transform: 'scale(1.1)',
+                                opacity: 0.7,
+                            },
                         }}
                     >
                         <Box
@@ -38,8 +46,36 @@ export default function SavedPostGrid({ posts }) {
                                 width: '100%',
                                 height: 'auto',
                                 display: 'block',
+                                transition: 'all 0.3s ease',
                             }}
                         />
+
+                        {/* Like Count Overlay */}
+                        <Box
+                            className="postOverlay"
+                            sx={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                width: '100%',
+                                height: '100%',
+                                bgcolor: 'rgba(0, 0, 0, 0.5)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                opacity: 0,
+                                color: 'white',
+                                transition: 'opacity 0.3s ease',
+                                borderRadius: '9px',
+                            }}
+                        >
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                <FavoriteIcon />
+                                <Typography variant="h6" component="span">
+                                    {post.post.likeCount}
+                                </Typography>
+                            </Box>
+                        </Box>
                     </Box>
                 ))
             ) : (

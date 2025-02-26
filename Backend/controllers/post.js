@@ -75,31 +75,26 @@ export const createPost = async (req, res) => {
     }
 };
 
-export const getAllPosts = async (req, res) => {
+export const trendingPosts = async (req, res) => {
     try {
+        const { page = 1, limit = 20 } = req.query; // Default to page 1, 10 posts per page
+        const skip = (page - 1) * limit;
 
-        // console.log('Cache miss for allPosts. Querying database...');
+        // Fetch trending posts directly using likeCount and createdAt for sorting
+        const posts = await Post.find()
+            .sort({ likeCount: -1, createdAt: -1 }) // Trending by likes, then by creation date
+            .skip(skip)
+            .limit(Number(limit))
+            .select(' imageUrl createdAt likeCount'); // Select only needed fields
 
-        // Fetch posts from MongoDB
-        const allPosts = await Post.find({}).select('imageUrl');
+        // Check if there are more posts to load
+        const totalPosts = await Post.countDocuments();
+        const hasMore = skip + posts.length < totalPosts;
 
-        // console.log('Caching fetched posts in Redis...');
-
-        // Cache the data in Redis
-        const cacheKey = res.locals.cacheKey;
-        await redisClient.setEx(cacheKey, 120, JSON.stringify(allPosts));
-
-        // Return fetched posts
-        return res.status(200).json({
-            allPosts: allPosts,
-            message: 'Fetched from DB: All Posts',
-        });
+        res.status(200).json({ trendingPosts: posts, hasMore });
     } catch (error) {
-        console.error('Error occurred while fetching all posts:', error);
-        // Handle any errors
-        return res.status(500).json({
-            message: `Internal Server Error: ${error.message}`,
-        });
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
     }
 };
 
@@ -142,7 +137,7 @@ export const getTaggedPosts = async (req, res) => {
 
     try {
         // Find all posts where the userId is in the taggedUsers array
-        const posts = await Post.find({ taggedUsers: userId }).select('imageUrl');
+        const posts = await Post.find({ taggedUsers: userId }).select('imageUrl likeCount');
 
         // Cache the data in Redis
         const cacheKey = res.locals.cacheKey;

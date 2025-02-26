@@ -6,13 +6,13 @@ import storage from '../config/cloudConfig.js';
 const upload = multer({ storage });
 import { auth, isOwner } from '../Middlewares/AuthMid.js';
 import { validatePost, checkCacheData } from '../Middlewares/ValidationMid.js';
-import { createPost, getAllPosts, getHomePostFeed, getTaggedPosts, showPost, delPost, postSuggestions } from '../controllers/post.js';
+import { createPost, trendingPosts, getHomePostFeed, getTaggedPosts, showPost, delPost, postSuggestions } from '../controllers/post.js';
 
 // create post
 router.post('/', auth, upload.single('imageUrl'), validatePost, createPost);
 
 // All posts 
-router.get('/', auth, checkCacheData((req) => `allPosts:${req.user._id}`, 'allPosts'), getAllPosts);
+router.get('/trending-posts', auth, trendingPosts);
 
 // Get Home Post's Feed
 router.get('/home-posts', auth, checkCacheData((req) => `home-posts:${req.user._id}`, 'posts'), getHomePostFeed);

@@ -198,7 +198,7 @@ export const getUserProfile = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        const posts = await Post.find({ owner: user._id }).select('imageUrl');
+        const posts = await Post.find({ owner: user._id }).select('imageUrl likeCount');
 
         // Get followers and following counts
         const followersCount = await Follow.countDocuments({ following: user._id });
