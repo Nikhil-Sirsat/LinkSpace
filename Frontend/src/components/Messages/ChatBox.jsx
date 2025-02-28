@@ -40,7 +40,6 @@ export default function ChatBox() {
     // fetch the data of the selected user
     useEffect(() => {
         if (!username) {
-            console.error('Username is not available.');
             setLoading(false);
             return;
         }
@@ -119,7 +118,6 @@ export default function ChatBox() {
                     markedAsRead(selectedUser._id);
                     setTimeout(scrollToBottom, 100);
 
-                    // console.log('Msg Received');
                 }
             }
 
@@ -159,10 +157,17 @@ export default function ChatBox() {
                         : msg
                 )
             );
-            // console.log('Message read event processed for sender:', senderId);
         });
 
         return () => socket.off('messageRead');
+    }, []);
+
+    // receive message Delete event
+    useEffect(() => {
+        socket.on('receiveMsgDelete', ({ msgToDelete }) => {
+            setMessages((prevMessages) => prevMessages.filter((msg) => msg._id !== msgToDelete));
+        });
+        return () => socket.off('receiveMsgDelete');
     }, []);
 
     // send msg fn
@@ -244,6 +249,9 @@ export default function ChatBox() {
 
             await axiosInstance.delete(`/api/messages/msg/${msgToDelete}`);
             setMessages((prevMessages) => prevMessages.filter((msg) => msg._id !== msgToDelete));
+
+            socket.emit('sendMsgDelete', { selectedUser, msgToDelete });
+            setMsgToDelete(null);
             handleMsgMenuClose();
         } catch (error) {
             console.error('Error deleting message:', error);

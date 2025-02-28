@@ -65,13 +65,19 @@ function initializeSocket(server, sessionMiddleware) {
             }
         });
 
-        // send MarkisRead Event
+        // send mard read Event
         socket.on('markAsRead', ({ senderId }) => {
             if (!senderId) return;
             io.to(senderId).emit('messageRead', { senderId });
         });
 
-        // send notification event
+        // Msg Delete Event
+        socket.on('sendMsgDelete', ({ selectedUser, msgToDelete }) => {
+            if (!selectedUser._id) return;
+            io.to(selectedUser._id).emit('receiveMsgDelete', { msgToDelete });
+        });
+
+        // send notification Event
         socket.on('sendNotification', async (notificationData) => {
             try {
                 if (socket.request.user._id.toString() !== notificationData.senderId) {
