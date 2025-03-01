@@ -17,8 +17,8 @@ function AuthProvider({ children }) {
                 setLoading(false);
             } catch (err) {
                 setUser(null);
-                console.log("Error in useEffect:", err.response ? err.response.data : err.message);
                 setLoading(false);
+                console.log("Error in useEffect:", err.response ? err.response.data : err.message);
             }
         };
         checkUser();
@@ -49,7 +49,7 @@ function AuthProvider({ children }) {
     }
 
     return (
-        <AuthContext.Provider value={{ user, setUser, login, logout }}>
+        <AuthContext.Provider value={{ user, setUser, login, logout, loading }}>
             {children}
         </AuthContext.Provider>
     );

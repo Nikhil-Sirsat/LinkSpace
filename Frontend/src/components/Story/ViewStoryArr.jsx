@@ -82,10 +82,8 @@ export default function ViewStoryArr({ storys }) {
 
                 // Ensure that the response contains the new message with its _id
                 if (response.data && response.data.newMsg) {
-                    const messageWithId = { ...messageData, _id: response.data.newMsg._id };
-
-                    // Emit the updated message data including the _id
-                    socket.emit('sendMessage', messageWithId);
+                    const resMsg = response.data.newMsg;
+                    socket.emit('sendMessage', resMsg);
                 } else {
                     console.error('Error: Response does not contain new message data');
                 }

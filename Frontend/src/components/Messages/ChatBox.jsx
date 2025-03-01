@@ -195,9 +195,9 @@ export default function ChatBox() {
         try {
             const response = await axiosInstance.post('/api/messages/newMessage', messageData);
             if (response.data.newMsg) {
-                const messageWithId = { ...messageData, _id: response.data.newMsg._id };
                 messageData._id = response.data.newMsg._id;
-                socket.emit('sendMessage', messageWithId);
+                const resMsg = response.data.newMsg;
+                socket.emit('sendMessage', resMsg);
             }
         } catch (error) {
             console.error('An Error occure while saving and sending Message');

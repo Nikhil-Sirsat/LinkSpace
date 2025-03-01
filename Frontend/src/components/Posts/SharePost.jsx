@@ -68,14 +68,12 @@ export default function SharePost({ id, handleToggleShareUsers, sharePostUsers }
             if (successfulPosts.length > 0) {
                 // Emit a socket event for each successfully posted message
                 successfulPosts.forEach(response => {
-                    const { data } = response; // Ensure `data` is safely destructured
-                    if (data && data.newMsg) {
-                        const { receiver, _id } = data.newMsg; // Get the actual message _id from the response
-                        socket.emit('sendMessage', { ...messageData, receiver, _id }); // Send the message with the _id
+                    if (response.data.newMsg) {
+                        const resMsg = response.data.newMsg;
+                        socket.emit('sendMessage', resMsg); // Send the message with the _id
+                        showSnackbar('Post shared successfully!');
                     }
                 });
-
-                showSnackbar('Post shared successfully!');
             } else {
                 showSnackbar('No posts were successfully shared.');
             }

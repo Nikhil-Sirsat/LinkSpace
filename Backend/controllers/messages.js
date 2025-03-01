@@ -156,12 +156,28 @@ export const getChatHistory = async (req, res) => {
 export const postMsg = async (req, res) => {
     try {
         const { sender, receiver, content, post, story, timestamp } = req.body;
+
+        // Create and save the new message
         const newMsg = new Message({ sender, receiver, content, post: post || null, story: story || null, timestamp });
         await newMsg.save();
-        // console.log(newMsg);
-        res.status(201).json({ newMsg: newMsg, message: 'Message Saved Successfully' });
+
+        // Populate based on whether it's a post or a story
+        const populatedMessage = await Message.findById(newMsg._id)
+            .populate(post ? {
+                path: 'post',
+                select: 'imageUrl owner',
+                populate: { path: 'owner', select: 'image username' }
+            } : {
+                path: 'story',
+                select: 'mediaUrl owner',
+                populate: { path: 'owner', select: 'username image' }
+            });
+
+        console.log(populatedMessage);
+
+        res.status(201).json({ newMsg: populatedMessage, message: 'Message Saved Successfully' });
     } catch (error) {
-        console.error('An Error Occured while Saving New Message : ', error.message);
+        console.error('An Error Occurred while Saving New Message:', error.message);
         res.status(500).json({ message: 'Internal Server Error' });
     }
 };

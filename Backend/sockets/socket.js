@@ -38,31 +38,12 @@ function initializeSocket(server, sessionMiddleware) {
 
         // send Message Event
         socket.on('sendMessage', async (messageData) => {
-            try {
-                if (socket.request.user._id.toString() !== messageData.sender) {
-                    console.error('Unauthorized attempt to send message');
-                    return;
-                }
-
-                if (messageData.post || messageData.story) {
-                    const populatedMessage = await Message.findById(messageData._id)
-                        .populate(messageData.post ? {
-                            path: 'post',
-                            select: 'imageUrl owner',
-                            populate: { path: 'owner', select: 'image username' }
-                        } : {
-                            path: 'story',
-                            select: 'mediaUrl owner',
-                            populate: { path: 'owner', select: 'username image' }
-                        });
-
-                    io.to(messageData.receiver).emit('receiveMessage', populatedMessage);
-                } else {
-                    io.to(messageData.receiver).emit('receiveMessage', messageData);
-                }
-            } catch (error) {
-                console.error('Error Sending Message:', error);
+            if (socket.request.user._id.toString() !== messageData.sender) {
+                console.error('Unauthorized attempt to send message');
+                return;
             }
+
+            io.to(messageData.receiver).emit('receiveMessage', messageData);
         });
 
         // send mard read Event

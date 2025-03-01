@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext.jsx';
 import axiosInstance from '../AxiosInstance.jsx';
-// import Loading from '../components/Loading/Loading.jsx';
 
 export default function ProtectedRoute({ children }) {
     const { user, setUser } = useContext(AuthContext);
