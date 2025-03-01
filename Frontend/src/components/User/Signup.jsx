@@ -1,5 +1,5 @@
 
-import signUpPoster from '../../assets/signup Poster 2.avif';
+import signUpPoster from '../../assets/signup Poster 3.jpg';
 
 import { useState, useContext } from 'react';
 import axiosInstance from '../../AxiosInstance.jsx';
@@ -21,6 +21,7 @@ import {
     Input,
     IconButton,
     Avatar,
+    Box,
 } from '@mui/material';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import Visibility from '@mui/icons-material/Visibility';
@@ -90,14 +91,6 @@ export default function SignUp() {
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-    const handleMouseDownPassword = (event) => {
-        event.preventDefault();
-    };
-
-    const handleMouseUpPassword = (event) => {
-        event.preventDefault();
-    };
-
     const handleChange = (e) => {
         const { name, value, files } = e.target;
 
@@ -160,248 +153,106 @@ export default function SignUp() {
     };
 
     return (
-        <Container maxWidth="md" sx={{ mt: 5, mb: 5 }}>
-            <Card style={{ boxShadow: '0px 8px 30px rgba(0, 0, 0, 0.1)', borderRadius: '16px' }}>
-                <Grid container>
-                    {/* Left Side: Image and Text */}
-                    <Grid
-                        item
-                        xs={12}
-                        md={5}
-                        style={{
-                            backgroundColor: '#2a363b',
-                            borderTopLeftRadius: '16px',
-                            borderBottomLeftRadius: '16px',
-                            color: '#fff',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <img
-                            src={signUpPoster}
-                            alt="Side Graphic"
-                            style={{ maxWidth: '100%' }}
-                        />
+        <Box sx={{ height: '100%', width: '100%', backgroundColor: '#121212', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+            <Container maxWidth="md">
+                <Card sx={{ borderRadius: '16px', overflow: 'hidden', boxShadow: 3, background: '#1e1e1e' }}>
+                    <Grid container>
+                        {/* Left Side: Image */}
+                        <Grid item xs={12} md={5} sx={{ backgroundColor: 'black', display: 'flex', justifyContent: 'center', alignItems: 'center', p: 2 }}>
+                            <img src={signUpPoster} alt="Signup Graphic" style={{ maxWidth: '100%', borderRadius: '8px' }} />
+                        </Grid>
+
+                        {/* Right Side: Form */}
+                        <Grid item xs={12} md={7}>
+                            <CardContent sx={{ padding: '2.5rem', backgroundColor: 'black' }}>
+
+                                <Avatar src={selectedImage || 'https://via.placeholder.com/150'} sx={{ width: 120, height: 120, borderRadius: '50%', margin: "auto", mb: 3, border: '3px solid #00adb5' }} />
+
+                                <form onSubmit={handleSubmit} encType='multipart/form-data'>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12} sm={6}>
+                                            <CustomTextField fullWidth label="Name" variant="outlined" name="name" type='text' value={formData.name} onChange={handleChange} required />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <CustomTextField fullWidth label="Email" variant="outlined" name="email" type="email" value={formData.email} onChange={handleChange} required />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} sx={{ display: 'flex', alignItems: 'flex-end' }}>
+                                            <AccountCircle sx={{ color: '#00adb5', mr: 1 }} />
+                                            <CustomTextField fullWidth label="Username" variant="outlined" name="username" value={formData.username} onChange={handleChange} required />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <FormControl fullWidth variant="outlined">
+                                                <CustomInputLabel>Password</CustomInputLabel>
+                                                <CustomInput type={showPassword ? 'text' : 'password'}
+                                                    endAdornment={
+                                                        <InputAdornment position="end">
+                                                            <IconButton onClick={handleClickShowPassword}>
+                                                                {showPassword ? <VisibilityOff sx={{ color: '#00adb5' }} /> : <Visibility sx={{ color: '#00adb5' }} />}
+                                                            </IconButton>
+                                                        </InputAdornment>
+                                                    }
+                                                    name="password"
+                                                    value={formData.password}
+                                                    onChange={handleChange}
+                                                    required
+                                                />
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <FormControl sx={{ width: '25ch' }} variant="standard">
+                                                <CustomInputLabel>Conform Password</CustomInputLabel>
+                                                <CustomInput type={showPassword ? 'text' : 'password'}
+                                                    endAdornment={
+                                                        <InputAdornment position="end">
+                                                            <IconButton onClick={handleClickShowPassword}>
+                                                                {showPassword ? <VisibilityOff sx={{ color: '#00adb5' }} /> : <Visibility sx={{ color: '#00adb5' }} />}
+                                                            </IconButton>
+                                                        </InputAdornment>
+                                                    }
+                                                    name="conformPass"
+                                                    value={formData.conformPass}
+                                                    onChange={handleChange}
+                                                    required
+                                                />
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <CustomTextField fullWidth label="Age" variant="outlined" name="age" type="number" value={formData.age} onChange={handleChange} required />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <CustomTextField fullWidth label="Gender" variant="outlined" name="gender" select value={formData.gender} onChange={handleChange} required>
+                                                <MenuItem value="male">Male</MenuItem>
+                                                <MenuItem value="female">Female</MenuItem>
+                                                <MenuItem value="other">Other</MenuItem>
+                                            </CustomTextField>
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <CustomTextField fullWidth label="Bio" variant="outlined" name="bio" multiline rows={2} value={formData.bio} onChange={handleChange} required />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <CustomTextField fullWidth type="file" variant="outlined" name="image" onChange={handleChange} />
+                                        </Grid>
+                                        <Grid item xs={12} sx={{ textAlign: 'center', mt: 2 }}>
+                                            <Button type="submit" variant="contained" sx={{ backgroundColor: '#00adb5', color: '#fff', padding: '10px 20px', borderRadius: '8px', fontSize: '1rem', ':hover': { backgroundColor: '#007f8b' } }}>
+                                                Create Account
+                                            </Button>
+                                        </Grid>
+                                    </Grid>
+                                </form>
+
+                                {message && <Alert severity="error" sx={{ mt: 2, borderRadius: '8px' }}>{message}</Alert>}
+
+                                <Typography variant="subtitle2" sx={{ color: '#fff', mt: 3, textAlign: 'center' }}>
+                                    Already have an account?{' '}
+                                    <Link to="/login" style={{ color: '#00adb5', textDecoration: 'none', fontWeight: 'bold' }}>
+                                        Log in here!
+                                    </Link>
+                                </Typography>
+                            </CardContent>
+                        </Grid>
                     </Grid>
-
-                    {/* Right Side: Form */}
-                    <Grid item xs={12} md={7}>
-                        <CardContent style={{ padding: '2rem', backgroundColor: '#2a363b', height: '100%' }}>
-                            <Typography
-                                variant="h5"
-                                style={{
-                                    textAlign: 'center',
-                                    color: '#ff8c00',
-                                    fontWeight: 'bold',
-                                    marginBottom: 25,
-                                }}
-                            >
-                                Create Account
-                            </Typography>
-
-                            <Avatar
-                                src={selectedImage || 'https://via.placeholder.com/150'}
-                                sx={{
-                                    width: { xs: 90, sm: 100, md: 160 }, // Avatar size
-                                    height: { xs: 90, sm: 100, md: 160 },
-                                    borderRadius: '50%', // Ensures the Avatar remains circular
-                                    margin: "auto",
-                                    mb: 5,
-                                }}
-                            />
-
-                            <form onSubmit={handleSubmit} encType='multipart/form-data'>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={12} sm={6}>
-                                        <CustomTextField
-                                            fullWidth
-                                            label="Name"
-                                            variant="standard"
-                                            name="name"
-                                            type='text'
-                                            value={formData.name}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <CustomTextField
-                                            fullWidth
-                                            label="Email"
-                                            variant="standard"
-                                            name="email"
-                                            type="email"
-                                            value={formData.email}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6} sx={{ display: 'flex', alignItems: 'flex-end' }}>
-                                        <AccountCircle sx={{ color: 'gray', mr: 1, my: 0.5 }} />
-                                        <CustomTextField
-                                            fullWidth
-                                            label="username"
-                                            id="input-with-sx"
-                                            variant="standard"
-                                            name="username"
-                                            value={formData.username}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <FormControl sx={{ width: '25ch' }} variant="standard">
-                                            <CustomInputLabel htmlFor="standard-adornment-password" sx={{ color: 'white' }}>Password</CustomInputLabel>
-                                            <CustomInput
-                                                id="standard-adornment-password"
-                                                type={showPassword ? 'text' : 'password'}
-                                                endAdornment={
-                                                    <InputAdornment position="end">
-                                                        <IconButton
-                                                            aria-label={
-                                                                showPassword ? 'hide the password' : 'display the password'
-                                                            }
-                                                            onClick={handleClickShowPassword}
-                                                            onMouseDown={handleMouseDownPassword}
-                                                            onMouseUp={handleMouseUpPassword}
-                                                        >
-                                                            {showPassword ? <VisibilityOff sx={{ color: 'gray' }} /> : <Visibility sx={{ color: 'gray' }} />}
-                                                        </IconButton>
-                                                    </InputAdornment>
-                                                }
-                                                label="Password"
-                                                name="password"
-                                                value={formData.password}
-                                                onChange={handleChange}
-                                                required
-                                            />
-                                        </FormControl>
-                                    </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <FormControl sx={{ width: '25ch' }} variant="standard">
-                                            <CustomInputLabel htmlFor="standard-adornment-password" sx={{ color: 'white' }}>Conform Password</CustomInputLabel>
-                                            <CustomInput
-                                                id="standard-adornment-password"
-                                                type={showPassword ? 'text' : 'password'}
-                                                endAdornment={
-                                                    <InputAdornment position="end">
-                                                        <IconButton
-                                                            aria-label={
-                                                                showPassword ? 'hide the password' : 'display the password'
-                                                            }
-                                                            onClick={handleClickShowPassword}
-                                                            onMouseDown={handleMouseDownPassword}
-                                                            onMouseUp={handleMouseUpPassword}
-                                                        >
-                                                            {showPassword ? <VisibilityOff sx={{ color: 'gray' }} /> : <Visibility sx={{ color: 'gray' }} />}
-                                                        </IconButton>
-                                                    </InputAdornment>
-                                                }
-                                                label="Conform Password"
-                                                name="conformPass"
-                                                value={formData.conformPass}
-                                                onChange={handleChange}
-                                                required
-                                            />
-                                        </FormControl>
-                                    </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <CustomTextField
-                                            fullWidth
-                                            label="Age"
-                                            variant="standard"
-                                            name="age"
-                                            id='age'
-                                            type="number"
-                                            value={formData.age}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <CustomTextField
-                                            fullWidth
-                                            label="Gender"
-                                            variant="standard"
-                                            name="gender"
-                                            id='gender'
-                                            select
-                                            value={formData.gender}
-                                            onChange={handleChange}
-                                            required
-                                        >
-                                            <MenuItem value="" disabled>Select Gender</MenuItem>
-                                            <MenuItem value="male">Male</MenuItem>
-                                            <MenuItem value="female">Female</MenuItem>
-                                            <MenuItem value="other">Other</MenuItem>
-                                        </CustomTextField>
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <CustomTextField
-                                            fullWidth
-                                            label="Bio"
-                                            variant="standard"
-                                            name="bio"
-                                            id='bio'
-                                            multiline
-                                            rows={1}
-                                            value={formData.bio}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <CustomTextField
-                                            fullWidth
-                                            type="file"
-                                            variant="standard"
-                                            name="image"
-                                            id='image'
-                                            onChange={handleChange}
-                                        />
-                                    </Grid>
-                                    {/* <Grid item xs={12}> */}
-                                    <Button
-                                        type="submit"
-                                        variant="contained"
-                                        style={{
-                                            margin: 'auto',
-                                            backgroundColor: '#ff8c00',
-                                            color: '#fff',
-                                            padding: '10px 20px',
-                                            marginTop: 25,
-                                        }}
-                                    >
-                                        Create Account
-                                    </Button>
-                                    {/* </Grid> */}
-                                </Grid>
-                            </form>
-                            {message && (
-                                <Alert severity="error" style={{ marginTop: '1rem', borderRadius: '8px' }}>
-                                    {message}
-                                </Alert>
-                            )}
-                            <Typography
-                                variant="subtitle2"
-                                style={{ color: '#fff', marginTop: '2rem', textAlign: 'center' }}
-                            >
-                                Already have an account?{' '}
-                                <Link to="/login" style={{ color: '#ff8c00', textDecoration: 'none' }}>
-                                    Login in here!
-                                </Link>
-                            </Typography>
-                        </CardContent>
-                    </Grid>
-                </Grid>
-            </Card>
-        </Container>
+                </Card>
+            </Container>
+        </Box>
     );
 };
-
-
-
-
-
