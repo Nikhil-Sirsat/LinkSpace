@@ -3,15 +3,15 @@ import { useEffect, useState, useContext } from 'react';
 
 import { Box, List, ListItem, Typography, Avatar, Badge, Modal, IconButton } from '@mui/material';
 import { Link, Outlet, NavLink } from 'react-router-dom';
-import { SocketContext } from '../../context/socketContext';
-import { AuthContext } from '../../context/AuthContext';
+import { SocketContext } from '../../context/socketContext.jsx';
+import { AuthContext } from '../../context/AuthContext.jsx';
 import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
-import MessagesSkeleton from '../Skeletons/MessagesSkeleton';
-import { ThemeContext } from "../../context/ThemeContext";
+import MessagesSkeleton from '../Skeletons/MessagesSkeleton.jsx';
+import { ThemeContext } from "../../context/ThemeContext.jsx";
 import axiosInstance from '../../AxiosInstance.jsx';
 
-export default function Messages() {
+export default function UserList() {
     const [userList, setUserList] = useState([]);
     const { user } = useContext(AuthContext);
     const { socket } = useContext(SocketContext);

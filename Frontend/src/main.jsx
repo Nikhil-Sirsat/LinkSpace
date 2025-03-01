@@ -9,7 +9,7 @@ import Profile from './components/User/Profile.jsx';
 import Explore from './components/Posts/Explore.jsx';
 import Signup from './components/User/Signup.jsx';
 import Login from './components/User/Login.jsx';
-import Messages from './components/Messages/Messages.jsx';
+import UserList from './components/Messages/UserList.jsx';
 import ChatBox from './components/Messages/ChatBox.jsx';
 import Notification from './components/Notification/Notification.jsx';
 import EditeProfile from './components/User/EditProfile.jsx';
@@ -69,7 +69,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/Messages',
-        element: <ProtectedRoute><Messages /></ProtectedRoute>,
+        element: <ProtectedRoute><UserList /></ProtectedRoute>,
         children: [
           {
             path: ':username',
