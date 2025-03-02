@@ -16,6 +16,7 @@ export default function Followers() {
     const { user } = useContext(AuthContext);
     const { mode } = useContext(ThemeContext);
 
+    // fetch followers
     useEffect(() => {
         const fetchFollowers = async () => {
             try {

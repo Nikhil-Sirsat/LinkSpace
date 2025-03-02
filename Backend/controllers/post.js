@@ -15,7 +15,6 @@ export const createPost = async (req, res) => {
         return res.status(400).json({ error: 'Form data is empty' });
     }
 
-
     const { caption, taggedUsers } = req.body;
     const io = req.app.get('io'); // Get the io instance from the app
 
@@ -63,8 +62,13 @@ export const createPost = async (req, res) => {
 
                 await newNotification.save();
 
+                // populate notification
+                const populatedNotify = await Notification.findById(newNotification._id)
+                    .populate('senderId', 'image username')
+                    .populate('postId', 'imageUrl');
+
                 // Emit 'sendNotification' event to the tagged user
-                io.to(taggedUserId).emit('sendNotification', newNotification);
+                io.to(taggedUserId).emit('sendNotification', populatedNotify);
             }
         }
 

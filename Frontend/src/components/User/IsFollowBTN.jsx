@@ -12,6 +12,7 @@ export default function IsFollowBTN({ username }) {
     const [otherUser, setOtherUser] = useState({});
     const { setFollowersCount, setFollowingCount } = useContext(FollowContext);
 
+    // check isFollow
     useEffect(() => {
         const fetchIsFollow = async () => {
             try {
@@ -49,11 +50,10 @@ export default function IsFollowBTN({ username }) {
                 throw new Error('Notification save failed or invalid response');
             }
 
-            // Include the saved notification ID in the data
-            const savedNotification = { ...notificationData, _id: response.data.newNotify._id };
+            const responseNotify = response.data.newNotify;
 
             // Emit the event with the full data
-            socket.emit('sendNotification', savedNotification);
+            socket.emit('sendNotification', responseNotify);
         } catch (error) {
             console.error('An Error occurred while saving and sending Notification:', error);
             return;

@@ -6,7 +6,13 @@ export const postNotify = async (req, res) => {
         const { senderId, receiverId, type, message, isRead, postId } = req.body;
         const newNotify = new Notification({ senderId, receiverId, type, message, isRead, postId: postId || null });
         await newNotify.save();
-        res.status(201).json({ newNotify: newNotify, message: 'Notification Saved Successfully' });
+
+        // populate notification
+        const populatedNotify = await Notification.findById(newNotify._id)
+            .populate('senderId', 'image username')
+            .populate('postId', 'imageUrl');
+
+        res.status(201).json({ newNotify: populatedNotify, message: 'Notification Saved Successfully' });
     } catch (error) {
         console.error('An Error Occured while Saving New Notification : ', error.message);
         res.status(500).json({ message: 'Internal Server Error' });

@@ -2,7 +2,6 @@
 import { Server } from 'socket.io';
 import passport from 'passport';
 import Notification from '../models/Notification.js';
-import Message from '../models/messages.js';
 
 function initializeSocket(server, sessionMiddleware) {
 
@@ -31,8 +30,8 @@ function initializeSocket(server, sessionMiddleware) {
 
     io.on('connection', (socket) => {
 
+        // socket join Event
         socket.on('join', ({ userId }) => {
-            // console.log(`User ${userId} joined`);
             socket.join(userId);
         });
 
@@ -60,34 +59,13 @@ function initializeSocket(server, sessionMiddleware) {
 
         // send notification Event
         socket.on('sendNotification', async (notificationData) => {
-            try {
-                if (socket.request.user._id.toString() !== notificationData.senderId) {
-                    console.error('Unauthorized attempt to send Notification');
-                    return;
-                }
 
-                let populatedNotification = null;
-
-                if (notificationData.postId) {
-                    populatedNotification = await Notification.findById(notificationData._id)
-                        .populate('senderId', 'image username')
-                        .populate('postId', 'imageUrl');
-                } else {
-                    populatedNotification = await Notification.findById(notificationData._id)
-                        .populate('senderId', 'image username');
-                }
-
-                if (populatedNotification) {
-                    io.to(notificationData.receiverId).emit('receiveNotification', populatedNotification);
-                } else {
-                    console.error('Notification not found:', notificationData._id);
-                    io.to(notificationData.receiverId).emit('receiveNotification', {
-                        error: 'Notification data not found',
-                    });
-                }
-            } catch (error) {
-                console.error('Error sending Notification:', error);
+            if (socket.request.user._id.toString() !== notificationData.senderId._id) {
+                console.error('Unauthorized attempt to send Notification');
+                return;
             }
+
+            io.to(notificationData.receiverId).emit('receiveNotification', notificationData);
         });
 
         socket.on('disconnect', () => {
