@@ -15,6 +15,7 @@ export default function UploadStory() {
     const showSnackbar = useSnackbar();
     const [selectedImage, setSelectedImage] = useState(null);
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
@@ -42,6 +43,7 @@ export default function UploadStory() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
 
         const data = new FormData();
         data.append('mediaUrl', formData.mediaUrl);
@@ -55,9 +57,11 @@ export default function UploadStory() {
             });
             navigate(`/user/${user.username}`);
             showSnackbar('Story Uploaded successfully !');
+            setLoading(false);
 
         } catch (error) {
             setError(error.response?.data?.error || 'Something went wrong');
+            setLoading(false);
         }
     };
 
@@ -211,7 +215,7 @@ export default function UploadStory() {
                                         mr: 2,
                                     }}
                                 >
-                                    Upload Story
+                                    {loading ? 'Loading...' : 'Upload Story'}
                                 </Button>
                                 <Button
                                     component={Link}

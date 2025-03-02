@@ -47,6 +47,7 @@ export default function EditeProfile() {
     const showSnackbar = useSnackbar();
     const [selectedImage, setSelectedImage] = useState(null);
     const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -84,6 +85,8 @@ export default function EditeProfile() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
+
         const data = new FormData();
         data.append('name', formData.name);
         data.append('username', formData.username);
@@ -117,18 +120,23 @@ export default function EditeProfile() {
                         setMessage("User information Updated Successfully");
                         navigate(`/user/${user.username}`);
                         showSnackbar('Profile Updated successfully');
+                        setLoading(false);
                     } else {
                         setMessage('error in Login');
+                        setLoading(false);
                     }
                 } catch (error) {
                     console.log(`Error in Updating : ${error.message}`);
                     setMessage(error.message);
+                    setLoading(false);
                 }
             } else {
                 setMessage('Incorrect Password');
+                setLoading(false);
             }
         } catch (error) {
             setMessage("Incorrect Password");
+            setLoading(false);
         }
     };
 
@@ -291,7 +299,7 @@ export default function EditeProfile() {
                                         marginTop: 25,
                                     }}
                                 >
-                                    Update
+                                    {loading ? "Loading..." : "Update"}
                                 </Button>
                                 <Button
                                     component={Link}

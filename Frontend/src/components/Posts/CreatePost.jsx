@@ -19,6 +19,7 @@ export default function CreatePost() {
     const [error, setError] = useState('');
     const [message, setMessage] = useState('');
     const [selectedImage, setSelectedImage] = useState(null);
+    const [submitLoading, setSubmitLoading] = useState(false);
     const navigate = useNavigate();
     const showSnackbar = useSnackbar();
 
@@ -67,6 +68,8 @@ export default function CreatePost() {
     // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setSubmitLoading(true);
+
         const data = new FormData();
         data.append('imageUrl', formData.imageUrl);
         data.append('caption', formData.caption);
@@ -82,9 +85,11 @@ export default function CreatePost() {
             navigate(`/user/${user.username}`);
             setMessage('Post created successfully');
             showSnackbar('Post created successfully');
+            setSubmitLoading(false);
         } catch (error) {
             console.log(error.response?.data?.error || 'Error creating post');
             setError(error.response?.data?.error || 'Something went wrong');
+            setSubmitLoading(false);
         }
     };
 
@@ -282,7 +287,7 @@ export default function CreatePost() {
                                     textTransform: 'none',
                                 }}
                             >
-                                Create Post
+                                {submitLoading ? "Loading..." : "Create Post"}
                             </Button>
                             <Button
                                 component={Link}
