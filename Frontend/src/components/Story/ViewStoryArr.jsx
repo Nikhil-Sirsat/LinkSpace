@@ -134,7 +134,6 @@ export default function ViewStoryArr({ storys }) {
             <style>
                 {`
                 .slick-prev:before, .slick-next:before {
-                    color: black;  /* Change arrow color */
                     font-size: 27px; /* Adjust size */
                     display : ${storys.length > 1 ? 'block' : 'none'}
                 }
@@ -146,7 +145,7 @@ export default function ViewStoryArr({ storys }) {
                 <Slider {...settings}>
                     {storys.map(story => (
 
-                        <Card key={story._id} sx={{ maxWidth: 345, border: 'none', boxShadow: 'none', position: 'relative', backgroundColor: '#4b4c44' }}>
+                        <Card key={story._id} sx={{ maxWidth: 345, height: '83vh', border: 'none', boxShadow: 'none', position: 'relative', backgroundColor: 'black' }}>
                             <Box sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid white' }}>
                                 <Box sx={{ flex: 1 }}>
                                     <Typography sx={{ display: 'flex', alignItems: 'center', fontSize: '12px' }} variant="body2" color="white">
@@ -169,21 +168,21 @@ export default function ViewStoryArr({ storys }) {
                             >
                                 {user._id === story.owner._id ? (
                                     <MenuItem onClick={handleDeleteStory}>Delete Story</MenuItem>
-                                ) : ''}
+                                ) : null}
 
                             </Menu>
                             <CardMedia
                                 component="img"
                                 image={story.mediaUrl.url}
                                 alt="media-url"
-                                sx={{ objectFit: 'contain', height: { xs: '64vh', md: 430 } }}
+                                sx={{ objectFit: 'contain', height: "67vh" }}
                             />
-                            <Typography variant="body2" sx={{ color: 'white', backgroundColor: '#00000080', width: '100%', textAlign: 'center', position: 'absolute', zIndex: 2, bottom: 0, marginBottom: { xs: 8, md: 12 }, padding: 1 }}>
+                            <Typography variant="body2" sx={{ color: 'white', backgroundColor: '#00000080', width: '100%', textAlign: 'center', position: 'absolute', zIndex: 2, bottom: 0, marginBottom: 10, padding: 1 }}>
                                 {story.caption}
                             </Typography>
 
                             {/* story reply */}
-                            <Box sx={{ display: 'flex', alignItems: 'center', mb: 0, mt: { xs: 6, md: 2 } }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
                                 <TextField
                                     fullWidth
                                     id="standard-basic"

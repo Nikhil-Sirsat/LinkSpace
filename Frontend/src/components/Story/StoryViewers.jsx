@@ -58,7 +58,7 @@ export default function StoryViewers({ viewers }) {
                 }}
             />
 
-            <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#4b4c44' }}>
+            <div style={{ display: 'flex', alignItems: 'center', backgroundColor: 'black' }}>
                 <IconButton onClick={toggleDrawer(true)}>
                     <VisibilityOutlinedIcon sx={{ color: 'white' }} />
                 </IconButton>
@@ -97,7 +97,7 @@ export default function StoryViewers({ viewers }) {
                         {viewers.length} seen
                     </Typography>
                 </StyledBox>
-                <StyledBox sx={{ px: 2, pb: 2, pt: 8, height: '100%', width: '100%', overflow: 'auto', color: 'black' }}>
+                <StyledBox sx={{ px: 2, pb: 2, pt: 8, height: '100%', width: '100%', overflow: 'auto' }}>
                     {viewers.length > 0 ? (
                         viewers.map((viewer) => (
                             <Box key={viewer._id} sx={{ display: 'flex', alignItems: 'flex-start', mb: 3 }}>

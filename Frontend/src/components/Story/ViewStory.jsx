@@ -58,7 +58,7 @@ export default function ViewStory() {
                     sx={{
                         width: { xs: '100%', md: '27%' },
                         height: { xs: '100%', md: '95%' },
-                        bgcolor: '#4b4c44',
+                        bgcolor: 'black',
                         boxShadow: 24,
                         display: 'flex',
                         flexDirection: 'column',
