@@ -1,17 +1,14 @@
 
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
-import { AppBar, Tabs, Tab, Typography, Box } from '@mui/material';
-import ProfilePostGreed from './ProfilePostGreed.jsx';
-import SavedPostGrid from './SavedPostsGreed.jsx';
+import { AppBar, Tabs, Tab, Box } from '@mui/material';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import AppsIcon from '@mui/icons-material/Apps';
 import PersonPinIcon from '@mui/icons-material/PersonPin';
 import axiosInstance from '../../AxiosInstance.jsx';
-import NotStartedIcon from '@mui/icons-material/NotStarted';
-import TaggUserPostGrid from './TaggUserPostGreed.jsx';
 import PostGridSkeleton from '../Skeletons/PostGridSkeleton.jsx';
-import { ThemeContext } from "../../context/ThemeContext";
+import PostsGrid from './PostsGrid.jsx';
+import NotStartedIcon from '@mui/icons-material/NotStarted';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -39,38 +36,56 @@ export default function FullWidthTabs({ posts, CurrUser, profileUser }) {
     const [savedPosts, setSavedPosts] = useState([]);
     const [taggPosts, setTaggPosts] = useState([]);
     const [loading, setLoading] = useState(true);
-    const { mode } = useContext(ThemeContext);
 
+    // fetch saved posts
     useEffect(() => {
         if (profileUser && profileUser._id) {
-            const fetchPosts = async () => {
+            const fetchSavedPosts = async () => {
                 try {
                     const savedPostResponse = await axiosInstance.get(`/api/savedPost/saved-posts`);
-                    const taggPostsResponse = await axiosInstance.get(`/api/post/tagged/${profileUser._id}`);
-                    // console.log(taggPostsResponse.data.posts);
-                    setTaggPosts(taggPostsResponse.data.posts);
                     setSavedPosts(savedPostResponse.data.savedPosts);
                     setLoading(false);
                 } catch (error) {
-                    console.log('Error fetching posts:', error);
+                    console.log('Error fetching saved posts:', error);
                     setLoading(false);
                 }
             };
-            fetchPosts();
+            fetchSavedPosts();
         }
     }, [profileUser._id]);
 
+    // fetch tagged posts
     useEffect(() => {
-        // Retrieve the saved tab index from local storage
+        if (profileUser && profileUser._id) {
+            const fetchTagPosts = async () => {
+                try {
+                    const taggPostsResponse = await axiosInstance.get(`/api/post/tagged/${profileUser._id}`);
+                    setTaggPosts(taggPostsResponse.data.posts);
+                    setLoading(false);
+                } catch (error) {
+                    console.log('Error fetching Tagged posts:', error);
+                    setLoading(false);
+                }
+            };
+            fetchTagPosts();
+        }
+    }, [profileUser._id]);
+
+    // get active tab from local-storage
+    useEffect(() => {
         const savedTabIndex = localStorage.getItem('selectedTabIndex');
-        if (savedTabIndex !== null) {
+
+        // Ensure it's a valid number; default to 0 if not
+        if (savedTabIndex !== null && !isNaN(savedTabIndex)) {
             setValue(Number(savedTabIndex));
+        } else {
+            setValue(0);  // Default to the first tab
         }
     }, []);
 
+    // save active tab index into the local-storage
     const handleChange = (event, newValue) => {
         setValue(newValue);
-        // Save the selected tab index to local storage
         localStorage.setItem('selectedTabIndex', newValue);
     };
 
@@ -90,6 +105,7 @@ export default function FullWidthTabs({ posts, CurrUser, profileUser }) {
                         <Tab icon={<BookmarkIcon />} iconPosition="start" label="SAVED" sx={{ fontSize: '12px' }} />
                     ) : (
                         <Tab icon={<NotStartedIcon />} iconPosition="start" label="REELS" sx={{ fontSize: '12px' }} />
+                        // null
                     )}
                     <Tab icon={<PersonPinIcon />} iconPosition="start" label="TAGGED" sx={{ fontSize: '12px' }} />
                 </Tabs>
@@ -100,11 +116,11 @@ export default function FullWidthTabs({ posts, CurrUser, profileUser }) {
             ) : (
                 <>
                     <TabPanel value={value} index={0} dir={theme.direction}>
-                        <ProfilePostGreed posts={posts} />
+                        <PostsGrid posts={posts} message={'no posts yet'} type={'profile'} />
                     </TabPanel>
                     {CurrUser._id === profileUser._id ? (
                         <TabPanel value={value} index={1} dir={theme.direction}>
-                            <SavedPostGrid posts={savedPosts} />
+                            <PostsGrid posts={savedPosts} message={'no posts saved yet'} type={'saved'} />
                         </TabPanel>
                     ) : (
                         <TabPanel value={value} index={1} dir={theme.direction}>
@@ -112,11 +128,10 @@ export default function FullWidthTabs({ posts, CurrUser, profileUser }) {
                         </TabPanel>
                     )}
                     <TabPanel value={value} index={2} dir={theme.direction}>
-                        <TaggUserPostGrid posts={taggPosts} />
+                        <PostsGrid posts={taggPosts} message={"no tagged's yet"} type={'taged'} />
                     </TabPanel>
                 </>
             )}
         </Box>
     );
 }
-

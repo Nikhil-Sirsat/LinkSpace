@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Typography, Box } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 
-export default function TaggUserPostGrid({ posts }) {
+export default function PostsGrid({ posts, message, type }) {
 
     return (
         <Box
@@ -18,8 +18,8 @@ export default function TaggUserPostGrid({ posts }) {
                 posts.map((post) => (
                     <Box className='onPost'
                         component={Link}
-                        to={`/post/${post._id}`}
-                        key={post._id}
+                        to={type === 'saved' ? (`/post/${post.post._id}`) : (`/post/${post._id}`)}
+                        key={type === 'saved' ? (post.post._id) : (post._id)}
                         sx={{
                             backgroundColor: 'black',
                             hover: 'cursor-pointer',
@@ -40,7 +40,11 @@ export default function TaggUserPostGrid({ posts }) {
                     >
                         <Box
                             component="img"
-                            src={post.imageUrl.url ? post.imageUrl.url : post.imageUrl}
+                            src={type === 'saved' ? (
+                                post.post.imageUrl.url ? post.post.imageUrl.url : post.post.imageUrl
+                            ) : (
+                                post.imageUrl.url ? post.imageUrl.url : post.imageUrl
+                            )}
                             alt={`Post ${post._id}`}
                             sx={{
                                 width: '100%',
@@ -72,7 +76,7 @@ export default function TaggUserPostGrid({ posts }) {
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                 <FavoriteIcon />
                                 <Typography variant="h6" component="span">
-                                    {post.likeCount}
+                                    {type === 'saved' ? (post.post.likeCount) : (post.likeCount)}
                                 </Typography>
                             </Box>
                         </Box>
@@ -80,7 +84,7 @@ export default function TaggUserPostGrid({ posts }) {
                 ))
             ) : (
                 <Typography variant="body2" color="textSecondary">
-                    no taggs
+                    {message}
                 </Typography>
             )}
 
