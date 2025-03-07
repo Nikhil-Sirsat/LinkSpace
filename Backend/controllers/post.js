@@ -189,7 +189,8 @@ export const showPost = async (req, res) => {
 export const delPost = async (req, res) => {
     try {
         const { id } = req.params;
-        const deletedPost = await Post.findByIdAndDelete(id);
+        // const deletedPost = await Post.findByIdAndDelete(id);
+        const deletedPost = await Post.findOneAndDelete({ _id: id });
 
         if (!deletedPost) {
             return res.status(404).json({ message: 'Post Not Found' });
