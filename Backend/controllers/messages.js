@@ -173,8 +173,6 @@ export const postMsg = async (req, res) => {
                 populate: { path: 'owner', select: 'username image' }
             });
 
-        console.log(populatedMessage);
-
         res.status(201).json({ newMsg: populatedMessage, message: 'Message Saved Successfully' });
     } catch (error) {
         console.error('An Error Occurred while Saving New Message:', error.message);

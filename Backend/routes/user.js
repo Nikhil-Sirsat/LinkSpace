@@ -7,7 +7,7 @@ import storage from '../config/cloudConfig.js';
 const upload = multer({ storage });
 import { auth } from '../Middlewares/AuthMid.js';
 import { validateUser, checkCacheData } from '../Middlewares/ValidationMid.js';
-import { signUp, Login, LogOut, protectedRoute, editUser, checkPass, search, suggested, getUserProfile } from '../controllers/user.js';
+import { signUp, Login, LogOut, protectedRoute, editUser, search, suggested, getUserProfile } from '../controllers/user.js';
 
 //SignUp Route
 router.post('/SignUp', upload.single('image'), validateUser, signUp);
@@ -23,9 +23,6 @@ router.get('/protected', auth, protectedRoute);
 
 // edit user info
 router.put('/edit/:id', auth, upload.single('image'), validateUser, editUser);
-
-// check password
-router.post('/check-password', checkPass);
 
 // search users
 router.get('/search-users', auth, search);

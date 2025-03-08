@@ -42,59 +42,50 @@ export const protectedRoute = (req, res) => {
 export const editUser = async (req, res) => {
     try {
         const { id } = req.params;
-        const updateData = req.body;
+        const { name, username, email, password, age, gender, bio } = req.body;
 
-        const userBeforeUpdate = await User.findById(id);
-        if (!userBeforeUpdate) {
-            return res.status(404).json({ message: 'User Not Found' });
-        }
-
-        const user = await User.findByIdAndUpdate(id, updateData, { new: true });
-
-        if (typeof req.file !== "undefined") {
-            let url = req.file.path;
-            let filename = req.file.filename;
-            user.image = { url, filename }
-
-            await user.save();
-        }
-
-        // Check if the update actually changed any data
-        if (JSON.stringify(userBeforeUpdate.toObject()) === JSON.stringify(user.toObject())) {
-            console.log('User information not updated');
-            return res.status(401).json({ message: 'user information not updated ' });
-        }
-
-        if (user) {
-            return res.status(200).json({ message: 'User Information Updated Successfully' });
-        } else {
-            return res.status(404).json({ message: 'User Not Found' });
-        }
-
-    } catch (error) {
-        console.log('Error in try-catch: ', error);
-        res.status(500).json({ message: 'An error occurred while updating user information', error: error.message });
-    }
-};
-
-export const checkPass = async (req, res) => {
-    try {
-        const { userId, password } = req.body;
-        const user = await User.findById(userId);
-
+        // Find user before update
+        const user = await User.findById(id);
         if (!user) {
-            return res.status(404).json({ valid: false });
+            return res.status(404).json({ message: 'User Not Found' });
         }
 
-        user.authenticate(password, (err, user, passwordError) => {
-            if (err || passwordError) {
-                return res.status(400).json({ valid: false });
-            }
-            return res.status(200).json({ valid: true });
-        });
+        // **Check if the username or email already exists (excluding the current user)**
+        const existingUser = await User.findOne({ username });
+        if (existingUser && existingUser._id.toString() !== id) {
+            return res.status(400).json({ message: 'Username already exists' });
+        }
+
+        const existingEmail = await User.findOne({ email });
+        if (existingEmail && existingEmail._id.toString() !== id) {
+            return res.status(400).json({ message: 'Email already exists' });
+        }
+
+        // **Verify password before allowing update**
+        const isPasswordValid = await user.authenticate(password);
+        if (!isPasswordValid.user) {
+            return res.status(401).json({ message: 'Incorrect password' });
+        }
+
+        // **Prepare update object**
+        const updateData = { name, username, email, age, gender, bio };
+
+        // **Check if an image is uploaded**
+        if (req.file) {
+            updateData.image = {
+                url: req.file.path,
+                filename: req.file.filename,
+            };
+        }
+
+        // **Update the user**
+        const updatedUser = await User.findByIdAndUpdate(id, updateData, { new: true });
+
+        return res.status(200).json({ message: 'User information updated successfully', user: updatedUser });
+
     } catch (error) {
-        console.error('Error checking password:', error);
-        res.status(500).json({ valid: false, message: error.message });
+        console.error('Error updating user:', error);
+        res.status(500).json({ message: 'An error occurred while updating user information', error: error.message });
     }
 };
 

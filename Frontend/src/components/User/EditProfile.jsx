@@ -98,46 +98,35 @@ export default function EditeProfile() {
 
         if (formData.image) {
             data.append('image', formData.image);
-        } else {
-            data.append('image', JSON.stringify({ url: user.image.url, filename: user.image.filename }));
         }
 
         try {
-
-            const passwordCheck = await axiosInstance.post('/api/user/check-password', {
-                userId: user._id,
-                password: formData.password
+            // **Send update request including password**
+            const response = await axiosInstance.put(`/api/user/edit/${user._id}`, data, {
+                headers: { 'Content-Type': 'multipart/form-data' },
             });
-            if (passwordCheck.data.valid) {
-                try {
-                    await axiosInstance.put(`/api/user/edit/${user._id}`, data, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data',
-                        },
-                    });
-                    const success = await login(formData.username, formData.password);
-                    if (success) {
-                        setMessage("User information Updated Successfully");
-                        navigate(`/user/${user.username}`);
-                        showSnackbar('Profile Updated successfully');
-                        setLoading(false);
-                    } else {
-                        setMessage('error in Login');
-                        setLoading(false);
-                    }
-                } catch (error) {
-                    console.log(`Error in Updating : ${error.message}`);
-                    setMessage(error.message);
-                    setLoading(false);
-                }
+
+            // **If successful, re-login and navigate**
+            const success = await login(formData.username, formData.password);
+            if (success) {
+                showSnackbar('Profile updated successfully');
+                navigate(`/user/${formData.username}`);
             } else {
-                setMessage('Incorrect Password');
-                setLoading(false);
+                setMessage('Error in login after update');
             }
+
         } catch (error) {
-            setMessage("Incorrect Password");
-            setLoading(false);
+            console.error('Error updating profile:', error);
+
+            // **Display specific error messages**
+            if (error.response) {
+                setMessage(error.response.data.message || 'Something went wrong');
+            } else {
+                setMessage('An error occurred. Please try again.');
+            }
         }
+
+        setLoading(false);
     };
 
     return (
