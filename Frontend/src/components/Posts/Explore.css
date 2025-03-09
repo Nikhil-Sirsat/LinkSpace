@@ -1,0 +1,17 @@
+.masonry-grid {
+    display: flex;
+    margin-left: -10px;
+    /* Adjust based on gap */
+    width: auto;
+}
+
+.masonry-column {
+    padding-left: 10px;
+    /* Adjust based on gap */
+    background-clip: padding-box;
+}
+
+.masonry-column>div {
+    margin-bottom: 10px;
+    /* Space between images */
+}

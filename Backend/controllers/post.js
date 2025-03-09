@@ -81,7 +81,7 @@ export const createPost = async (req, res) => {
 
 export const trendingPosts = async (req, res) => {
     try {
-        const { page = 1, limit = 20 } = req.query; // Default to page 1, 10 posts per page
+        const { page = 1, limit = 12 } = req.query; // Default to page 1, 10 posts per page
         const skip = (page - 1) * limit;
 
         // Fetch trending posts directly using likeCount and createdAt for sorting

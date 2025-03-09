@@ -10,22 +10,22 @@ export default function PostsGrid({ posts, message, type }) {
             sx={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(3, 1fr)', // 3 columns
-                gap: '3px',
-                padding: '3px',
+                gap: '10px',
+                width: { xs: '94vw', md: '60vw' },
+                margin: 'auto',
             }}
         >
             {posts.length > 0 ? (
                 posts.map((post) => (
-                    <Box className='onPost'
+                    <Box
                         component={Link}
                         to={type === 'saved' ? (`/post/${post.post._id}`) : (`/post/${post._id}`)}
                         key={type === 'saved' ? (post.post._id) : (post._id)}
                         sx={{
+                            aspectRatio: '1 / 1', // Keeps images square like Instagram
+
                             backgroundColor: 'black',
                             hover: 'cursor-pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
                             overflow: 'hidden',
                             position: 'relative',
                             borderRadius: '9px',
@@ -38,22 +38,22 @@ export default function PostsGrid({ posts, message, type }) {
                             },
                         }}
                     >
-                        <Box
-                            component="img"
+                        <img
                             src={type === 'saved' ? (
                                 post.post.imageUrl.url ? post.post.imageUrl.url : post.post.imageUrl
                             ) : (
                                 post.imageUrl.url ? post.imageUrl.url : post.imageUrl
                             )}
-                            alt={`Post ${post._id}`}
-                            sx={{
+                            alt="post-img"
+                            loading="lazy"
+                            style={{
                                 width: '100%',
-                                height: 'auto',
-                                display: 'block',
+                                height: '100%',
+                                objectFit: 'cover', // Ensures image fully covers the grid item
+                                borderRadius: '9px',
                                 transition: 'all 0.3s ease',
                             }}
                         />
-
                         {/* Like Count Overlay */}
                         <Box
                             className="postOverlay"
@@ -87,8 +87,8 @@ export default function PostsGrid({ posts, message, type }) {
                     {message}
                 </Typography>
             )}
-
         </Box>
+
     );
 }
 
