@@ -3,6 +3,7 @@ import Story from '../models/story.js';
 import Follow from '../models/Follow.js';
 import User from '../models/user.js';
 import redisClient from '../config/redisClient.js';
+import { moderateText, analyzeImage, extractTextFromImage, } from '../Utils/postAnalysis.js';
 
 export const postStory = async (req, res) => {
     if (!req.file) {
@@ -16,13 +17,38 @@ export const postStory = async (req, res) => {
         const owner = req.user._id;
         const { caption } = req.body;
 
-        // Create new story
-        const newStory = new Story({ caption, owner });
+        // caption Moderation
+        const TXTcheck = await moderateText(caption);
+        if (TXTcheck == true) {
+            return res.status(400).json({ error: 'inappropriate or violent content detected' });
+        }
+
+        // get url & fileName from cloudinary
         let url = req.file.path;
         let filename = req.file.filename;
 
-        newStory.mediaUrl = { url, filename };
+        // Analyze if the Image is SAFE || NOT
+        const nsfwScore = await analyzeImage(url);
+        if (nsfwScore > 0.5) {
+            return res.status(400).json({ error: 'Image contains inappropriate or violent content.' });
+        }
 
+        // Extract Text from Image 
+        const extractedTXT = await extractTextFromImage(url);
+
+        if (!extractedTXT || extractedTXT.trim() === '') {
+            console.log("No text extracted from image.");
+        } else {
+            // extracted txt moderation
+            const imgTXT = await moderateText(extractedTXT);
+            if (imgTXT == true) {
+                return res.status(400).json({ error: 'Image contains inappropriate or violent content.' });
+            }
+        }
+
+        // Create new story
+        const newStory = new Story({ caption, owner });
+        newStory.mediaUrl = { url, filename };
         const savedStory = await newStory.save();
 
         res.status(201).json({ savedStory, message: 'Story posted successfully' });

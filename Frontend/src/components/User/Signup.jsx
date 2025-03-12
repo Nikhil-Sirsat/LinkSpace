@@ -88,6 +88,7 @@ export default function SignUp() {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -117,6 +118,7 @@ export default function SignUp() {
 
     const handleSubmit = async (e) => {
         setMessage('');
+        setLoading(true);
         e.preventDefault();
         const data = new FormData();
         data.append('name', formData.name);
@@ -130,6 +132,7 @@ export default function SignUp() {
 
         if (formData.password !== formData.conformPass) {
             setMessage('password miss match');
+            setLoading(false);
             return;
         }
 
@@ -145,10 +148,12 @@ export default function SignUp() {
                 navigate('/');
             } else {
                 setMessage('Error in registration');
+                setLoading(false);
             }
         } catch (error) {
             console.log(error.message);
             setMessage(error.response.data.error);
+            setLoading(false);
         }
     };
 
@@ -234,7 +239,7 @@ export default function SignUp() {
                                         </Grid>
                                         <Grid item xs={12} sx={{ textAlign: 'center', mt: 2 }}>
                                             <Button type="submit" variant="contained" sx={{ backgroundColor: '#00adb5', color: '#fff', padding: '10px 20px', borderRadius: '8px', fontSize: '1rem', ':hover': { backgroundColor: '#007f8b' } }}>
-                                                Create Account
+                                                {loading ? "Loading..." : "Create Account"}
                                             </Button>
                                         </Grid>
                                     </Grid>

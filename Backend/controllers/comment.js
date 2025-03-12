@@ -1,10 +1,19 @@
 
 import Post from '../models/posts.js';
 import Comment from '../models/comments.js';
-import leoProfanity from 'leo-profanity';
+import { moderateText } from '../Utils/postAnalysis.js';
 
 export const postComment = async (req, res) => {
     try {
+
+        // Text moderation
+        const { comment } = req.body;
+        const TXTcheck = await moderateText(comment);
+        if (TXTcheck == true) {
+            return res.status(400).json({ error: 'inappropriate or violent statement' });
+        }
+
+        // get post
         const { postId } = req.params;
         const post = await Post.findById(postId).populate({
             path: "comments", populate: {
@@ -16,23 +25,16 @@ export const postComment = async (req, res) => {
             return res.status(404).json({ message: 'Post not found' });
         }
 
-        const { comment } = req.body;
+        const newComment = new Comment({ comment });
+        newComment.author = req.user._id;
+        post.comments.push(newComment);
 
-        if (leoProfanity.check(comment)) {
-            console.log("Profanity detected!");
-            return res.status(400).json({ error: 'inappropriate or violent statement' });
-        } else {
+        await newComment.save();
+        await post.save();
+        await newComment.populate('author');
 
-            const newComment = new Comment({ comment });
-            newComment.author = req.user._id;
-            post.comments.push(newComment);
+        res.status(201).json({ comment: newComment, message: 'Comment created successfully' });
 
-            await newComment.save();
-            await post.save();
-            await newComment.populate('author');
-
-            res.status(201).json({ comment: newComment, message: 'Comment created successfully' });
-        }
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Internal Server Error' });

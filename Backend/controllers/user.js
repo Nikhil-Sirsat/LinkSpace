@@ -3,22 +3,55 @@ import User from '../models/user.js';
 import Post from '../models/posts.js';
 import Follow from '../models/Follow.js';
 import redisClient from '../config/redisClient.js';
+import { moderateText, analyzeImage, extractTextFromImage, } from '../Utils/postAnalysis.js';
 
 export const signUp = async (req, res) => {
     try {
-        const { username, name, email, age, gender, bio, password } = req.body;
-        const newUser = new User({ username, name, email, age, gender, bio });
 
+        if (!req.file) {
+            return res.status(400).json({ error: 'Profile Picture not uploaded' });
+        }
+
+        const { username, name, email, age, gender, bio, password } = req.body;
+
+        // TXT Moderation
+        const TXTcheck = await moderateText(username + " " + name + " " + bio);
+        if (TXTcheck == true) {
+            return res.status(400).json({ error: 'inappropriate or violent content detected' });
+        }
+
+        // get url & fileName from cloudinary
         let url = req.file.path;
         let filename = req.file.filename;
-        newUser.image = { url, filename }
 
+        // Analyze if the Image is SAFE || NOT
+        const nsfwScore = await analyzeImage(url);
+        if (nsfwScore > 0.5) {
+            return res.status(400).json({ error: 'Image contains inappropriate or violent content.' });
+        }
+
+        // Extract Text from Image 
+        const extractedTXT = await extractTextFromImage(url);
+
+        if (!extractedTXT || extractedTXT.trim() === '') {
+            console.log("No text extracted from image.");
+        } else {
+            // extracted txt moderation
+            const imgTXT = await moderateText(extractedTXT);
+            if (imgTXT == true) {
+                return res.status(400).json({ error: 'Image contains inappropriate or violent content.' });
+            }
+        }
+
+        // new user
+        const newUser = new User({ username, name, email, age, gender, bio });
+        newUser.image = { url, filename }
 
         await User.register(newUser, password);
         res.status(201).json({ message: 'User registered successfully' });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-        console.log(err);
+    } catch (error) {
+        res.status(500).json({ error: error });
+        console.log(error);
     }
 };
 
@@ -43,6 +76,12 @@ export const editUser = async (req, res) => {
     try {
         const { id } = req.params;
         const { name, username, email, password, age, gender, bio } = req.body;
+
+        // TXT Moderation
+        const TXTcheck = await moderateText(username + " " + name + " " + bio);
+        if (TXTcheck == true) {
+            return res.status(400).json({ message: 'inappropriate or violent content detected' });
+        }
 
         // Find user before update
         const user = await User.findById(id);
@@ -72,10 +111,32 @@ export const editUser = async (req, res) => {
 
         // **Check if an image is uploaded**
         if (req.file) {
-            updateData.image = {
-                url: req.file.path,
-                filename: req.file.filename,
-            };
+
+            // get url & fileName from cloudinary
+            let url = req.file.path;
+            let filename = req.file.filename;
+
+            // Analyze if the Image is SAFE || NOT
+            const nsfwScore = await analyzeImage(url);
+            if (nsfwScore > 0.5) {
+                return res.status(400).json({ message: 'Image contains inappropriate or violent content.' });
+            }
+
+            // Extract Text from Image 
+            const extractedTXT = await extractTextFromImage(url);
+
+            if (!extractedTXT || extractedTXT.trim() === '') {
+                console.log("No text extracted from image.");
+            } else {
+                // extracted txt moderation
+                const imgTXT = await moderateText(extractedTXT);
+                if (imgTXT == true) {
+                    return res.status(400).json({ message: 'Image contains inappropriate or violent content.' });
+                }
+            }
+
+            // update image
+            updateData.image = { url, filename };
         }
 
         // **Update the user**

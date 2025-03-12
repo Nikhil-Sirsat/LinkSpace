@@ -24,7 +24,8 @@ router.get('/tagged/:userId', auth, checkCacheData((req) => `tagged:${req.params
 router.get('/suggested-posts', auth, postSuggestions);
 
 // show post
-router.get('/:id', auth, checkCacheData((req) => `${req.params.id}`, 'post'), showPost);
+// router.get('/:id', auth, checkCacheData((req) => `${req.params.id}`, 'post'), showPost);
+router.get('/:id', auth, showPost);
 
 // delete post
 router.delete('/:id', auth, isOwner, delPost);

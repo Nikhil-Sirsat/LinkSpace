@@ -4,7 +4,7 @@ import Follow from '../models/Follow.js';
 import User from '../models/user.js';
 import Notification from '../models/Notification.js';
 import redisClient from '../config/redisClient.js';
-import analyzeImage from '../Utils/postAnalysis.js';
+import { analyzeImage, extractTextFromImage, moderateText } from '../Utils/postAnalysis.js';
 
 export const createPost = async (req, res) => {
     if (!req.file) {
@@ -18,9 +18,6 @@ export const createPost = async (req, res) => {
     const { caption, taggedUsers } = req.body;
     const io = req.app.get('io'); // Get the io instance from the app
 
-    // console.log(req.file);
-    // console.log(req.body);
-
     try {
         // Create a new post with the owner and tagged users
         const newPost = new Post({
@@ -29,6 +26,7 @@ export const createPost = async (req, res) => {
             taggedUsers
         });
 
+        // get Url and FileName from cloudinary
         let url = req.file.path;
         let filename = req.file.filename;
 
@@ -38,6 +36,26 @@ export const createPost = async (req, res) => {
             return res.status(400).json({ error: 'Image contains inappropriate or violent content.' });
         }
 
+        // Caption TXT Moderation
+        const captionTxT = await moderateText(caption);
+        if (captionTxT == true) {
+            return res.status(400).json({ error: 'Caption contains inappropriate or violent content.' });
+        }
+
+        // Extract Text from Image 
+        const extractedTXT = await extractTextFromImage(url);
+
+        if (!extractedTXT || extractedTXT.trim() === '') {
+            console.log("No text extracted from image.");
+        } else {
+            // extracted txt moderation
+            const imgTXT = await moderateText(extractedTXT);
+            if (imgTXT == true) {
+                return res.status(400).json({ error: 'Image contains inappropriate or violent content.' });
+            }
+        }
+
+        // Add Image
         newPost.imageUrl = { url, filename }
 
         // Save the post
@@ -176,8 +194,8 @@ export const showPost = async (req, res) => {
         }
 
         // Cache the data in Redis
-        const cacheKey = res.locals.cacheKey;
-        await redisClient.setEx(cacheKey, 120, JSON.stringify(post));
+        // const cacheKey = res.locals.cacheKey;
+        // await redisClient.setEx(cacheKey, 120, JSON.stringify(post));
 
         res.status(200).json({ post: post, message: 'post found successfully' });
     } catch (error) {

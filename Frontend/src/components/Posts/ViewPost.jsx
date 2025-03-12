@@ -102,7 +102,7 @@ export default function ViewPost() {
     const handleAddComment = async () => {
         try {
             const response = await axiosInstance.post(`/api/comment/post/${id}`, { comment: commentText });
-            if (response.data) {
+            if (response.data.comment) {
                 setComments([...comments, response.data.comment]);
                 handleSendNotification();
                 setCommentText('');

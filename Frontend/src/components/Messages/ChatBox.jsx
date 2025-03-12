@@ -13,6 +13,7 @@ import { encryptMessage, decryptMessage } from '../../Encryption-Utility-fns/enc
 import { ThemeContext } from "../../context/ThemeContext";
 import axiosInstance from '../../AxiosInstance.jsx';
 import leoProfanity from 'leo-profanity';
+import { badWords } from '../../BadWordDB/BadWordsDB.js';
 
 export default function ChatBox() {
     const { mode } = useContext(ThemeContext);
@@ -28,6 +29,10 @@ export default function ChatBox() {
     const [msgToDelete, setMsgToDelete] = useState(null);
     const [loading, setLoading] = useState(true);
     const [errMsg, setErrMsg] = useState('');
+
+    // // Remove Default & Add Custom Bad Words in leoProfanity
+    leoProfanity.clearList();
+    leoProfanity.add(badWords);
 
     // Ref for auto-scrolling
     const messagesEndRef = useRef(null);
@@ -177,7 +182,6 @@ export default function ChatBox() {
 
         // Check Violent Words
         if (leoProfanity.check(newMessage)) {
-            // console.log("Profanity detected!");
             setErrMsg('Inappropriate content detected!');
             return
         }
