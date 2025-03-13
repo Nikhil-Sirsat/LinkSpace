@@ -79,9 +79,9 @@ export const delMsg = async (req, res) => {
 
         res.status(200).json({ message: 'Message deleted successfully' });
 
-    } catch (err) {
-        console.error('Error deleting message:', err);
-        res.status(500).send('An error occurred while deleting single message.');
+    } catch (error) {
+        console.error('Error deleting message:', error);
+        res.status(500).json({ message: 'Error deleting message', error: error.message });
     }
 };
 
@@ -100,9 +100,9 @@ export const delChatHistory = async (req, res) => {
         }
 
         res.status(200).json({ message: 'Chat history deleted successfully' });
-    } catch (err) {
-        console.error('Error deleting messages:', err);
-        res.status(500).send('An error occurred while fetching messages.');
+    } catch (error) {
+        console.error('Error deleting messages:', error);
+        res.status(500).json({ message: 'Error Deleteing-Chat History', error: error.message });
     }
 };
 
@@ -147,9 +147,9 @@ export const getChatHistory = async (req, res) => {
             .sort({ timestamp: 1 });
 
         res.json({ messages: messages });
-    } catch (err) {
+    } catch (error) {
         console.error('Error fetching messages:', err);
-        res.status(500).send('An error occurred while fetching messages.');
+        res.status(500).json({ message: 'Error Fetching Messages', error: error.message });
     }
 };
 
@@ -176,7 +176,7 @@ export const postMsg = async (req, res) => {
         res.status(201).json({ newMsg: populatedMessage, message: 'Message Saved Successfully' });
     } catch (error) {
         console.error('An Error Occurred while Saving New Message:', error.message);
-        res.status(500).json({ message: 'Internal Server Error' });
+        res.status(500).json({ message: 'Error Sending Message', error: error.message });
     }
 };
 
@@ -194,7 +194,7 @@ export const markIsReadTrue = async (req, res) => {
         res.status(200).json({ message: 'Marked as Read' });
 
     } catch (error) {
-        console.error('An Error Occured while Marking isRead True : ', error);
-        res.status(500).json({ message: 'Internal Server Error' });
+        console.error('Error Marking isRead True : ', error);
+        res.status(500).json({ message: 'Error Reading Messages', error: error.message });
     }
 };

@@ -71,6 +71,6 @@ export const isSave = async (req, res) => {
         const existingSave = await SavedPost.findOne({ user: userId, post: postId });
         res.json({ isSaved: !!existingSave });
     } catch (error) {
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: 'Error getting isSaved Status', error: error.message });
     }
 };

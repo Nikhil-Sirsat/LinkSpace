@@ -29,6 +29,7 @@ export default function DeletePostBTN({ postId, onDeleteSuccess }) {
             }
         } catch (error) {
             console.error('Error deleting post:', error);
+            showSnackbar('Error Deleting post');
         } finally {
             handleClose();
         }

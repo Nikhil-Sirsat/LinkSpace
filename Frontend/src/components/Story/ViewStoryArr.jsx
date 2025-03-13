@@ -26,10 +26,8 @@ export default function ViewStoryArr({ storys }) {
 
     useEffect(() => {
         const markView = async () => {
-            // if (id) {
             try {
                 const response = await axiosInstance.put(`/api/story/view/${id ? id : storys[0]._id}`);
-                // console.log('fire : ', id);
             } catch (error) {
                 console.log('error adding view in the story');
             }

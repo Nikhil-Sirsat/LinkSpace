@@ -57,6 +57,6 @@ export const deleteComment = async (req, res) => {
 
         res.status(200).json({ message: 'comment deleted successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Internal Server Error' });
+        res.status(500).json({ message: 'Error Deleting Comment', error: error.message });
     }
 };

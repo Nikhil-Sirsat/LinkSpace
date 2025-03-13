@@ -62,7 +62,7 @@ export default function CommentBoxForMob({ caption, comments, user, setComments,
             }
         } catch (error) {
             console.error('Error deleting comment:', error);
-            setErrMsg(error.message);
+            setErrMsg(error.response.data.message || 'Something went wrong');
         }
     };
 

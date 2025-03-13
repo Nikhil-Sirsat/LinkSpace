@@ -1,7 +1,7 @@
 
 import { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Modal, Box, Typography, Avatar } from '@mui/material';
+import { Modal, Box, Typography, Avatar, Alert } from '@mui/material';
 import axiosInstance from '../../AxiosInstance.jsx';
 import IsFollowBTN from '../User/IsFollowBTN';
 import { AuthContext } from '../../context/AuthContext';
@@ -13,6 +13,7 @@ export default function LikedUsers({ id, open, handleToggleLikedUsers }) {
     const [likedUsers, setLikedUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const { user } = useContext(AuthContext);
+    const [errMsg, setErrMsg] = useState("");
 
     useEffect(() => {
         const fetchLikedUsers = async () => {
@@ -21,6 +22,7 @@ export default function LikedUsers({ id, open, handleToggleLikedUsers }) {
                 setLikedUsers(response.data.users);
             } catch (error) {
                 console.error('Error fetching liked likedUsers:', error);
+                setErrMsg(error.response.data.message || 'Something went wrong');
             } finally {
                 setLoading(false);
             }
@@ -52,13 +54,16 @@ export default function LikedUsers({ id, open, handleToggleLikedUsers }) {
                     borderRadius: 2,
                 }}
             >
+                {/* Error Message */}
+                {errMsg && <Alert severity="error">{errMsg}</Alert>}
+
                 {loading ? (
                     <Box height='100%' width='100%' p={4}>
                         <UserListSkeleton />
                     </Box>
                 ) : (
                     <Box sx={{ flexGrow: 1, overflowY: 'auto', borderRadius: '5px', height: '100%', width: '100%' }}>
-                        <Box sx={{ p: 1.5, position: 'sticky', top: 0, zIndex: 10, borderBottom: '1px solid gray', backgroundColor: mode === 'dark'? 'black' : 'white' }}>
+                        <Box sx={{ p: 1.5, position: 'sticky', top: 0, zIndex: 10, borderBottom: '1px solid gray', backgroundColor: mode === 'dark' ? 'black' : 'white' }}>
                             <span>Liked User</span>
                         </Box>
                         {likedUsers.length > 0 ? (

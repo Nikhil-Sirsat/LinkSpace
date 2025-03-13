@@ -268,6 +268,6 @@ export const getUserProfile = async (req, res) => {
             message: 'User fetched successfully'
         });
     } catch (error) {
-        res.status(500).json({ message: `Error fetching user: ${error.message}` });
+        res.status(500).json({ message: 'Error Fetching User Profile', error: error.message });
     }
 };

@@ -116,7 +116,7 @@ export const trendingPosts = async (req, res) => {
         res.status(200).json({ trendingPosts: posts, hasMore });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: 'Error Fetching Trending-Posts', error: error.message });
     }
 };
 
@@ -200,7 +200,7 @@ export const showPost = async (req, res) => {
         res.status(200).json({ post: post, message: 'post found successfully' });
     } catch (error) {
         console.error('An Error occured While fetching a post : ', error.message);
-        res.status(500).json({ message: `Internal Server Error : ${error.message}` });
+        res.status(500).json({ message: `Error Fetching Post`, error: error.message });
     }
 };
 

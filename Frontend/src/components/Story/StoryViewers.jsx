@@ -35,10 +35,6 @@ export default function StoryViewers({ viewers }) {
         setOpen(newOpen);
     };
 
-    // useEffect(() => {
-    //     console.log('viewers : ', viewers);
-    // })
-
     return (
         <Root>
             <CssBaseline />

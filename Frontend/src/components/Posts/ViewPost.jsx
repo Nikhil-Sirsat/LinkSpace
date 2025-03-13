@@ -35,6 +35,7 @@ export default function ViewPost() {
     const [error, setError] = useState('');
     const showSnackbar = useSnackbar();
 
+    // fetch Post
     useEffect(() => {
         const fetchPost = async () => {
             try {
@@ -42,20 +43,53 @@ export default function ViewPost() {
                 setPost(response.data.post);
                 setComments(response.data.post.comments);
 
-                const likeResponse = await axiosInstance.get(`/api/like/${id}/isLiked`);
-                setIsLiked(likeResponse.data.isLiked);
-
-                const SavedResponse = await axiosInstance.get(`/api/savedPost/${id}/isSaved`);
-                setIsSaved(SavedResponse.data.isSaved);
-
             } catch (error) {
                 console.error('Error fetching post:', error);
+                setError(error.response.data.message || 'Something went wrong');
             } finally {
                 setLoading(false);
             }
         };
 
         fetchPost();
+    }, [id]);
+
+    // fetch isLiked Status
+    useEffect(() => {
+        const fetchIsLiked = async () => {
+            try {
+
+                const likeResponse = await axiosInstance.get(`/api/like/${id}/isLiked`);
+                setIsLiked(likeResponse.data.isLiked);
+
+            } catch (error) {
+                console.error('Error fetching isLiked Status:', error);
+                setError(error.response.data.message || 'Something went wrong');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchIsLiked();
+    }, [id]);
+
+    // fetch isSaved Status
+    useEffect(() => {
+        const fetchIsSaved = async () => {
+            try {
+
+                const SavedResponse = await axiosInstance.get(`/api/savedPost/${id}/isSaved`);
+                setIsSaved(SavedResponse.data.isSaved);
+
+            } catch (error) {
+                console.error('Error fetching isSaved Status:', error);
+                setError(error.response.data.message || 'Something went wrong');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchIsSaved();
     }, [id]);
 
     const handleToggleShareUsers = () => {
@@ -141,6 +175,7 @@ export default function ViewPost() {
             showSnackbar('comment deleted successfully !');
         } catch (error) {
             console.error('Error deleting comment:', error);
+            setError('Error Deleting Comment');
         }
     };
 

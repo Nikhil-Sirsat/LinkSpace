@@ -55,7 +55,8 @@ export default function ChatBox() {
                 setSelectedUser(fetchedUser);
                 setLoading(false);
             } catch (error) {
-                console.error('Error fetching selected-User data:', error.response ? error.response.data : error.message);
+                console.error('Error fetching selected-Chats :', error.response ? error.response.data.message : error.message);
+                setErrMsg(error.response.data.message || 'Something went wrong');
                 setLoading(false);
             }
         };
@@ -79,6 +80,7 @@ export default function ChatBox() {
                 setTimeout(scrollToBottom, 100);
             } catch (error) {
                 console.error('Error fetching messages:', error.response ? error.response.data : error);
+                setErrMsg(error.response.data.message || 'Something went wrong');
             }
         };
         fetchMessages();
@@ -149,6 +151,7 @@ export default function ChatBox() {
             }
         } catch (error) {
             console.log('An Erro Occured while Marking isRead to true');
+            setErrMsg(error.response.data.message || 'Something went wrong');
         }
     };
 
@@ -167,7 +170,7 @@ export default function ChatBox() {
         return () => socket.off('messageRead');
     }, []);
 
-    // receive message Delete event
+    // receive message-Delete event
     useEffect(() => {
         socket.on('receiveMsgDelete', ({ msgToDelete }) => {
             setMessages((prevMessages) => prevMessages.filter((msg) => msg._id !== msgToDelete));
@@ -205,7 +208,7 @@ export default function ChatBox() {
             }
         } catch (error) {
             console.error('An Error occure while saving and sending Message');
-            setErrMsg(error.response?.data?.error || 'Something went wrong');
+            setErrMsg(error.response?.data?.message || 'Something went wrong');
             return;
         }
 
@@ -234,6 +237,7 @@ export default function ChatBox() {
             setMessages([]);
         } catch (error) {
             console.error('Error deleting Chat history:', error);
+            setErrMsg(error.response.data.message || 'Something went wrong');
         }
     };
 
@@ -259,6 +263,7 @@ export default function ChatBox() {
             handleMsgMenuClose();
         } catch (error) {
             console.error('Error deleting message:', error);
+            setErrMsg(error.response.data.message || 'Something went wrong');
         }
     };
 

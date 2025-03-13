@@ -1,7 +1,7 @@
 
 // components/TrendingPosts.jsx
 import { useEffect, useState, useCallback } from 'react';
-import { Box, ImageList, ImageListItem, CircularProgress, Typography } from '@mui/material';
+import { Box, Typography, Alert } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import axiosInstance from '../../AxiosInstance.jsx';
 import { Link } from 'react-router-dom';
@@ -16,6 +16,7 @@ export default function Explore() {
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
+    const [errMsg, setErrMsg] = useState("");
 
     const breakpointColumns = {
         default: 3,
@@ -37,6 +38,7 @@ export default function Explore() {
             }
         } catch (error) {
             console.error('Error fetching trending posts:', error);
+            setErrMsg(error.response.data.message || 'Something went wrong');
         }
         setLoading(false);
     });
@@ -66,6 +68,9 @@ export default function Explore() {
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100vw', }}>
 
             <Search route={'user'} />
+
+            {/* Error Message */}
+            {errMsg && <Alert severity="error">{errMsg}</Alert>}
 
             {/* explore posts :  */}
 

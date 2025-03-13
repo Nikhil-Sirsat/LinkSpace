@@ -64,7 +64,7 @@ export const isLike = async (req, res) => {
         const existingLike = await Like.findOne({ postId, userId });
         res.json({ isLiked: !!existingLike });
     } catch (error) {
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: 'Error getting isLiked Status', error: error.message });
     }
 };
 
@@ -85,6 +85,6 @@ export const getLikedUsers = async (req, res) => {
         res.status(200).json({ users: users });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'An error occurred while fetching likes data.' });
+        res.status(500).json({ message: 'Error Fetching Liked Users', error: error.message });
     }
 };
