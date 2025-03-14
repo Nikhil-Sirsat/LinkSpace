@@ -4,6 +4,7 @@ import Follow from '../models/Follow.js';
 import User from '../models/user.js';
 import redisClient from '../config/redisClient.js';
 import { moderateText, analyzeImage, extractTextFromImage, } from '../Utils/postAnalysis.js';
+import { v2 as cloudinary } from 'cloudinary';
 
 export const postStory = async (req, res) => {
     if (!req.file) {
@@ -138,12 +139,25 @@ export const delStory = async (req, res) => {
     try {
         const { id } = req.params;
 
-        // Find and delete the story
-        const deletedStory = await Story.findByIdAndDelete(id);
+        // get story
+        const story = await Story.findById(id);
 
-        if (!deletedStory) {
+        // check story exist
+        if (!story) {
             return res.status(404).json({ message: 'Story not found' });
         }
+
+        // Extract the public_id from the story URL & delete
+        if (story.mediaUrl && story.mediaUrl.url) {
+            const prevStoryUrl = story.mediaUrl.url;
+            const publicId = prevStoryUrl.split('/').pop().split('.')[0]; // Extract public_id from URL
+
+            // Delete image from Cloudinary
+            await cloudinary.uploader.destroy(`LinkSpace_Posts/${publicId}`);
+        }
+
+        // Find and delete the story
+        await Story.findByIdAndDelete(id);
 
         res.status(200).json({ message: 'Story deleted successfully' });
     } catch (err) {

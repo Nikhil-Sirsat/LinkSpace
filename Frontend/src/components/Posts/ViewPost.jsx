@@ -65,8 +65,6 @@ export default function ViewPost() {
             } catch (error) {
                 console.error('Error fetching isLiked Status:', error);
                 setError(error.response.data.message || 'Something went wrong');
-            } finally {
-                setLoading(false);
             }
         };
 
@@ -84,8 +82,6 @@ export default function ViewPost() {
             } catch (error) {
                 console.error('Error fetching isSaved Status:', error);
                 setError(error.response.data.message || 'Something went wrong');
-            } finally {
-                setLoading(false);
             }
         };
 
@@ -343,9 +339,7 @@ export default function ViewPost() {
                             open={Boolean(postAnchorEl)}
                             onClose={handlePostMenuClose}
                         >
-                            <MenuItem>
-                                <DeletePostBTN postId={post._id} onDeleteSuccess={handleClose} />
-                            </MenuItem>
+                            <DeletePostBTN postId={post._id} onDeleteSuccess={handleClose} />
                         </Menu>
                         <Menu
                             anchorEl={commentAnchorEl}

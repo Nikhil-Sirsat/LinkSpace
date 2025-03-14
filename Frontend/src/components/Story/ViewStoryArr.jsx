@@ -192,6 +192,7 @@ export default function ViewStoryArr({ storys }) {
                                         flexGrow: 1,
                                         "& .MuiOutlinedInput-root": {
                                             padding: "6px", // Adjust the padding as needed
+                                            color: 'white',
                                         },
                                         "& .MuiInputLabel-root": {
                                             fontSize: "0.875rem", // Adjust label font size

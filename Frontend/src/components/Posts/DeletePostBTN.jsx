@@ -7,6 +7,7 @@ import { useSnackbar } from '../../context/SnackBarContext';
 export default function DeletePostBTN({ postId, onDeleteSuccess }) {
     const [open, setOpen] = useState(false);
     const showSnackbar = useSnackbar();
+    const [loading, setLoading] = useState(false);
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -17,6 +18,7 @@ export default function DeletePostBTN({ postId, onDeleteSuccess }) {
     };
 
     const handleDelete = async () => {
+        setLoading(true);
         try {
             const response = await axiosInstance.delete(`/api/post/${postId}`);
 
@@ -32,6 +34,7 @@ export default function DeletePostBTN({ postId, onDeleteSuccess }) {
             showSnackbar('Error Deleting post');
         } finally {
             handleClose();
+            setLoading(false);
         }
     };
 
@@ -42,9 +45,8 @@ export default function DeletePostBTN({ postId, onDeleteSuccess }) {
                 color="error"
                 onClick={handleClickOpen}
                 sx={{
-                    marginTop: 2,
                     fontSize: { xs: '0.5rem', sm: '0.7rem', md: '0.7rem' },
-                    padding: { xs: '5px 10px', sm: '8px 16px', md: '10px 20px' }
+                    padding: { xs: '5px 10px', sm: '8px 16px', md: '10px 20px' },
                 }}
             >
                 Delete Post
@@ -69,7 +71,7 @@ export default function DeletePostBTN({ postId, onDeleteSuccess }) {
                         Cancel
                     </Button>
                     <Button onClick={handleDelete} color="error" autoFocus>
-                        Delete
+                        {loading ? "Loading..." : "Delete"}
                     </Button>
                 </DialogActions>
             </Dialog>

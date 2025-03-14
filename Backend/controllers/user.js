@@ -4,6 +4,7 @@ import Post from '../models/posts.js';
 import Follow from '../models/Follow.js';
 import redisClient from '../config/redisClient.js';
 import { moderateText, analyzeImage, extractTextFromImage, } from '../Utils/postAnalysis.js';
+import { v2 as cloudinary } from 'cloudinary';
 
 export const signUp = async (req, res) => {
     try {
@@ -133,6 +134,15 @@ export const editUser = async (req, res) => {
                 if (imgTXT == true) {
                     return res.status(400).json({ message: 'Image contains inappropriate or violent content.' });
                 }
+            }
+
+            // delete previous image from cloudinary
+            if (user.image && user.image.url) {
+                const prevImgUrl = user.image.url;
+                const publicId = prevImgUrl.split('/').pop().split('.')[0]; // Extract public_id from URL
+
+                // Delete image from Cloudinary
+                await cloudinary.uploader.destroy(`LinkSpace_Posts/${publicId}`);
             }
 
             // update image

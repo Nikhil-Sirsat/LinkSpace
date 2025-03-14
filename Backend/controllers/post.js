@@ -5,6 +5,7 @@ import User from '../models/user.js';
 import Notification from '../models/Notification.js';
 import redisClient from '../config/redisClient.js';
 import { analyzeImage, extractTextFromImage, moderateText } from '../Utils/postAnalysis.js';
+import { v2 as cloudinary } from 'cloudinary';
 
 export const createPost = async (req, res) => {
     if (!req.file) {
@@ -207,12 +208,25 @@ export const showPost = async (req, res) => {
 export const delPost = async (req, res) => {
     try {
         const { id } = req.params;
-        // const deletedPost = await Post.findByIdAndDelete(id);
-        const deletedPost = await Post.findOneAndDelete({ _id: id });
 
-        if (!deletedPost) {
+        // get the post 
+        const post = await Post.findById(id);
+
+        // check post exist
+        if (!post) {
             return res.status(404).json({ message: 'Post Not Found' });
         }
+
+        // Extract the public_id from the image URL & delete
+        if (post.imageUrl && post.imageUrl.url) {
+            const delImgUrl = post.imageUrl.url;
+            const publicId = delImgUrl.split('/').pop().split('.')[0]; // Extract public_id from URL
+
+            // Delete image from Cloudinary
+            await cloudinary.uploader.destroy(`LinkSpace_Posts/${publicId}`);
+        }
+
+        await Post.findOneAndDelete({ _id: id });
 
         // clear cache
         redisClient.del(`${req.params.id}`);
