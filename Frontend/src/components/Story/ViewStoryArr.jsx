@@ -4,7 +4,7 @@ import "slick-carousel/slick/slick-theme.css";
 
 import { useState, useEffect, useContext } from 'react';
 import Slider from "react-slick";
-import { Box, Typography, IconButton, Menu, MenuItem, TextField, Button, Card, CardMedia } from '@mui/material';
+import { Box, Typography, IconButton, Menu, MenuItem, TextField, Button, Card, CardMedia, Alert } from '@mui/material';
 import axiosInstance from '../../AxiosInstance.jsx';
 import { useNavigate } from "react-router-dom";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -13,6 +13,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { SocketContext } from '../../context/socketContext';
 import { useSnackbar } from "../../context/SnackBarContext";
 import { encryptMessage } from "../../Encryption-Utility-fns/encryptionUtility";
+import { containsLink, moderateText } from '../../TXT-Moderation/txtModeration.js';
 
 export default function ViewStoryArr({ storys }) {
     const [id, setId] = useState('');
@@ -23,6 +24,7 @@ export default function ViewStoryArr({ storys }) {
     const [replyText, setReplyText] = useState('');
     const navigate = useNavigate();
     const showSnackbar = useSnackbar();
+    const [errMsg, setErrMsg] = useState('');
 
     useEffect(() => {
         const markView = async () => {
@@ -64,6 +66,19 @@ export default function ViewStoryArr({ storys }) {
     const handleSendReply = async () => {
         if (!replyText) return;
 
+        // Check Violent messages
+        const messageTxT = await moderateText(replyText);
+        if (messageTxT == true) {
+            setErrMsg('message contains inappropriate or violent content.');
+            return
+        }
+
+        // check message for links
+        if (containsLink(replyText)) {
+            setErrMsg("Links are not allowed in the messages!");
+            return
+        }
+
         let content = encryptMessage(replyText);
 
         try {
@@ -81,6 +96,7 @@ export default function ViewStoryArr({ storys }) {
                 // Ensure that the response contains the new message with its _id
                 if (response.data && response.data.newMsg) {
                     const resMsg = response.data.newMsg;
+                    setErrMsg('');
                     socket.emit('sendMessage', resMsg);
                 } else {
                     console.error('Error: Response does not contain new message data');
@@ -144,6 +160,7 @@ export default function ViewStoryArr({ storys }) {
                     {storys.map(story => (
 
                         <Card key={story._id} sx={{ maxWidth: 345, height: '83vh', border: 'none', boxShadow: 'none', position: 'relative', backgroundColor: 'black' }}>
+
                             <Box sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid white' }}>
                                 <Box sx={{ flex: 1 }}>
                                     <Typography sx={{ display: 'flex', alignItems: 'center', fontSize: '12px' }} variant="body2" color="white">
@@ -169,15 +186,20 @@ export default function ViewStoryArr({ storys }) {
                                 ) : null}
 
                             </Menu>
+
                             <CardMedia
                                 component="img"
                                 image={story.mediaUrl.url}
                                 alt="media-url"
                                 sx={{ objectFit: 'contain', height: "67vh" }}
                             />
+
                             <Typography variant="body2" sx={{ color: 'white', backgroundColor: '#00000080', width: '100%', textAlign: 'center', position: 'absolute', zIndex: 2, bottom: 0, marginBottom: 10, padding: 1 }}>
                                 {story.caption}
                             </Typography>
+
+                            {/* Error Message */}
+                            {errMsg && <Alert severity="error" sx={{ position: 'absolute', zIndex: 2, bottom: 0, marginBottom: 10, }}>{errMsg}</Alert>}
 
                             {/* story reply */}
                             <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>

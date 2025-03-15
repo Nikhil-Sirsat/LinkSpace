@@ -87,3 +87,8 @@ const normalizeText = async (text) => {
         .normalize("NFC")
         .trim();
 };
+
+export const containsLink = (text) => {
+    const urlRegex = /(https?:\/\/[^\s]+)|www\.[^\s]+/g;
+    return urlRegex.test(text);
+};

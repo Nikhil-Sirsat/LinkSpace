@@ -3,7 +3,7 @@ import Story from '../models/story.js';
 import Follow from '../models/Follow.js';
 import User from '../models/user.js';
 import redisClient from '../config/redisClient.js';
-import { moderateText, analyzeImage, extractTextFromImage, } from '../Utils/postAnalysis.js';
+import { moderateText, analyzeImage, extractTextFromImage, containsLink } from '../Utils/postAnalysis.js';
 import { v2 as cloudinary } from 'cloudinary';
 
 export const postStory = async (req, res) => {
@@ -22,6 +22,11 @@ export const postStory = async (req, res) => {
         const TXTcheck = await moderateText(caption);
         if (TXTcheck == true) {
             return res.status(400).json({ error: 'inappropriate or violent content detected' });
+        }
+
+        // check caption for links
+        if (containsLink(caption)) {
+            return res.status(400).json({ error: "Links are not allowed in the caption!" });
         }
 
         // get url & fileName from cloudinary
@@ -44,6 +49,11 @@ export const postStory = async (req, res) => {
             const imgTXT = await moderateText(extractedTXT);
             if (imgTXT == true) {
                 return res.status(400).json({ error: 'Image contains inappropriate or violent content.' });
+            }
+
+            // check for links
+            if (containsLink(extractedTXT)) {
+                return res.status(400).json({ error: "Links are not allowed on Story!" });
             }
         }
 

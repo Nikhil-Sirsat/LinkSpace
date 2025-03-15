@@ -3,7 +3,7 @@ import User from '../models/user.js';
 import Post from '../models/posts.js';
 import Follow from '../models/Follow.js';
 import redisClient from '../config/redisClient.js';
-import { moderateText, analyzeImage, extractTextFromImage, } from '../Utils/postAnalysis.js';
+import { moderateText, analyzeImage, extractTextFromImage, containsLink } from '../Utils/postAnalysis.js';
 import { v2 as cloudinary } from 'cloudinary';
 
 export const signUp = async (req, res) => {
@@ -19,6 +19,11 @@ export const signUp = async (req, res) => {
         const TXTcheck = await moderateText(username + " " + name + " " + bio);
         if (TXTcheck == true) {
             return res.status(400).json({ error: 'inappropriate or violent content detected' });
+        }
+
+        // check TXT for Links
+        if (containsLink(username + " " + name + " " + bio)) {
+            return res.status(400).json({ error: "Links are not allowed!" });
         }
 
         // get url & fileName from cloudinary
@@ -41,6 +46,11 @@ export const signUp = async (req, res) => {
             const imgTXT = await moderateText(extractedTXT);
             if (imgTXT == true) {
                 return res.status(400).json({ error: 'Image contains inappropriate or violent content.' });
+            }
+
+            // check for links
+            if (containsLink(extractedTXT)) {
+                return res.status(400).json({ error: "Links are not allowed on the Profile Picture!" });
             }
         }
 
@@ -82,6 +92,11 @@ export const editUser = async (req, res) => {
         const TXTcheck = await moderateText(username + " " + name + " " + bio);
         if (TXTcheck == true) {
             return res.status(400).json({ message: 'inappropriate or violent content detected' });
+        }
+
+        // check TXT for Links
+        if (containsLink(username + " " + name + " " + bio)) {
+            return res.status(400).json({ error: "Links are not allowed!" });
         }
 
         // Find user before update
@@ -133,6 +148,11 @@ export const editUser = async (req, res) => {
                 const imgTXT = await moderateText(extractedTXT);
                 if (imgTXT == true) {
                     return res.status(400).json({ message: 'Image contains inappropriate or violent content.' });
+                }
+
+                // check for links
+                if (containsLink(extractedTXT)) {
+                    return res.status(400).json({ error: "Links are not allowed on the Profile Picture!" });
                 }
             }
 

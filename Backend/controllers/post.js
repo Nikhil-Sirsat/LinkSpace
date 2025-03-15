@@ -4,7 +4,7 @@ import Follow from '../models/Follow.js';
 import User from '../models/user.js';
 import Notification from '../models/Notification.js';
 import redisClient from '../config/redisClient.js';
-import { analyzeImage, extractTextFromImage, moderateText } from '../Utils/postAnalysis.js';
+import { analyzeImage, extractTextFromImage, moderateText, containsLink } from '../Utils/postAnalysis.js';
 import { v2 as cloudinary } from 'cloudinary';
 
 export const createPost = async (req, res) => {
@@ -43,6 +43,11 @@ export const createPost = async (req, res) => {
             return res.status(400).json({ error: 'Caption contains inappropriate or violent content.' });
         }
 
+        // check caption for links
+        if (containsLink(caption)) {
+            return res.status(400).json({ error: "Links are not allowed in caption!" });
+        }
+
         // Extract Text from Image 
         const extractedTXT = await extractTextFromImage(url);
 
@@ -53,6 +58,11 @@ export const createPost = async (req, res) => {
             const imgTXT = await moderateText(extractedTXT);
             if (imgTXT == true) {
                 return res.status(400).json({ error: 'Image contains inappropriate or violent content.' });
+            }
+
+            // check caption for links
+            if (containsLink(extractedTXT)) {
+                return res.status(400).json({ error: "Links are not allowed on the post!" });
             }
         }
 

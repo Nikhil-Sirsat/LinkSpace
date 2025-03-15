@@ -1,7 +1,7 @@
 
 import Post from '../models/posts.js';
 import Comment from '../models/comments.js';
-import { moderateText } from '../Utils/postAnalysis.js';
+import { moderateText, containsLink } from '../Utils/postAnalysis.js';
 
 export const postComment = async (req, res) => {
     try {
@@ -11,6 +11,10 @@ export const postComment = async (req, res) => {
         const TXTcheck = await moderateText(comment);
         if (TXTcheck == true) {
             return res.status(400).json({ error: 'inappropriate or violent statement' });
+        }
+
+        if (containsLink(comment)) {
+            return res.status(400).json({ error: "Links are not allowed in comments!" });
         }
 
         // get post

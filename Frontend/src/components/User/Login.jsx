@@ -29,13 +29,13 @@ const CustomTextField = styled(TextField)({
         backgroundColor: '#1e1e1e',
         color: '#fff',
         '& fieldset': {
-            borderColor: '#444',
+            borderColor: '#b0bec5',
         },
         '&:hover fieldset': {
-            borderColor: '#00adb5',
+            borderColor: '#b0bec5',
         },
         '&.Mui-focused fieldset': {
-            borderColor: '#00adb5',
+            borderColor: '#b0bec5',
         },
         '& input': {
             color: '#fff',
@@ -43,6 +43,9 @@ const CustomTextField = styled(TextField)({
         '& label': {
             color: '#b0bec5',
         },
+    },
+    "& .MuiInputLabel-root": {
+        color: '#b0bec5'
     },
 });
 

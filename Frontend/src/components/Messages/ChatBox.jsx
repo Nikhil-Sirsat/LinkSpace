@@ -12,8 +12,7 @@ import MessageTimestamp from './MsgTimeStamp';
 import { encryptMessage, decryptMessage } from '../../Encryption-Utility-fns/encryptionUtility';
 import { ThemeContext } from "../../context/ThemeContext";
 import axiosInstance from '../../AxiosInstance.jsx';
-import leoProfanity from 'leo-profanity';
-import { badWords } from '../../BadWordDB/BadWordsDB.js';
+import { containsLink, moderateText } from '../../TXT-Moderation/txtModeration.js';
 
 export default function ChatBox() {
     const { mode } = useContext(ThemeContext);
@@ -29,10 +28,6 @@ export default function ChatBox() {
     const [msgToDelete, setMsgToDelete] = useState(null);
     const [loading, setLoading] = useState(true);
     const [errMsg, setErrMsg] = useState('');
-
-    // // Remove Default & Add Custom Bad Words in leoProfanity
-    leoProfanity.clearList();
-    leoProfanity.add(badWords);
 
     // Ref for auto-scrolling
     const messagesEndRef = useRef(null);
@@ -183,9 +178,16 @@ export default function ChatBox() {
         if (!selectedUser?._id) return;
         if (!newMessage) return;
 
-        // Check Violent Words
-        if (leoProfanity.check(newMessage)) {
-            setErrMsg('Inappropriate content detected!');
+        // Check Violent messages
+        const messageTxT = await moderateText(newMessage);
+        if (messageTxT == true) {
+            setErrMsg('message contains inappropriate or violent content.');
+            return
+        }
+
+        // check message for links
+        if (containsLink(newMessage)) {
+            setErrMsg("Links are not allowed in the messages!");
             return
         }
 
