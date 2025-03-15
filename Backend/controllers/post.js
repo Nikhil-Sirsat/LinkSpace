@@ -6,6 +6,7 @@ import Notification from '../models/Notification.js';
 import redisClient from '../config/redisClient.js';
 import { analyzeImage, extractTextFromImage, moderateText, containsLink } from '../Utils/postAnalysis.js';
 import { v2 as cloudinary } from 'cloudinary';
+import { delImgFromCloud } from '../Utils/Del-Img-from-Cloud.js';
 
 export const createPost = async (req, res) => {
     if (!req.file) {
@@ -34,17 +35,20 @@ export const createPost = async (req, res) => {
         // Analyze if the Image is SAFE || NOT
         const nsfwScore = await analyzeImage(url);
         if (nsfwScore > 0.5) {
+            await delImgFromCloud(url); // Delete the image from Cloudinary
             return res.status(400).json({ error: 'Image contains inappropriate or violent content.' });
         }
 
         // Caption TXT Moderation
         const captionTxT = await moderateText(caption);
         if (captionTxT == true) {
+            await delImgFromCloud(url); // Delete the image from Cloudinary
             return res.status(400).json({ error: 'Caption contains inappropriate or violent content.' });
         }
 
         // check caption for links
         if (containsLink(caption)) {
+            await delImgFromCloud(url); // Delete the image from Cloudinary
             return res.status(400).json({ error: "Links are not allowed in caption!" });
         }
 
@@ -57,11 +61,13 @@ export const createPost = async (req, res) => {
             // extracted txt moderation
             const imgTXT = await moderateText(extractedTXT);
             if (imgTXT == true) {
+                await delImgFromCloud(url); // Delete the image from Cloudinary
                 return res.status(400).json({ error: 'Image contains inappropriate or violent content.' });
             }
 
             // check caption for links
             if (containsLink(extractedTXT)) {
+                await delImgFromCloud(url); // Delete the image from Cloudinary
                 return res.status(400).json({ error: "Links are not allowed on the post!" });
             }
         }

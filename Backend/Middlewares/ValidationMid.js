@@ -1,9 +1,10 @@
 
 import { userSchema, PostSchema, commentSchema, storySchema } from '../ShemaValidation/Schema.js';
 import redisClient from '../config/redisClient.js';
+import { delImgFromCloud } from '../Utils/Del-Img-from-Cloud.js';
 
 // validate user
-export const validateUser = (req, res, next) => {
+export const validateUser = async (req, res, next) => {
     const userData = {
         ...req.body,
         image: req.file ? req.file.path : undefined, // Use `req.file.path` for validation
@@ -12,6 +13,7 @@ export const validateUser = (req, res, next) => {
     let { error } = userSchema.validate(userData);
     if (error) {
         console.log('error in user schema : ', error);
+        await delImgFromCloud(req.file.path); // Delete the image from Cloudinary
         return res.status(400).json({ error: error.details[0].message });
     } else {
         next();
@@ -19,7 +21,7 @@ export const validateUser = (req, res, next) => {
 }
 
 // validate post
-export const validatePost = (req, res, next) => {
+export const validatePost = async (req, res, next) => {
     // Add `imageUrl` validation based on `req.file`
     const postData = {
         ...req.body,
@@ -28,6 +30,7 @@ export const validatePost = (req, res, next) => {
 
     let { error } = PostSchema.validate(postData);
     if (error) {
+        await delImgFromCloud(req.file.path); // Delete the image from Cloudinary
         return res.status(400).json({ error: error.details[0].message });
     } else {
         next();
@@ -35,7 +38,7 @@ export const validatePost = (req, res, next) => {
 };
 
 // validate Story
-export const validateStory = (req, res, next) => {
+export const validateStory = async (req, res, next) => {
     const storyData = {
         ...req.body,
         mediaUrl: req.file ? req.file.path : undefined, // Use `req.file.path` for validation
@@ -43,6 +46,7 @@ export const validateStory = (req, res, next) => {
 
     let { error } = storySchema.validate(storyData);
     if (error) {
+        await delImgFromCloud(req.file.path); // Delete the image from Cloudinary
         return res.status(400).json({ error: error.details[0].message });
     } else {
         next();

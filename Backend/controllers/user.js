@@ -5,6 +5,7 @@ import Follow from '../models/Follow.js';
 import redisClient from '../config/redisClient.js';
 import { moderateText, analyzeImage, extractTextFromImage, containsLink } from '../Utils/postAnalysis.js';
 import { v2 as cloudinary } from 'cloudinary';
+import { delImgFromCloud } from '../Utils/Del-Img-from-Cloud.js';
 
 export const signUp = async (req, res) => {
     try {
@@ -33,6 +34,7 @@ export const signUp = async (req, res) => {
         // Analyze if the Image is SAFE || NOT
         const nsfwScore = await analyzeImage(url);
         if (nsfwScore > 0.5) {
+            await delImgFromCloud(url); // Delete the image from Cloudinary
             return res.status(400).json({ error: 'Image contains inappropriate or violent content.' });
         }
 
@@ -45,11 +47,13 @@ export const signUp = async (req, res) => {
             // extracted txt moderation
             const imgTXT = await moderateText(extractedTXT);
             if (imgTXT == true) {
+                await delImgFromCloud(url); // Delete the image from Cloudinary
                 return res.status(400).json({ error: 'Image contains inappropriate or violent content.' });
             }
 
             // check for links
             if (containsLink(extractedTXT)) {
+                await delImgFromCloud(url); // Delete the image from Cloudinary
                 return res.status(400).json({ error: "Links are not allowed on the Profile Picture!" });
             }
         }
@@ -135,6 +139,7 @@ export const editUser = async (req, res) => {
             // Analyze if the Image is SAFE || NOT
             const nsfwScore = await analyzeImage(url);
             if (nsfwScore > 0.5) {
+                await delImgFromCloud(url); // Delete the image from Cloudinary
                 return res.status(400).json({ message: 'Image contains inappropriate or violent content.' });
             }
 
@@ -147,11 +152,13 @@ export const editUser = async (req, res) => {
                 // extracted txt moderation
                 const imgTXT = await moderateText(extractedTXT);
                 if (imgTXT == true) {
+                    await delImgFromCloud(url); // Delete the image from Cloudinary
                     return res.status(400).json({ message: 'Image contains inappropriate or violent content.' });
                 }
 
                 // check for links
                 if (containsLink(extractedTXT)) {
+                    await delImgFromCloud(url); // Delete the image from Cloudinary
                     return res.status(400).json({ error: "Links are not allowed on the Profile Picture!" });
                 }
             }
