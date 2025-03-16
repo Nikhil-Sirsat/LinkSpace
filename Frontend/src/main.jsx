@@ -28,7 +28,6 @@ import About from './components/About/About.jsx';
 import Search from './components/User/Search.jsx';
 
 import { AuthProvider } from './context/AuthContext.jsx';
-import { FollowProvider } from './context/IsFollowContext.jsx';
 import { SocketProvider } from './context/socketContext.jsx';
 import { SnackbarProvider } from './context/SnackBarContext.jsx';
 
@@ -138,9 +137,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <AuthProvider>
       <SnackbarProvider>
         <SocketProvider>
-          <FollowProvider>
-            <RouterProvider router={router} />
-          </FollowProvider>
+          <RouterProvider router={router} />
         </SocketProvider>
       </SnackbarProvider>
     </AuthProvider>

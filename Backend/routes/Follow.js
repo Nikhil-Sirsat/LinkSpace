@@ -3,7 +3,7 @@ import express from 'express';
 const router = express.Router();
 import { auth } from '../Middlewares/AuthMid.js';
 import { checkCacheData } from '../Middlewares/ValidationMid.js';
-import { follow, unfollow, getFollowers, getFollowings } from '../controllers/Follow.js';
+import { follow, unfollow, getFollowers, getFollowings, isFollow } from '../controllers/Follow.js';
 
 // Follow a user
 router.post('/follow/:username', auth, follow);
@@ -16,6 +16,8 @@ router.get('/:username/followers', auth, checkCacheData((req) => `${req.params.u
 
 // Get following
 router.get('/:username/following', auth, checkCacheData((req) => `${req.params.username}:following`, 'following'), getFollowings);
+
+router.get('/:username/isFollow', auth, isFollow);
 
 export default router;
 

@@ -1,7 +1,6 @@
 import { useEffect, useState, useContext } from 'react';
 import { Button } from '@mui/material';
 import axiosInstance from '../../AxiosInstance.jsx';
-import { FollowContext } from '../../context/IsFollowContext';
 import { AuthContext } from '../../context/AuthContext';
 import { SocketContext } from '../../context/socketContext';
 
@@ -10,22 +9,23 @@ export default function IsFollowBTN({ username }) {
     const { socket } = useContext(SocketContext);
     const [isFollowing, setIsFollowing] = useState(false);
     const [otherUser, setOtherUser] = useState({});
-    const { setFollowersCount, setFollowingCount } = useContext(FollowContext);
+    const [loading, setLoading] = useState(true);
 
     // check isFollow
     useEffect(() => {
+        if (!username) return;
         const fetchIsFollow = async () => {
+            setLoading(true);
             try {
-                const response = await axiosInstance.get(`/api/user/${username}`);
-                const { user: fetchedUser, posts: fetchedPosts, isFollowing, followersCount, followingCount } = response.data;
-                // console.log(response.data.user);
-                setOtherUser(response.data.user);
+                const response = await axiosInstance.get(`/api/follow/${username}/isFollow`);
+                const { isFollowing, user } = response.data;
+                setOtherUser(user);
                 setIsFollowing(isFollowing || false);
-                setFollowersCount(followersCount || 0);
-                setFollowingCount(followingCount || 0);
 
             } catch (error) {
                 console.error('Error fetching user and user posts:', error);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -65,12 +65,10 @@ export default function IsFollowBTN({ username }) {
             if (isFollowing) {
                 await axiosInstance.delete(`/api/follow/unfollow/${username}`);
                 setIsFollowing(false);
-                setFollowersCount(prevCount => prevCount - 1);
             } else {
                 await axiosInstance.post(`/api/follow/follow/${username}`);
                 setIsFollowing(true);
                 handleSendNotification();
-                setFollowersCount(prevCount => prevCount + 1);
             }
         } catch (error) {
             console.log('Error toggling follow status:', error);
@@ -88,7 +86,10 @@ export default function IsFollowBTN({ username }) {
                 textTransform: 'none'
             }}
         >
-            {isFollowing ? 'Unfollow' : 'Follow'}
+            {loading ?
+                ('Loading...') :
+                (isFollowing ? 'Unfollow' : 'Follow')
+            }
         </Button>
     )
 

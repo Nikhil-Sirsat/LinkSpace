@@ -7,7 +7,7 @@ import axiosInstance from '../../AxiosInstance.jsx';
 import SettingsIcon from '@mui/icons-material/Settings';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FullWidthTabs from '../Posts/FullWidthTabs';
-import { FollowContext } from '../../context/IsFollowContext';
+// import { FollowContext } from '../../context/IsFollowContext';
 import IsFollowBTN from './IsFollowBTN';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import ProfileSkeleton from '../Skeletons/ProfileSkeleton';
@@ -20,12 +20,19 @@ export default function Profile() {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isFollowing, setIsFollowing] = useState(false);
-    const { followersCount, setFollowersCount, followingCount, setFollowingCount } = useContext(FollowContext);
+    // const { followersCount, setFollowersCount, followingCount, setFollowingCount } = useContext(FollowContext);
+    const [followingCount, setFollowingCount] = useState(0);
+    const [followersCount, setFollowersCount] = useState(0);
     const [userStory, setUserStory] = useState([]);
     const { mode, toggleTheme } = useContext(ThemeContext);
 
     useEffect(() => {
+
+        if (!username) return;
+
         const fetchUserData = async () => {
+            setLoading(true);
+            console.log('profile re-render');
             try {
                 const response = await axiosInstance.get(`/api/user/${username}`);
                 const { user: fetchedUser, posts: fetchedPosts, isFollowing, followersCount, followingCount } = response.data;
@@ -35,15 +42,15 @@ export default function Profile() {
                 setIsFollowing(isFollowing || false);
                 setFollowersCount(followersCount || 0);
                 setFollowingCount(followingCount || 0);
-                setLoading(false);
             } catch (error) {
                 console.error('Error fetching user and user posts:', error);
+            } finally {
                 setLoading(false);
             }
         };
 
         fetchUserData();
-    }, [username, followersCount, followingCount]);
+    }, [username]);
 
     // for gettting user story
     useEffect(() => {

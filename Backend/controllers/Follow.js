@@ -111,3 +111,20 @@ export const getFollowings = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+export const isFollow = async (req, res) => {
+    try {
+        const { username } = req.params;
+        const currentUserId = req.user._id;
+
+        const user = await User.findOne({ username: username }).select('username name');
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const isFollowing = await Follow.exists({ follower: currentUserId, following: user._id });
+        res.status(200).json({ isFollowing: !!isFollowing, user });
+    } catch (error) {
+        res.status(500).json({ message: 'Error Fetching isFollow Status', error: error.message });
+    }
+}
