@@ -11,6 +11,7 @@ import connectDB from './connectDB/connectDB.js';
 import session from 'express-session';
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
+import MongoStore from 'connect-mongo';
 
 import User from './models/user.js';
 
@@ -43,10 +44,22 @@ app.use(json());
 app.use(urlencoded({ extended: true }));
 
 // Session Setup
+
+const store = MongoStore.create({
+    mongoUrl: process.env.MONGO_URL,
+    crypto: { secret: process.env.SECRET_SESSION_KEY },
+    ttl: 24 * 3600,
+});
+
+store.on("error", (err) => {
+    console.log("ERROR IN MONGO SESSION STORE : ", err);
+});
+
 const sessionMiddleware = session({
     secret: process.env.SECRET_SESSION_KEY,
     resave: false,
     saveUninitialized: false,
+    store: store,
     cookie: {
         maxAge: 7 * 24 * 60 * 60 * 1000,
         httpOnly: true,
