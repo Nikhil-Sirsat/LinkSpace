@@ -6,7 +6,7 @@ if (process.env.NODE_ENV != "production") {
 }
 
 import express, { json, urlencoded } from 'express';
-import { connect } from 'mongoose';
+import connectDB from './connectDB/connectDB.js';
 
 import session from 'express-session';
 import passport from 'passport';
@@ -61,15 +61,8 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// Data Base set up
-const mongo_URL = process.env.MONGO_URL;
-connect(mongo_URL)
-    .then(() => {
-        console.log("Connected to Database");
-    })
-    .catch((err) => {
-        console.log(`Database connection error: ${err}`);
-    });
+// connect MongoDB-Atlas database
+connectDB();
 
 // Initialize socket.io with session-middleware
 const io = initializeSocket(server, sessionMiddleware);
