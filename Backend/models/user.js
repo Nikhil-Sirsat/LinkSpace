@@ -17,9 +17,8 @@ const userSchema = new Schema({
 
 userSchema.plugin(passportLocalMongoose);
 
-userSchema.index({ email: 1 }, { unique: true }); // Ensure email is unique
-userSchema.index({ followersCount: -1 });
-userSchema.index({ followingCount: -1 });
+userSchema.index({ email: 1, taggedInPosts: 1 }, { unique: true });
+userSchema.index({ followersCount: -1, followingCount: -1 });
 
 const User = mongoose.model('User', userSchema);
 export default User;

@@ -8,5 +8,8 @@ const likeSchema = new Schema({
     createdAt: { type: Date, default: Date.now },
 });
 
+// add indexes 
+likeSchema.index({ userId: 1, postId: 1 }, { unique: true });
+
 const Like = mongoose.model('Like', likeSchema);
 export default Like;

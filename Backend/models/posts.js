@@ -44,9 +44,9 @@ PostSchema.post("findOneAndDelete", async (post) => {
     }
 });
 
+// Define Indexes
 PostSchema.index({ owner: 1 });
-PostSchema.index({ likeCount: -1 });
-PostSchema.index({ taggedUsers: 1 });
+PostSchema.index({ likeCount: -1, taggedUsers: -1, createdAt: -1 });
 
 const Post = mongoose.model('Post', PostSchema);
 export default Post;

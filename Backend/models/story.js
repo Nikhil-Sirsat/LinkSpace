@@ -14,6 +14,7 @@ const storySchema = new Schema({
 
 // Create a TTL ( Time To Live ) index on the expiresAt field
 // storySchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+storySchema.index({ createdAt: 1, owner: 1, viewers: 1, isActive: 1 });
 
 const story = mongoose.model('Story', storySchema);
 export default story;

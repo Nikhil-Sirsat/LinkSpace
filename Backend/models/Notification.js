@@ -16,8 +16,8 @@ const notificationSchema = new Schema({
 });
 
 // Define indexes
-notificationSchema.index({ senderId: 1, receiverId: 1, timestamp: 1 }); // Compound index
-notificationSchema.index({ timestamp: -1 }); // Index on timestamp for sorting
+notificationSchema.index({ senderId: 1, receiverId: 1, isRead: 1 }); // Compound index
+notificationSchema.index({ timestamp: -1 });
 
 const Notification = mongoose.model('Notification', notificationSchema);
 export default Notification;

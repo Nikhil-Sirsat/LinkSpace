@@ -14,8 +14,8 @@ const messageSchema = new Schema({
 });
 
 // Define indexes
-messageSchema.index({ sender: 1, receiver: 1, timestamp: 1, isRead: 1 }); // Compound index
-messageSchema.index({ timestamp: -1 }); // Index on timestamp for sorting
+messageSchema.index({ sender: 1, receiver: 1, isRead: 1 }); // Compound index
+messageSchema.index({ timestamp: -1 });
 
 const Message = mongoose.model('Message', messageSchema);
 export default Message;

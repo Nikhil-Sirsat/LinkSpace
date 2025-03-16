@@ -8,5 +8,8 @@ const SavedPostSchema = new Schema({
     createdAt: { type: Date, default: Date.now },
 });
 
+// define indexes
+SavedPostSchema.index({ user: 1, post: 1 }, { unique: true });
+
 const SavedPost = mongoose.model('SavedPost', SavedPostSchema);
 export default SavedPost;
