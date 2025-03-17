@@ -55,15 +55,25 @@ export default function Login() {
     const { login } = useContext(AuthContext);
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
+
     const handleMouseDownPassword = (event) => event.preventDefault();
+
     const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const success = await login(formData.username, formData.password);
-        if (success) navigate('/');
-        else setMessage('Invalid credentials');
+        try {
+            setLoading(true);
+            const success = await login(formData.username, formData.password);
+            if (success) navigate('/');
+        } catch (error) {
+            setMessage('Invalid credentials', error.message);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -102,16 +112,20 @@ export default function Login() {
                                     </FormControl>
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <Button type="submit" variant="contained" fullWidth sx={{ backgroundColor: '#00adb5', color: '#fff', fontSize: '1rem', textTransform: 'none', '&:hover': { backgroundColor: '#008c9e' } }}>Log in</Button>
+                                    <Button type="submit" variant="contained" fullWidth sx={{ backgroundColor: '#00adb5', color: '#fff', fontSize: '1rem', textTransform: 'none', '&:hover': { backgroundColor: '#008c9e' } }}>
+                                        {loading ? 'Loading...' : 'Log in'}
+                                    </Button>
                                 </Grid>
                             </Grid>
                         </form>
                         {message && (
                             <Alert severity="error" sx={{ mt: 2, borderRadius: '8px' }}>{message}</Alert>
                         )}
-                        <Typography variant="body2" align="center" sx={{ mt: 2, color: '#b0bec5' }}>
+
+                        {/* optional */}
+                        {/* <Typography variant="body2" align="center" sx={{ mt: 2, color: '#b0bec5' }}>
                             <Link to="#" style={{ textDecoration: 'none', color: '#00adb5' }}>Forgot username?</Link> | <Link to="#" style={{ textDecoration: 'none', color: '#00adb5' }}>Forgot password?</Link>
-                        </Typography>
+                        </Typography> */}
                     </CardContent>
                 </Card>
             </Container>

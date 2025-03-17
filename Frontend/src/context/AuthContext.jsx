@@ -27,7 +27,8 @@ function AuthProvider({ children }) {
         try {
             const response = await axiosInstance.post('/api/user/Login', { username, password }, { withCredentials: true });
             setUser(response.data.user);
-            console.log("User set in login:", response.data.user);
+            localStorage.setItem("password", password); // ⚠️ Store TEMPORARILY for encryption
+            console.log("User set in login:", response.data.user.username);
             return true;
         } catch (err) {
             console.log("Error in login:", err.response ? err.response.data : err.message);
@@ -38,6 +39,7 @@ function AuthProvider({ children }) {
         try {
             await axiosInstance.get('/api/user/Logout', { withCredentials: true });
             setUser(null);
+            localStorage.removeItem("password"); // Remove password
             console.log("User logged out");
         } catch (err) {
             console.log("Error in logout:", err.response ? err.response.data : err.message);
