@@ -38,7 +38,7 @@ app.set("trust proxy", 1);
 
 // Middleware
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: "https://linkspace-wd0q.onrender.com",
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true,
 }));
