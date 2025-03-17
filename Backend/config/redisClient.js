@@ -1,17 +1,27 @@
-import redis from 'redis';
+import { createClient } from 'redis';
+import dotenv from 'dotenv';
+
+dotenv.config(); // Load environment variables from .env file
+
 // Create and connect the Redis client
-const client = redis.createClient();
+const client = createClient({
+    url: process.env.REDIS_URL, // Use environment variable
+    socket: {
+        tls: true, // Required for Upstash
+        rejectUnauthorized: false,
+    },
+});
 
-client.on('error', (err) => console.error('Redis Client Error', err));
+client.on('error', (err) => console.error('Redis Client Error:', err));
 
-// Connect to Redis
 (async () => {
     try {
         await client.connect();
-        console.log('Connected to Redis');
+        console.log('Connected to Redis!');
     } catch (err) {
         console.error('Error connecting to Redis:', err);
     }
 })();
 
 export default client;
+
