@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, forwardRef } from 'react';
 import { Box, TextField, Typography, Button, Avatar } from '@mui/material';
 import axios from 'axios';
 import axiosInstance from '../../AxiosInstance.jsx';
@@ -7,7 +7,7 @@ import _ from 'lodash';  // lodash library for debouncing
 import UserListSkeleton from '../Skeletons/UserListSkeleton';
 import { ThemeContext } from "../../context/ThemeContext.jsx";
 
-export default function Search({ route }) {
+const Search = forwardRef(({ route }, ref) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [users, setUsers] = useState([]);
     const [userLoading, setUserLoading] = useState(false);
@@ -70,7 +70,7 @@ export default function Search({ route }) {
     };
 
     return (
-        <Box sx={{ width: { xs: '90%', md: '30%' }, height: 'auto', borderRadius: 5, m: 4, zIndex: 10, boxShadow: { xs: 0, md: 5 } }}>
+        <Box ref={ref} sx={{ width: '90%', height: 'auto', borderRadius: 5, m: 4, zIndex: 10, boxShadow: { xs: 0, md: 5 } }}>
             <Box>
                 <TextField
                     fullWidth
@@ -117,4 +117,6 @@ export default function Search({ route }) {
             </Box>
         </Box>
     )
-}
+});
+
+export default Search;

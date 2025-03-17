@@ -67,7 +67,9 @@ export default function Explore() {
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100vw', }}>
 
-            <Search route={'user'} />
+            <Box sx={{ width: { xs: '90%', md: '40%' }, display: 'flex', justifyContent: 'center' }}>
+                <Search route={'user'} />
+            </Box>
 
             {/* Error Message */}
             {errMsg && <Alert severity="error">{errMsg}</Alert>}
