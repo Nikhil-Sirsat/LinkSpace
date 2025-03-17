@@ -34,6 +34,8 @@ const app = express();
 const PORT = process.env.PORT || 5050;
 const server = createServer(app);
 
+app.set("trust proxy", 1);
+
 // Middleware
 app.use(cors({
     origin: "http://localhost:5173",
@@ -63,6 +65,8 @@ const sessionMiddleware = session({
     cookie: {
         maxAge: 7 * 24 * 60 * 60 * 1000,
         httpOnly: true,
+        secure: true,
+        sameSite: "none",
     }
 });
 app.use(sessionMiddleware);
