@@ -1,5 +1,5 @@
 
-import signUpPoster from '../../assets/signup Poster 3.jpg';
+import signUpPoster from '../../assets/signup-poster-3.jpg';
 
 import { useState, useContext } from 'react';
 import axiosInstance from '../../AxiosInstance.jsx';
