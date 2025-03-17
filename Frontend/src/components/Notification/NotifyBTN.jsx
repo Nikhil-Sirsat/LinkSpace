@@ -30,7 +30,6 @@ export default function NotifyBTN() {
             try {
                 const response = await axiosInstance.get(`/api/notify/all-notifications`);
                 setAllNotifications(response.data.allNotifications.reverse() || []);
-                // console.log("Notify Triggered");
             } catch (error) {
                 console.error('Error fetching Notifications:', error);
             }
@@ -46,13 +45,11 @@ export default function NotifyBTN() {
     useEffect(() => {
         if (isJoin && socket) {
             socket.on('receiveNotification', (NotificationData) => {
-                // console.log("receive Notify event : ", NotificationData);
 
                 if (NotificationData) {
                     if (NotificationData.receiverId === user._id) {
                         setAllNotifications((prevNotify) => [NotificationData, ...prevNotify]);
                         unreadCount++;
-                        // console.log(unreadCount);
                     }
                 }
             });

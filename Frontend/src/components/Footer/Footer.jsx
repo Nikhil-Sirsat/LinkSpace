@@ -9,7 +9,6 @@ export default function Footer() {
             sx={{
                 py: 3,
                 mt: 'auto',
-                // borderTop: '1px solid #333',
             }}
         >
             <Container maxWidth="lg">

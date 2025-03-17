@@ -11,9 +11,8 @@ import NotifySkeleton from '../Skeletons/NotifySkeleton';
 import { SocketContext } from '../../context/socketContext';
 
 export default function Notification() {
-    // const [notifications, setNotifications] = useState([]);
     const [notifyAnchorE1, setNotifyAnchorE1] = useState(null);
-    const [notifyIdToDelete, setNotifyIdToDelete] = useState(null); // New state
+    const [notifyIdToDelete, setNotifyIdToDelete] = useState(null);
     const [loading, setLoading] = useState(true);
     const { allNotifications, setAllNotifications } = useContext(SocketContext);
 

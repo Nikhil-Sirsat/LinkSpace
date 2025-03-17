@@ -18,7 +18,7 @@ export const like = async (req, res) => {
         const like = new Like({ postId, userId });
         await like.save();
 
-        // Atomically update the like count in the post
+        // update the like count in the post
         await Post.findByIdAndUpdate(postId, { $inc: { likeCount: 1 } });
 
         redisClient.del(`${req.params.id}:LikedUsers`);
@@ -44,7 +44,7 @@ export const unlike = async (req, res) => {
         // Remove the like
         await Like.deleteOne({ postId, userId });
 
-        // Atomically decrement the like count in the post
+        // decrement the like count in the post
         await Post.findByIdAndUpdate(postId, { $inc: { likeCount: -1 } });
 
         redisClient.del(`${req.params.id}:LikedUsers`);
@@ -72,7 +72,7 @@ export const getLikedUsers = async (req, res) => {
     try {
         const { postId } = req.params;
 
-        // Find all likes for the given post
+        // get all likes for the given post
         const likes = await Like.find({ postId }).populate('userId', 'name username image');
 
         // Extract user data from likes

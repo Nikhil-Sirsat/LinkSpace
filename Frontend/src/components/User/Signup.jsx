@@ -95,7 +95,6 @@ export default function SignUp() {
     const handleChange = (e) => {
         const { name, value, files } = e.target;
 
-        // Safely update formData with a file or value
         setFormData({
             ...formData,
             [name]: files && files.length > 0 ? files[0] : value,
@@ -109,7 +108,7 @@ export default function SignUp() {
 
             // Define the onload handler for the FileReader
             reader.onload = (e) => {
-                setSelectedImage(e.target.result); // Set the Base64 string as the image source
+                setSelectedImage(e.target.result);
             };
 
             reader.readAsDataURL(file); // Start reading the file

@@ -162,7 +162,6 @@ export default function CommentBoxForMob({ caption, comments, user, setComments,
                     >
                         <MenuItem onClick={handleDeleteComment}>Delete Comment</MenuItem>
                     </Menu>
-                    {/* </Box> */}
 
                 </StyledBox>
             </SwipeableDrawer>

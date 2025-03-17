@@ -44,7 +44,6 @@ export default function IsFollowBTN({ username }) {
 
         try {
             const response = await axiosInstance.post('/api/notify/post', notificationData);
-            // console.log('res is here : ', response.data.newNotify);
 
             if (!response.data.newNotify || !response.data.newNotify._id) {
                 throw new Error('Notification save failed or invalid response');

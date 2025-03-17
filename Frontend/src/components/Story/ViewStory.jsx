@@ -15,7 +15,6 @@ export default function ViewStory() {
         const fetchStory = async () => {
             try {
                 const response = await axiosInstance.get(`/api/story/${username}`);
-                // console.log(response.data.story);
                 setStory(response.data.story);
 
             } catch (error) {

@@ -27,7 +27,7 @@ function AuthProvider({ children }) {
         try {
             const response = await axiosInstance.post('/api/user/Login', { username, password }, { withCredentials: true });
             setUser(response.data.user);
-            localStorage.setItem("password", password); // ⚠️ Store TEMPORARILY for encryption
+            localStorage.setItem("password", password); // Store TEMPORARILY for encryption
             console.log("User set in login:", response.data.user.username);
             return true;
         } catch (err) {

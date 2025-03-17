@@ -20,7 +20,7 @@ export default function SavedPostBTN({ postId, isInitiallySaved }) {
                 setSaved(true);
                 showSnackbar('Post saved successfully !');
             }
-            setError(null);  // Clear error if successful
+            setError(null);
         } catch (error) {
             console.error('Error updating Post Saved status', error);
             setError('Failed to update saved status.');

@@ -5,9 +5,8 @@ import { Box, Avatar, Typography, Button, Badge, IconButton, Tooltip } from '@mu
 import { AuthContext } from '../../context/AuthContext';
 import axiosInstance from '../../AxiosInstance.jsx';
 import SettingsIcon from '@mui/icons-material/Settings';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+// import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FullWidthTabs from '../Posts/FullWidthTabs';
-// import { FollowContext } from '../../context/IsFollowContext';
 import IsFollowBTN from './IsFollowBTN';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import ProfileSkeleton from '../Skeletons/ProfileSkeleton';
@@ -20,11 +19,10 @@ export default function Profile() {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isFollowing, setIsFollowing] = useState(false);
-    // const { followersCount, setFollowersCount, followingCount, setFollowingCount } = useContext(FollowContext);
     const [followingCount, setFollowingCount] = useState(0);
     const [followersCount, setFollowersCount] = useState(0);
     const [userStory, setUserStory] = useState([]);
-    const { mode, toggleTheme } = useContext(ThemeContext);
+    const { mode } = useContext(ThemeContext);
 
     useEffect(() => {
 
@@ -66,7 +64,7 @@ export default function Profile() {
         };
 
         fetchStory();
-    }, [profileUser]); // This will only run when profileUser is updated
+    }, [profileUser]);
 
     if (loading) {
         return <ProfileSkeleton />;
@@ -89,11 +87,11 @@ export default function Profile() {
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            borderRadius: '50%', // Circular shape for the border container
-                            width: { xs: 100, sm: 110, md: 170 }, // Slightly larger than the Avatar to show the border
+                            borderRadius: '50%',
+                            width: { xs: 100, sm: 110, md: 170 },
                             height: { xs: 100, sm: 110, md: 170 },
-                            background: userStory.length > 0 ? 'linear-gradient(45deg, blue, red, yellow)' : 'none', // Gradient if there's a story
-                            padding: '0px', // Space for the border thickness
+                            background: userStory.length > 0 ? 'linear-gradient(45deg, blue, red, yellow)' : 'none',
+                            padding: '0px',
                         }}
                     >
 
@@ -120,10 +118,10 @@ export default function Profile() {
                                 component={Link}
                                 to={userStory.length > 0 ? `/story/${profileUser.username}` : ''}
                                 sx={{
-                                    width: { xs: 90, sm: 100, md: 160 }, // Avatar size
+                                    width: { xs: 90, sm: 100, md: 160 },
                                     height: { xs: 90, sm: 100, md: 160 },
-                                    borderRadius: '50%', // Ensures the Avatar remains circular
-                                    border: userStory.length === 0 ? '5px solid transparent' : 'none', // White border if no story
+                                    borderRadius: '50%',
+                                    border: userStory.length === 0 ? '5px solid transparent' : 'none',
                                 }}
                             />
                         </Badge>

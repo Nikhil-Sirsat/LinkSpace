@@ -55,10 +55,10 @@ export default function SharePost({ id, handleToggleShareUsers, sharePostUsers }
                 try {
                     const dataWithReceiver = { ...messageData, receiver: followingId };
                     const response = await axiosInstance.post('/api/messages/newMessage', dataWithReceiver);
-                    return response; // Return response if successful
+                    return response;
                 } catch (error) {
                     console.error(`Error while saving and sharing the post to ${followingId}:`, error);
-                    return null; // Return null on error to prevent undefined issues
+                    return null;
                 } finally {
                     setSending(false);
                 }
@@ -75,7 +75,7 @@ export default function SharePost({ id, handleToggleShareUsers, sharePostUsers }
                 successfulPosts.forEach(response => {
                     if (response.data.newMsg) {
                         const resMsg = response.data.newMsg;
-                        socket.emit('sendMessage', resMsg); // Send the message with the _id
+                        socket.emit('sendMessage', resMsg);
                         showSnackbar('Post shared successfully!');
                     }
                 });

@@ -116,15 +116,15 @@ export const createPost = async (req, res) => {
 
 export const trendingPosts = async (req, res) => {
     try {
-        const { page = 1, limit = 12 } = req.query; // Default to page 1, 10 posts per page
+        const { page = 1, limit = 12 } = req.query;
         const skip = (page - 1) * limit;
 
-        // Fetch trending posts directly using likeCount and createdAt for sorting
+        // Fetch trending posts using likeCount and createdAt for sorting
         const posts = await Post.find()
-            .sort({ likeCount: -1, createdAt: -1 }) // Trending by likes, then by creation date
+            .sort({ likeCount: -1, createdAt: -1 })
             .skip(skip)
             .limit(Number(limit))
-            .select(' imageUrl createdAt likeCount'); // Select only needed fields
+            .select(' imageUrl createdAt likeCount');
 
         // Check if there are more posts to load
         const totalPosts = await Post.countDocuments();
@@ -140,7 +140,6 @@ export const trendingPosts = async (req, res) => {
 export const getHomePostFeed = async (req, res) => {
     try {
 
-        // Query Data Base
         const currentUserId = req.user._id;
 
         // Find the users that the current user is following
@@ -155,9 +154,9 @@ export const getHomePostFeed = async (req, res) => {
             .limit(5)                 // Limit to 5 posts
             .populate('owner', 'image username')
             .populate({
-                path: "taggedUsers", // The field to populate
-                select: "username" // Select the fields you need
-            })        // Optionally, populate the owner field with user info
+                path: "taggedUsers",
+                select: "username"
+            })
             .exec();
 
         // Cache the data in Redis
@@ -182,7 +181,6 @@ export const getTaggedPosts = async (req, res) => {
         const cacheKey = res.locals.cacheKey;
         await redisClient.setEx(cacheKey, 120, JSON.stringify(posts));
 
-        // Return the posts
         res.status(200).json({ posts });
     } catch (error) {
         console.error(error);
@@ -209,10 +207,6 @@ export const showPost = async (req, res) => {
         if (!post) {
             return res.status(404).json({ message: 'Post Not Found' });
         }
-
-        // Cache the data in Redis
-        // const cacheKey = res.locals.cacheKey;
-        // await redisClient.setEx(cacheKey, 120, JSON.stringify(post));
 
         res.status(200).json({ post: post, message: 'post found successfully' });
     } catch (error) {
@@ -259,7 +253,7 @@ export const postSuggestions = async (req, res) => {
         // Fetch random posts using aggregation
         const suggPosts = await Post.aggregate([{ $sample: { size: 10 } }]);
 
-        // Manually populate the 'owner' and 'taggedUsers' fields
+        // populate the 'owner' and 'taggedUsers' fields
         const populatedPosts = await Post.populate(suggPosts, [
             { path: "owner", select: "image username" },
             { path: "taggedUsers", select: "username" }

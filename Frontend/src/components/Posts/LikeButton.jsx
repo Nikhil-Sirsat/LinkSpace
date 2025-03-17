@@ -27,7 +27,6 @@ export default function LikeButton({ post, initialLikes, initialLiked }) {
 
         try {
             const response = await axiosInstance.post('/api/notify/post', notificationData);
-            // console.log('res is here : ', response.data.newNotify);
 
             if (!response.data.newNotify || !response.data.newNotify._id) {
                 throw new Error('Notification save failed or invalid response');
@@ -78,7 +77,7 @@ export default function LikeButton({ post, initialLikes, initialLiked }) {
             <Tooltip title="see liked users" placement="top">
                 <Typography
                     sx={{ textDecoration: 'none', cursor: 'pointer' }}
-                    onClick={handleToggleLikedUsers}  // Toggle on click
+                    onClick={handleToggleLikedUsers}
                     variant="body2"
                     color="textSecondary"
                 >

@@ -1,5 +1,4 @@
 
-// components/TrendingPosts.jsx
 import { useEffect, useState, useCallback } from 'react';
 import { Box, Typography, Alert } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -95,8 +94,8 @@ export default function Explore() {
                             textDecoration: 'none',
                             borderRadius: '9px',
                             overflow: 'hidden',
-                            '&:hover .postOverlay': { opacity: 1 }, // Show overlay on hover
-                            '&:hover img': { transform: 'scale(1.1)', opacity: 0.7 }, // Image zoom effect
+                            '&:hover .postOverlay': { opacity: 1 },
+                            '&:hover img': { transform: 'scale(1.1)', opacity: 0.7 },
                         }}
                     >
                         <img
@@ -142,7 +141,6 @@ export default function Explore() {
 
             {loading && (
                 <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-                    {/* <CircularProgress /> */}
                     <PostGridSkeleton />
                 </Box>
             )}

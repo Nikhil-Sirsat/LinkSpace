@@ -26,7 +26,6 @@ export default function HomePostFeedCard() {
 
                 // Check if user.followingCount exists and is greater than 0
                 const url = user?.followingCount > 0 ? '/api/post/home-posts' : '/api/post/suggested-posts';
-                // console.log(url);
 
                 const response = await axiosInstance.get(url);
 
@@ -104,7 +103,7 @@ export default function HomePostFeedCard() {
                             <LikeButton
                                 post={post}
                                 initialLikes={post.likeCount}
-                                initialLiked={post.isLiked} // Pass isLiked status
+                                initialLiked={post.isLiked}
                             />
 
                             <Tooltip title="share post" placement="top">
@@ -140,7 +139,6 @@ export default function HomePostFeedCard() {
                 id={selectIdToShare}
                 handleToggleShareUsers={handleToggleShareUsers}
                 sharePostUsers={sharePostUsers}
-            // setSharePostUsers={setSharePostUsers}
             />
         </Box>
     );

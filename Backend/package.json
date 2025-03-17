@@ -14,9 +14,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@google-cloud/vision": "^4.3.2",
     "axios": "^1.7.9",
-    "bcrypt": "^5.1.1",
     "cloudinary": "^1.21.0",
     "connect-mongo": "^5.1.0",
     "cors": "^2.8.5",

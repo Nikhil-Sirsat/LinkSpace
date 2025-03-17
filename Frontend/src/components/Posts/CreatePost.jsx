@@ -26,7 +26,7 @@ export default function CreatePost() {
     const handleChange = (e) => {
         const { name, value, files } = e.target;
 
-        // Safely update formData with a file or value
+        // update formData with a file or value
         setFormData({
             ...formData,
             [name]: files && files.length > 0 ? files[0] : value,
@@ -34,13 +34,13 @@ export default function CreatePost() {
 
         // Handle file selection and preview
         if (files && files.length > 0) {
-            const file = files[0]; // Safely get the first file
+            const file = files[0];
 
             const reader = new FileReader(); // Create a FileReader instance
 
             // Define the onload handler for the FileReader
             reader.onload = (e) => {
-                setSelectedImage(e.target.result); // Set the Base64 string as the image source
+                setSelectedImage(e.target.result);
             };
 
             reader.readAsDataURL(file); // Start reading the file
@@ -74,7 +74,6 @@ export default function CreatePost() {
         data.append('imageUrl', formData.imageUrl);
         data.append('caption', formData.caption);
         formData.taggedUsers.forEach((userId) => data.append('taggedUsers[]', userId));
-        // console.log(data);
 
         try {
             await axiosInstance.post('/api/post', data, {
@@ -111,12 +110,9 @@ export default function CreatePost() {
         });
     };
 
-    // send Notify fn rem
-
     return (
         <Modal
             open={true}
-            // onClose={handleClose}
             sx={{
                 display: 'flex',
                 alignItems: 'center',

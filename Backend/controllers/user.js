@@ -188,25 +188,24 @@ export const editUser = async (req, res) => {
 };
 
 export const search = async (req, res) => {
-    const searchQuery = req.query.q;  // 'q' is the search term from the frontend
-    const page = parseInt(req.query.page) || 1;  // Get the page number from query, default to 1
-    const limit = parseInt(req.query.limit) || 10;  // Get the limit from query, default to 10
+    const searchQuery = req.query.q;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
 
     try {
         // Search for users whose username starts with the search query (case-insensitive)
         const users = await User.find({
-            username: { $regex: new RegExp('^' + searchQuery, 'i') }  // 'i' for case-insensitive
+            username: { $regex: new RegExp('^' + searchQuery, 'i') }
         })
-            .skip((page - 1) * limit)  // Skip the number of results based on the page
-            .limit(limit)  // Limit the result to a set number of users
-            .select('username name image followersCount');  // Return only necessary fields
+            .skip((page - 1) * limit)
+            .limit(limit)
+            .select('username name image followersCount');
 
-        // Optional: Count the total number of matching users for pagination purposes
         const totalUsers = await User.countDocuments({
             username: { $regex: new RegExp('^' + searchQuery, 'i') }
         });
 
-        res.json({ data: users, hasMore: (page * limit) < totalUsers });  // Determine if there are more users to load
+        res.json({ data: users, hasMore: (page * limit) < totalUsers });
 
     } catch (error) {
         console.error(error);

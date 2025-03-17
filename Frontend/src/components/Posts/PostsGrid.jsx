@@ -9,7 +9,7 @@ export default function PostsGrid({ posts, message, type }) {
         <Box
             sx={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)', // 3 columns
+                gridTemplateColumns: 'repeat(3, 1fr)',
                 gap: '10px',
                 width: { xs: '94vw', md: '60vw' },
                 margin: 'auto',
@@ -22,7 +22,7 @@ export default function PostsGrid({ posts, message, type }) {
                         to={type === 'saved' ? (`/post/${post.post._id}`) : (`/post/${post._id}`)}
                         key={type === 'saved' ? (post.post._id) : (post._id)}
                         sx={{
-                            aspectRatio: '1 / 1', // Keeps images square like Instagram
+                            aspectRatio: '1 / 1',
 
                             backgroundColor: 'black',
                             hover: 'cursor-pointer',
@@ -49,7 +49,7 @@ export default function PostsGrid({ posts, message, type }) {
                             style={{
                                 width: '100%',
                                 height: '100%',
-                                objectFit: 'cover', // Ensures image fully covers the grid item
+                                objectFit: 'cover',
                                 borderRadius: '9px',
                                 transition: 'all 0.3s ease',
                             }}

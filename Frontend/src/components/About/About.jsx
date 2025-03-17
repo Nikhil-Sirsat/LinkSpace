@@ -15,9 +15,9 @@ export default function About() {
             <Avatar
                 src={Logo}
                 sx={{
-                    width: { xs: 90, sm: 100, md: 160 }, // Avatar size
+                    width: { xs: 90, sm: 100, md: 160 },
                     height: { xs: 90, sm: 100, md: 160 },
-                    borderRadius: '50%', // Ensures the Avatar remains circular
+                    borderRadius: '50%',
                     margin: "auto",
                     mb: 3,
                 }}
@@ -117,9 +117,9 @@ export default function About() {
                     <Avatar
                         src={DeveloperImg}
                         sx={{
-                            width: { xs: 90, sm: 100, md: 160 }, // Avatar size
+                            width: { xs: 90, sm: 100, md: 160 },
                             height: { xs: 90, sm: 100, md: 160 },
-                            borderRadius: '50%', // Ensures the Avatar remains circular
+                            borderRadius: '50%',
                             margin: "auto",
                             mb: 3,
                         }}

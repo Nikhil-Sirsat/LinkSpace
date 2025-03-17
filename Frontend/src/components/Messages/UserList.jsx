@@ -17,7 +17,7 @@ export default function UserList() {
     const { socket } = useContext(SocketContext);
     const [parentState, setParentState] = useState(false);
     const [loading, setLoading] = useState(true);
-    const { mode, toggleTheme } = useContext(ThemeContext);
+    const { mode } = useContext(ThemeContext);
 
     // Fetch user history with unread messages
     useEffect(() => {
@@ -33,7 +33,6 @@ export default function UserList() {
         };
 
         fetchUsers();
-        // console.log('parent called');
 
     }, [user, parentState, socket]);
 
@@ -54,7 +53,6 @@ export default function UserList() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                // backgroundColor: '#e6eef0',
             }}
         >
             <Box
@@ -125,7 +123,7 @@ export default function UserList() {
                                         justifyContent: { xs: 'center', md: 'flex-start' },
                                         flexDirection: { xs: 'column', md: 'row' },
                                         '&.active': {
-                                            backgroundColor: theme.palette.action.selected, // or any color you prefer for active state
+                                            backgroundColor: theme.palette.action.selected,
                                         },
                                         '&:hover': {
                                             backgroundColor: mode === "dark" ? '#323232' : '#f0f0f0',
@@ -177,7 +175,3 @@ export default function UserList() {
         </Modal>
     );
 }
-
-
-
-

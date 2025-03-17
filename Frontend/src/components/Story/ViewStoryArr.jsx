@@ -214,16 +214,16 @@ export default function ViewStoryArr({ storys }) {
                                     sx={{
                                         flexGrow: 1,
                                         "& .MuiOutlinedInput-root": {
-                                            padding: "6px", // Adjust the padding as needed
+                                            padding: "6px",
                                             color: 'white',
                                         },
                                         "& .MuiInputLabel-root": {
-                                            fontSize: "0.875rem", // Adjust label font size
+                                            fontSize: "0.875rem",
                                             color: 'white'
                                         },
                                         "& .MuiOutlinedInput-input": {
-                                            fontSize: "0.875rem", // Adjust input text font size
-                                            padding: "6px", // Adjust input padding
+                                            fontSize: "0.875rem",
+                                            padding: "6px",
                                         },
                                     }}
                                 />

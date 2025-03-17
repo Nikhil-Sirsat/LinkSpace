@@ -105,7 +105,6 @@ export default function ViewPost() {
 
         try {
             const response = await axiosInstance.post('/api/notify/post', notificationData);
-            // console.log('res is here : ', response.data.newNotify);
 
             if (!response.data.newNotify || !response.data.newNotify._id) {
                 throw new Error('Notification save failed or invalid response');
@@ -250,7 +249,6 @@ export default function ViewPost() {
                             height: { xs: 'auto', md: '100%' },
                             minWidth: '300px',
                             width: { xs: '100%', md: 'auto' },
-                            // overflowY: 'auto',
                         }}
                     >
 
@@ -362,14 +360,14 @@ export default function ViewPost() {
                                 sx={{
                                     flexGrow: 1,
                                     "& .MuiOutlinedInput-root": {
-                                        padding: "6px", // Adjust the padding as needed
+                                        padding: "6px",
                                     },
                                     "& .MuiInputLabel-root": {
-                                        fontSize: "0.875rem", // Adjust label font size
+                                        fontSize: "0.875rem",
                                     },
                                     "& .MuiOutlinedInput-input": {
-                                        fontSize: "0.875rem", // Adjust input text font size
-                                        padding: "6px", // Adjust input padding
+                                        fontSize: "0.875rem",
+                                        padding: "6px",
                                     },
                                 }}
                             />
@@ -394,7 +392,6 @@ export default function ViewPost() {
 
                         {/* post actions */}
                         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                            {/* <hr style={{ margin: '0' }}></hr> */}
                             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
 
                                 <LikeButton
@@ -428,7 +425,6 @@ export default function ViewPost() {
                                 <SharePost
                                     handleToggleShareUsers={handleToggleShareUsers}
                                     id={post._id}
-                                    // setSharePostUsers={setSharePostUsers}
                                     sharePostUsers={sharePostUsers}
                                 />
 

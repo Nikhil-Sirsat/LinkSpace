@@ -16,7 +16,6 @@ export default function StoryList() {
         const fetchStoryList = async () => {
             try {
                 const response = await axiosInstance.get('/api/story/get-stories-list');
-                // console.log(response.data);
                 setUserList(response.data.usersWithStories);
                 setLoading(false);
             } catch (error) {
@@ -85,11 +84,11 @@ export default function StoryList() {
                                     sx={{
                                         position: 'relative',
                                         display: 'inline-block',
-                                        borderRadius: '50%', // Circular shape for the border container
-                                        width: { xs: '55px', md: '75px' }, // Slightly larger than the Avatar to show the border
+                                        borderRadius: '50%',
+                                        width: { xs: '55px', md: '75px' },
                                         height: { xs: '55px', md: '75px' },
                                         background: 'linear-gradient(45deg, blue, red, yellow)',
-                                        padding: '5px', // Space for the border thickness
+                                        padding: '5px',
                                         margin: '0 auto',
                                     }}
                                 >
@@ -102,7 +101,6 @@ export default function StoryList() {
                                             width: { xs: '45px', md: '65px' },
                                             height: { xs: '45px', md: '65px' },
                                             margin: '0 auto',
-                                            // border: '4px solid #1976d2',
                                         }}
                                     />
                                 </Box>

@@ -161,7 +161,7 @@ export const postMsg = async (req, res) => {
         const newMsg = new Message({ sender, receiver, content, post: post || null, story: story || null, timestamp });
         await newMsg.save();
 
-        // Populate based on whether it's a post or a story
+        // Populate based on what exist (post or story)
         const populatedMessage = await Message.findById(newMsg._id)
             .populate(post ? {
                 path: 'post',

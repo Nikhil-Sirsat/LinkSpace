@@ -24,8 +24,6 @@ import {
     Box,
 } from '@mui/material';
 
-// Custom styles for rounded input fields and background color
-
 export default function EditeProfile() {
     const { user } = useContext(AuthContext);
     const [formData, setFormData] = useState({
@@ -62,7 +60,6 @@ export default function EditeProfile() {
     const handleChange = (e) => {
         const { name, value, files } = e.target;
 
-        // Safely update formData with a file or value
         setFormData({
             ...formData,
             [name]: files && files.length > 0 ? files[0] : value,
@@ -76,7 +73,7 @@ export default function EditeProfile() {
 
             // Define the onload handler for the FileReader
             reader.onload = (e) => {
-                setSelectedImage(e.target.result); // Set the Base64 string as the image source
+                setSelectedImage(e.target.result);
             };
 
             reader.readAsDataURL(file); // Start reading the file
@@ -138,9 +135,9 @@ export default function EditeProfile() {
                     <Avatar
                         src={selectedImage ? selectedImage : user.image.url}
                         sx={{
-                            width: { xs: 90, sm: 100, md: 160 }, // Avatar size
+                            width: { xs: 90, sm: 100, md: 160 },
                             height: { xs: 90, sm: 100, md: 160 },
-                            borderRadius: '50%', // Ensures the Avatar remains circular
+                            borderRadius: '50%',
                             margin: "auto",
                             mb: 5,
                         }}

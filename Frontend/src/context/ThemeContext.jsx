@@ -5,7 +5,6 @@ import CssBaseline from "@mui/material/CssBaseline";
 export const ThemeContext = createContext();
 
 export const ThemeProviderComponent = ({ children }) => {
-  // Get mode from localStorage (if available) or set default as "light"
   const storedMode = localStorage.getItem("theme") || "light";
   const [mode, setMode] = useState(storedMode);
 
@@ -26,13 +25,13 @@ export const ThemeProviderComponent = ({ children }) => {
           mode: mode,
           ...(mode === "dark"
             ? {
-                background: { default: "#121212", paper: "#1e1e1e" },
-                text: { primary: "#ffffff" },
-              }
+              background: { default: "#121212", paper: "#1e1e1e" },
+              text: { primary: "#ffffff" },
+            }
             : {
-                background: { default: "#ffffff", paper: "#f5f5f5" },
-                text: { primary: "#000000" },
-              }),
+              background: { default: "#ffffff", paper: "#f5f5f5" },
+              text: { primary: "#000000" },
+            }),
         },
       }),
     [mode]

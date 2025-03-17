@@ -1,7 +1,6 @@
 
 import { Server } from 'socket.io';
 import passport from 'passport';
-import Notification from '../models/Notification.js';
 
 function initializeSocket(server, sessionMiddleware) {
 

@@ -106,7 +106,7 @@ export const markView = async (req, res) => {
         const { storyId } = req.params;
         const userId = req.user._id;
 
-        // Use $addToSet to add userId to viewers array if it doesn't already exist
+        // add userId to viewers array if it doesn't already exist
         const result = await Story.findByIdAndUpdate(
             storyId,
             { $addToSet: { viewers: userId } }, // Ensures no duplicate entries in viewers array

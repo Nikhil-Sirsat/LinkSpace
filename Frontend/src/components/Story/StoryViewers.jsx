@@ -48,7 +48,7 @@ export default function StoryViewers({ viewers }) {
 
                         // Add media query for mobile devices
                         '@media (max-width: 600px)': {
-                            width: '100%', // Adjust width for mobile
+                            width: '100%',
                         },
                     },
                 }}

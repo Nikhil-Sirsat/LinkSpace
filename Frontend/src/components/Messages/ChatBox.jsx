@@ -382,7 +382,6 @@ export default function ChatBox() {
                     variant="outlined"
                     sx={{
                         mr: 2,
-                        // backgroundColor: 'white',
                         borderRadius: '20px',
                         '& .MuiOutlinedInput-root fieldset': { border: 'none' },
                     }}

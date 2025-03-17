@@ -30,8 +30,6 @@ const Search = forwardRef(({ route }, ref) => {
                 cancelToken: source.token
             });
 
-            // console.log("API Response:", response.data); // Debugging output
-
             const { data, hasMore } = response.data || { data: [], hasMore: false };
 
             setUsers(prevUsers => (page === 1 ? data : [...prevUsers, ...data]));

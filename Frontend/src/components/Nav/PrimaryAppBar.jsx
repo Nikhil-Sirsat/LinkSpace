@@ -104,7 +104,6 @@ export default function PrimarySearchAppBar() {
                                         sx={{
                                             width: 40,
                                             height: 40,
-                                            // border: '5px solid black'
                                         }}
                                     />
                                 </Tooltip>

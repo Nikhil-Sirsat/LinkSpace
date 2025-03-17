@@ -1,13 +1,13 @@
 import { Badge } from '@mui/material';
 import MessageIcon from '@mui/icons-material/Message';
-import { useEffect, useContext, useState } from 'react';
+import { useEffect, useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import axiosInstance from '../../AxiosInstance.jsx';
 import { SocketContext } from '../../context/socketContext';
 
 export default function MsgNotifyBtn() {
     const { user } = useContext(AuthContext);
-    const { socket, msgNotify, setMsgNotify, reFetchMsgNotify, setReFetchMsgNotify } = useContext(SocketContext);
+    const { socket, msgNotify, setMsgNotify, reFetchMsgNotify } = useContext(SocketContext);
 
     useEffect(() => {
         if (!user) return;
@@ -32,10 +32,7 @@ export default function MsgNotifyBtn() {
             if (!messageData) return;
 
             if (messageData.receiver === user._id || messageData.isRead === false) {
-                // setMsgNotify((prevMessages) => [...prevMessages, messageData]);
                 setMsgNotify(msgNotify + 1);
-
-                // console.log('Msg Notify receive');
             }
         });
 

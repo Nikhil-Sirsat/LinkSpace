@@ -20,7 +20,6 @@ export default function UploadStory() {
     const handleChange = (e) => {
         const { name, value, files } = e.target;
 
-        // Safely update formData with a file or value
         setFormData({
             ...formData,
             [name]: files && files.length > 0 ? files[0] : value,
@@ -28,13 +27,13 @@ export default function UploadStory() {
 
         // Handle file selection and preview
         if (files && files.length > 0) {
-            const file = files[0]; // Safely get the first file
+            const file = files[0];
 
             const reader = new FileReader(); // Create a FileReader instance
 
             // Define the onload handler for the FileReader
             reader.onload = (e) => {
-                setSelectedImage(e.target.result); // Set the Base64 string as the image source
+                setSelectedImage(e.target.result);
             };
 
             reader.readAsDataURL(file); // Start reading the file
@@ -79,7 +78,7 @@ export default function UploadStory() {
             <Box
                 sx={{
                     width: { xs: '100%', md: '70%' },
-                    maxHeight: '100vh', // Ensure the modal doesn't exceed the viewport height
+                    maxHeight: '100vh',
                     bgcolor: 'background.paper',
                     boxShadow: 24,
                     display: 'flex',
@@ -87,7 +86,7 @@ export default function UploadStory() {
                     alignItems: 'center',
                     justifyContent: 'space-evenly',
                     borderRadius: { xs: 0, md: 2 },
-                    overflow: 'hidden', // To handle excessive content
+                    overflow: 'hidden',
                 }}
             >
                 {/* Scrollable Container */}
@@ -95,7 +94,7 @@ export default function UploadStory() {
                     sx={{
                         width: '100%',
                         height: '100%',
-                        overflowY: 'auto', // Enable vertical scrolling for content
+                        overflowY: 'auto',
                         display: 'flex',
                         flexDirection: { xs: 'column', md: 'row' },
                         alignItems: 'center',
@@ -104,15 +103,12 @@ export default function UploadStory() {
                     {/* Image Box */}
                     <Box
                         sx={{
-                            // flex: 1,
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            // flexBasis: { xs: '75%', md: '50%' },
                             height: '100vh',
                             minWidth: '40%',
                             maxWidth: { xs: '100%', md: '60%' },
-                            // maxHeight: { xs: '90vh', md: '100%' }, // Limit image height on mobile
                             overflow: 'hidden',
                             backgroundColor: 'black',
                         }}
