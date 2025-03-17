@@ -61,6 +61,7 @@ export default function IsFollowBTN({ username }) {
     };
 
     const handleFollowToggle = async () => {
+        setLoading(true);
         try {
             if (isFollowing) {
                 await axiosInstance.delete(`/api/follow/unfollow/${username}`);
@@ -72,6 +73,8 @@ export default function IsFollowBTN({ username }) {
             }
         } catch (error) {
             console.log('Error toggling follow status:', error);
+        } finally {
+            setLoading(false);
         }
     };
 

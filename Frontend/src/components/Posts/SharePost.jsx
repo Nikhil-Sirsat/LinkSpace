@@ -13,6 +13,7 @@ export default function SharePost({ id, handleToggleShareUsers, sharePostUsers }
     const [loading, setLoading] = useState(true);
     const { user } = useContext(AuthContext);
     const showSnackbar = useSnackbar();
+    const [sending, setSending] = useState(false);
 
     useEffect(() => {
         const fetchFollowings = async () => {
@@ -38,6 +39,8 @@ export default function SharePost({ id, handleToggleShareUsers, sharePostUsers }
     };
 
     const handleSendMessage = async () => {
+        setSending(true);
+
         if (!id) return;
 
         const messageData = {
@@ -56,6 +59,8 @@ export default function SharePost({ id, handleToggleShareUsers, sharePostUsers }
                 } catch (error) {
                     console.error(`Error while saving and sharing the post to ${followingId}:`, error);
                     return null; // Return null on error to prevent undefined issues
+                } finally {
+                    setSending(false);
                 }
             });
 
@@ -83,6 +88,8 @@ export default function SharePost({ id, handleToggleShareUsers, sharePostUsers }
         } catch (error) {
             console.error('An error occurred while saving and sending the post:', error);
             showSnackbar('Error occurred, no post shared!');
+        } finally {
+            setSending(false);
         }
     };
 
@@ -114,7 +121,9 @@ export default function SharePost({ id, handleToggleShareUsers, sharePostUsers }
                 ) : (
                     <Box sx={{ flexGrow: 1, overflowY: 'auto', overflowX: 'hidden', borderRadius: '5px', height: '100%', width: '100%', }}>
                         <Box sx={{ position: 'sticky', top: 0, backgroundColor: '#f7f7f7', zIndex: 10, p: 2 }}>
-                            <Button variant='contained' onClick={handleSendMessage}>Send</Button>
+                            <Button variant='contained' onClick={handleSendMessage}>
+                                {sending ? 'sending...' : 'send'}
+                            </Button>
 
                         </Box>
 

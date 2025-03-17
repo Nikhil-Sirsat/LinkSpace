@@ -85,11 +85,11 @@ export default function HomePostFeedCard() {
                         avatar={
                             <Avatar component={Link} to={`/user/${post.owner.username}`} src={post.owner.image.url} sx={{ bgcolor: red[500] }} aria-label="owner-img"></Avatar>
                         }
-                        action={
-                            <IconButton aria-label="settings" sx={{ mr: 1 }}>
-                                <MoreHorizIcon />
-                            </IconButton>
-                        }
+                        // action={
+                        //     <IconButton aria-label="settings" sx={{ mr: 1 }}>
+                        //         <MoreHorizIcon />
+                        //     </IconButton>
+                        // }
                         title={post.owner.username}
                         subheader={new Date(post.createdAt).toLocaleString()}
                     />

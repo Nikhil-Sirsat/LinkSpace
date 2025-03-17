@@ -2,6 +2,7 @@ import React from "react";
 import { Container, Typography, Grid, Card, CardContent, IconButton, Stack, Avatar } from "@mui/material";
 import { LinkedIn, GitHub, X } from "@mui/icons-material";
 import DeveloperImg from '../../assets/Developer-Img.jpg'
+import Logo from '../../assets/logo-3-2.jpg';
 
 export default function About() {
     return (
@@ -9,6 +10,18 @@ export default function About() {
             <Typography variant="h3" align="center" gutterBottom>
                 About Our Social Media Platform
             </Typography>
+
+            {/* site logo */}
+            <Avatar
+                src={Logo}
+                sx={{
+                    width: { xs: 90, sm: 100, md: 160 }, // Avatar size
+                    height: { xs: 90, sm: 100, md: 160 },
+                    borderRadius: '50%', // Ensures the Avatar remains circular
+                    margin: "auto",
+                    mb: 3,
+                }}
+            />
             <Typography variant="body1" align="center" paragraph>
                 Welcome to our social media platform, where users can connect, share, and engage in real-time. Built using the MERN stack, our platform ensures seamless interactions, robust performance, and a secure experience.
             </Typography>
@@ -31,6 +44,34 @@ export default function About() {
                                     {feature.title}
                                 </Typography>
                                 <Typography variant="body2">{feature.desc}</Typography>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                ))}
+            </Grid>
+
+            {/* Privacy & Security Section */}
+            <Typography variant="h4" align="center" gutterBottom sx={{ mt: 5 }}>
+                Privacy & Security
+            </Typography>
+            <Typography variant="body1" align="center" paragraph>
+                At LinkSpace, security and privacy are our top priorities. We implement industry-leading security measures to keep your personal data safe.
+            </Typography>
+            <Grid container spacing={3} justifyContent="center">
+                {[
+                    { title: "End-to-End Encryption", desc: "Your private messages are encrypted using AES, ensuring that only you and the recipient can read them—not even LinkSpace." },
+                    { title: "Secure Password Storage", desc: "We use salted hashing techniques to store passwords securely, making them resistant to breaches." },
+                    { title: "Advanced Encryption Algorithms", desc: "Sensitive data is encrypted using AES-256 to prevent unauthorized access." },
+                    { title: "Cloud Security", desc: "Our database is securely hosted on MongoDB Atlas, ensuring data protection and compliance with security best practices." },
+                    { title: "AI-Powered Content Moderation", desc: "We use AI-driven image moderation to keep the platform safe and free from inappropriate content." }
+                ].map((security, index) => (
+                    <Grid item xs={12} sm={6} md={6} key={index}>
+                        <Card sx={{ height: "100%", boxShadow: 3 }}>
+                            <CardContent>
+                                <Typography variant="h6" gutterBottom>
+                                    {security.title}
+                                </Typography>
+                                <Typography variant="body2">{security.desc}</Typography>
                             </CardContent>
                         </Card>
                     </Grid>

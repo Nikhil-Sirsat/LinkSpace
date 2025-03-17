@@ -168,22 +168,23 @@ export default function ViewStoryArr({ storys }) {
                                     </Typography>
                                 </Box>
                                 {user._id === story.owner._id ? (
-                                    <StoryViewers viewers={story.viewers} />
+                                    <>
+                                        <StoryViewers viewers={story.viewers} />
+                                        <IconButton onClick={(event) => handleStoryMenuClick(event, story._id)}>
+                                            <MoreVertIcon sx={{ color: 'white' }} />
+                                        </IconButton>
+                                    </>
                                 ) : (
                                     null
                                 )}
-                                <IconButton onClick={(event) => handleStoryMenuClick(event, story._id)}>
-                                    <MoreVertIcon sx={{ color: 'white' }} />
-                                </IconButton>
+
                             </Box>
                             <Menu
                                 anchorEl={storyAnchorEl}
                                 open={Boolean(storyAnchorEl)}
                                 onClose={handleStoryMenuClose}
                             >
-                                {user._id === story.owner._id ? (
-                                    <MenuItem onClick={handleDeleteStory}>Delete Story</MenuItem>
-                                ) : null}
+                                <MenuItem onClick={handleDeleteStory}>Delete Story</MenuItem>
 
                             </Menu>
 

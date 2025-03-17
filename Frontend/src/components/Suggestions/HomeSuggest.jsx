@@ -45,14 +45,14 @@ export default function HomeSuggest() {
                         <Typography variant="body2" sx={{ color: 'gray' }}>{user.name} . {user.followersCount} followers</Typography>
                     </Box>
                 </Box>
-                <Box>
+                {/* <Box>
                     <Typography variant="body2">switch</Typography>
-                </Box>
+                </Box> */}
             </Box>
 
             <Box sx={{ display: 'flex', justifyContent: 'space-between', p: 1, mt: 2, mb: 2 }}>
                 <Typography variant="subtitle2"><strong>Suggested for you</strong></Typography>
-                <Typography variant="body2">see all</Typography>
+                {/* <Typography variant="body2">see all</Typography> */}
             </Box>
 
             <Box sx={{ mt: 1, }}>

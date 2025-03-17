@@ -71,7 +71,7 @@ export default function DeletePostBTN({ postId, onDeleteSuccess }) {
                         Cancel
                     </Button>
                     <Button onClick={handleDelete} color="error" autoFocus>
-                        {loading ? "Loading..." : "Delete"}
+                        {loading ? "Deleting..." : "Delete"}
                     </Button>
                 </DialogActions>
             </Dialog>

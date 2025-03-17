@@ -28,6 +28,7 @@ export default function ChatBox() {
     const [msgToDelete, setMsgToDelete] = useState(null);
     const [loading, setLoading] = useState(true);
     const [errMsg, setErrMsg] = useState('');
+    const [sending, setSending] = useState(false);
 
     // Ref for auto-scrolling
     const messagesEndRef = useRef(null);
@@ -175,6 +176,7 @@ export default function ChatBox() {
 
     // send msg fn
     const handleSendMessage = async () => {
+        setSending(true);
         if (!selectedUser?._id) return;
         if (!newMessage) return;
 
@@ -182,12 +184,14 @@ export default function ChatBox() {
         const messageTxT = await moderateText(newMessage);
         if (messageTxT == true) {
             setErrMsg('message contains inappropriate or violent content.');
+            setSending(false);
             return
         }
 
         // check message for links
         if (containsLink(newMessage)) {
             setErrMsg("Links are not allowed in the messages!");
+            setSending(false);
             return
         }
 
@@ -212,6 +216,8 @@ export default function ChatBox() {
             console.error('An Error occure while saving and sending Message');
             setErrMsg(error.response?.data?.message || 'Something went wrong');
             return;
+        } finally {
+            setSending(false);
         }
 
         messageData.content = newMessage;
@@ -393,7 +399,7 @@ export default function ChatBox() {
                         '&:hover': { backgroundColor: newMessage ? '#0073e6' : '#e0e0e0' },
                     }}
                 >
-                    Send
+                    {sending ? "sending..." : "send"}
                 </Button>
             </Box>
 

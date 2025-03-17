@@ -241,11 +241,12 @@ export default function Profile() {
                                     </Tooltip>
                                 </Link>
                             ) : (
-                                <Link style={{ paddingTop: '2px', color: '#0073e6' }} to={`#`}>
-                                    <Tooltip title="more" placement="bottom">
-                                        <ExpandMoreIcon />
-                                    </Tooltip>
-                                </Link>
+                                // <Link style={{ paddingTop: '2px', color: '#0073e6' }} to={`#`}>
+                                //     <Tooltip title="more" placement="bottom">
+                                //         <ExpandMoreIcon />
+                                //     </Tooltip>
+                                // </Link>
+                                null
                             )}
                         </Box>
                     </Box>

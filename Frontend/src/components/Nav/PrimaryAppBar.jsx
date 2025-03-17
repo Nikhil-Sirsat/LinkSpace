@@ -12,6 +12,7 @@ import BackButton from '../BackButton';
 import InfoIcon from '@mui/icons-material/Info';
 import { ThemeContext } from "../../context/ThemeContext";
 import { Brightness4, Brightness7 } from "@mui/icons-material";
+import navLogo from '../../assets/logo-3-2.jpg';
 
 export default function PrimarySearchAppBar() {
     const { user } = useContext(AuthContext);
@@ -53,15 +54,17 @@ export default function PrimarySearchAppBar() {
                     </Menu>
 
                     <Tooltip title="Home" placement="bottom">
-                        <Typography
-                            variant="h6"
-                            noWrap
+                        <Avatar
                             component={Link}
-                            to={'/'}
-                            sx={{ display: { xs: 'none', sm: 'block', md: 'block' }, textDecoration: 'none', fontWeight: 'bold', color: '#0073e6' }}
-                        >
-                            LinkSpace
-                        </Typography>
+                            to={`/`}
+                            alt={'Home'}
+                            src={navLogo}
+                            sx={{
+                                width: 40,
+                                height: 40,
+                                display: { xs: 'none', sm: 'block', md: 'block' }
+                            }}
+                        />
                     </Tooltip>
 
                     <Box sx={{ flexGrow: 1 }} />
@@ -70,7 +73,7 @@ export default function PrimarySearchAppBar() {
                             <>
 
                                 <IconButton onClick={toggleTheme} color="inherit" sx={{ mr: 1 }}>
-                                    {mode === "dark" ? <Brightness7 /> : <Brightness4 sx={{color: 'black'}} />}
+                                    {mode === "dark" ? <Brightness7 /> : <Brightness4 sx={{ color: 'black' }} />}
                                 </IconButton>
 
                                 <Tooltip title="messages" placement="bottom">

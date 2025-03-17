@@ -1,7 +1,6 @@
-
 import { useState, useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
-import { AppBar, Tabs, Tab, Box } from '@mui/material';
+import { AppBar, Tabs, Tab, Box, } from '@mui/material';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import AppsIcon from '@mui/icons-material/Apps';
 import PersonPinIcon from '@mui/icons-material/PersonPin';
@@ -30,6 +29,7 @@ function TabPanel(props) {
     );
 }
 
+
 export default function FullWidthTabs({ posts, CurrUser, profileUser }) {
     const theme = useTheme();
     const [value, setValue] = useState(0);
@@ -37,33 +37,41 @@ export default function FullWidthTabs({ posts, CurrUser, profileUser }) {
     const [taggPosts, setTaggPosts] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // fetch saved posts
+    const isProfileOwner = CurrUser._id === profileUser._id;
+
+    const tabs = [
+        { label: "POSTS", icon: <AppsIcon /> },
+        ...(isProfileOwner ? [{ label: "SAVED", icon: <BookmarkIcon /> }] : []),
+        { label: "TAGGED", icon: <PersonPinIcon /> }
+    ];
+
+    // Fetch saved posts
     useEffect(() => {
-        if (profileUser && profileUser._id) {
+        if (isProfileOwner) {
             const fetchSavedPosts = async () => {
                 try {
                     const savedPostResponse = await axiosInstance.get(`/api/savedPost/saved-posts`);
                     setSavedPosts(savedPostResponse.data.savedPosts);
-                    setLoading(false);
                 } catch (error) {
                     console.log('Error fetching saved posts:', error);
+                } finally {
                     setLoading(false);
                 }
             };
             fetchSavedPosts();
         }
-    }, [profileUser._id]);
+    }, [isProfileOwner]);
 
-    // fetch tagged posts
+    // Fetch tagged posts
     useEffect(() => {
-        if (profileUser && profileUser._id) {
+        if (profileUser._id) {
             const fetchTagPosts = async () => {
                 try {
                     const taggPostsResponse = await axiosInstance.get(`/api/post/tagged/${profileUser._id}`);
                     setTaggPosts(taggPostsResponse.data.posts);
-                    setLoading(false);
                 } catch (error) {
                     console.log('Error fetching Tagged posts:', error);
+                } finally {
                     setLoading(false);
                 }
             };
@@ -71,43 +79,44 @@ export default function FullWidthTabs({ posts, CurrUser, profileUser }) {
         }
     }, [profileUser._id]);
 
-    // get active tab from local-storage
+    // Retrieve active tab index from localStorage
     useEffect(() => {
         const savedTabIndex = localStorage.getItem('selectedTabIndex');
 
         // Ensure it's a valid number; default to 0 if not
         if (savedTabIndex !== null && !isNaN(savedTabIndex)) {
-            setValue(Number(savedTabIndex));
+            const tabIndex = Number(savedTabIndex);
+
+            // Ensure value is within valid range
+            if (CurrUser._id === profileUser._id) {
+                setValue(tabIndex > 2 ? 0 : tabIndex); // Reset to 0 if invalid
+            } else {
+                setValue(tabIndex > 1 ? 0 : tabIndex); // Reset to 0 if invalid
+            }
         } else {
             setValue(0);  // Default to the first tab
         }
-    }, []);
+    }, [profileUser]);  // Reset when `profileUser` changes    
 
-    // save active tab index into the local-storage
+    // Save active tab index to localStorage
     const handleChange = (event, newValue) => {
         setValue(newValue);
         localStorage.setItem('selectedTabIndex', newValue);
     };
 
     return (
-        <Box sx={{ bgcolor: 'transparent', width: '100%', border: 'none' }}>
-            <AppBar position="static" sx={{ boxShadow: 'none', border: 'none', backgroundColor: 'transparent' }}>
-                <Tabs className='bor' style={{ border: 'none' }}
+        <Box sx={{ bgcolor: 'transparent', width: '100%' }}>
+            <AppBar position="static" sx={{ boxShadow: 'none', backgroundColor: 'transparent' }}>
+                <Tabs
                     value={value}
                     onChange={handleChange}
                     indicatorColor="secondary"
                     textColor="primary"
                     variant="fullWidth"
-                    aria-label="full width tabs example"
                 >
-                    <Tab icon={<AppsIcon />} iconPosition="start" label="POSTS" sx={{ fontSize: '12px' }} />
-                    {CurrUser._id === profileUser._id ? (
-                        <Tab icon={<BookmarkIcon />} iconPosition="start" label="SAVED" sx={{ fontSize: '12px' }} />
-                    ) : (
-                        <Tab icon={<NotStartedIcon />} iconPosition="start" label="REELS" sx={{ fontSize: '12px' }} />
-                        // null
-                    )}
-                    <Tab icon={<PersonPinIcon />} iconPosition="start" label="TAGGED" sx={{ fontSize: '12px' }} />
+                    {tabs.map((tab, index) => (
+                        <Tab key={index} icon={tab.icon} iconPosition="start" label={tab.label} sx={{ fontSize: '12px' }} />
+                    ))}
                 </Tabs>
             </AppBar>
 
@@ -118,16 +127,14 @@ export default function FullWidthTabs({ posts, CurrUser, profileUser }) {
                     <TabPanel value={value} index={0} dir={theme.direction}>
                         <PostsGrid posts={posts} message={'no posts yet'} type={'profile'} />
                     </TabPanel>
-                    {CurrUser._id === profileUser._id ? (
+
+                    {isProfileOwner && (
                         <TabPanel value={value} index={1} dir={theme.direction}>
                             <PostsGrid posts={savedPosts} message={'no posts saved yet'} type={'saved'} />
                         </TabPanel>
-                    ) : (
-                        <TabPanel value={value} index={1} dir={theme.direction}>
-                            reels here
-                        </TabPanel>
                     )}
-                    <TabPanel value={value} index={2} dir={theme.direction}>
+
+                    <TabPanel value={value} index={isProfileOwner ? 2 : 1} dir={theme.direction}>
                         <PostsGrid posts={taggPosts} message={"no tagged's yet"} type={'taged'} />
                     </TabPanel>
                 </>
