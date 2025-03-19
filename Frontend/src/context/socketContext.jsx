@@ -13,7 +13,7 @@ const SocketProvider = ({ children }) => {
     const [reFetchMsgNotify, setReFetchMsgNotify] = useState(false);
 
     useEffect(() => {
-        const newSocket = io('http://localhost:5050', {
+        const newSocket = io('https://linkspace-backend.onrender.com', {
             withCredentials: true,
         });
         setSocket(newSocket);
