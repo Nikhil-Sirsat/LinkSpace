@@ -15,6 +15,7 @@ export default function Notification() {
     const [notifyIdToDelete, setNotifyIdToDelete] = useState(null);
     const [loading, setLoading] = useState(true);
     const { allNotifications, setAllNotifications } = useContext(SocketContext);
+    const [deleting, setdeleting] = useState(false);
 
     useEffect(() => {
         if (allNotifications) {
@@ -48,6 +49,7 @@ export default function Notification() {
     };
 
     const handleDeleteNotify = async () => {
+        setdeleting(true);
         try {
             if (!notifyIdToDelete) return;
             await axiosInstance.delete(`/api/notify/${notifyIdToDelete}`);
@@ -55,6 +57,8 @@ export default function Notification() {
             setAllNotifications((previousNotifications) => previousNotifications.filter((notify) => notify._id !== notifyIdToDelete));
         } catch (error) {
             console.error('Error deleting Notification:', error);
+        } finally {
+            setdeleting(false);
         }
     };
 
@@ -169,7 +173,9 @@ export default function Notification() {
                 open={Boolean(notifyAnchorE1)}
                 onClose={handleNotifyMenuClose}
             >
-                <MenuItem onClick={handleDeleteNotify}>Delete Notification</MenuItem>
+                <MenuItem onClick={handleDeleteNotify}>
+                    {deleting ? 'Deleting...' : 'Delete'}
+                </MenuItem>
             </Menu>
         </Box>
     );

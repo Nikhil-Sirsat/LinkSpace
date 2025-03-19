@@ -152,6 +152,7 @@ export default function SignUp() {
         } catch (error) {
             console.log(error.message);
             setMessage(error.response.data.error);
+        } finally {
             setLoading(false);
         }
     };

@@ -34,6 +34,8 @@ export default function ViewPost() {
     const [sharePostUsers, setSharePostUsers] = useState(false);
     const [error, setError] = useState('');
     const showSnackbar = useSnackbar();
+    const [delComment, setDelComment] = useState(false);
+    const [addingComment, setAddingComment] = useState(false);
 
     // fetch Post
     useEffect(() => {
@@ -129,6 +131,7 @@ export default function ViewPost() {
     };
 
     const handleAddComment = async () => {
+        setAddingComment(true);
         try {
             const response = await axiosInstance.post(`/api/comment/post/${id}`, { comment: commentText });
             if (response.data.comment) {
@@ -141,6 +144,8 @@ export default function ViewPost() {
         } catch (error) {
             console.error('Error adding comment:', error);
             setError(error.response?.data?.error || 'Something went wrong');
+        } finally {
+            setAddingComment(false);
         }
     };
 
@@ -163,6 +168,7 @@ export default function ViewPost() {
     };
 
     const handleDeleteComment = async () => {
+        setDelComment(true);
         try {
             await axiosInstance.delete(`/api/comment/${id}/${selectedCommentId}`);
             setComments(comments.filter(comment => comment._id !== selectedCommentId));
@@ -171,6 +177,8 @@ export default function ViewPost() {
         } catch (error) {
             console.error('Error deleting comment:', error);
             setError('Error Deleting Comment');
+        } finally {
+            setDelComment(false);
         }
     };
 
@@ -344,7 +352,9 @@ export default function ViewPost() {
                             open={Boolean(commentAnchorEl)}
                             onClose={handleCommentMenuClose}
                         >
-                            <MenuItem onClick={handleDeleteComment}>Delete Comment</MenuItem>
+                            <MenuItem onClick={handleDeleteComment}>
+                                {delComment ? "deleting..." : "delete"}
+                            </MenuItem>
                         </Menu>
 
                         {/* post comment */}
@@ -386,7 +396,7 @@ export default function ViewPost() {
                                     ml: 1
                                 }}
                             >
-                                Send
+                                {addingComment ? "sending..." : 'send'}
                             </Button>
                         </Box>
 

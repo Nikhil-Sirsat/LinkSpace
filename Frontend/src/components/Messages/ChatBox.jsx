@@ -29,6 +29,7 @@ export default function ChatBox() {
     const [loading, setLoading] = useState(true);
     const [errMsg, setErrMsg] = useState('');
     const [sending, setSending] = useState(false);
+    const [deleting, setDeleting] = useState(false);
 
     // Ref for auto-scrolling
     const messagesEndRef = useRef(null);
@@ -197,6 +198,11 @@ export default function ChatBox() {
 
         // Encrypt the message
         const encryptedData = encryptMessage(newMessage);
+        if (!encryptedData) {
+            setErrMsg('Error in Encryption, log in again');
+            setSending(false);
+            return
+        }
 
         const messageData = {
             sender: user._id,
@@ -260,6 +266,7 @@ export default function ChatBox() {
     };
 
     const handleDeleteMsg = async () => {
+        setDeleting(true);
         try {
             if (!msgToDelete) return;
 
@@ -272,6 +279,8 @@ export default function ChatBox() {
         } catch (error) {
             console.error('Error deleting message:', error);
             setErrMsg(error.response.data.message || 'Something went wrong');
+        } finally {
+            setDeleting(false);
         }
     };
 
@@ -404,7 +413,9 @@ export default function ChatBox() {
 
             {/* Message Options Menu */}
             <Menu anchorEl={msgAnchorE1} open={Boolean(msgAnchorE1)} onClose={handleMsgMenuClose}>
-                <MenuItem onClick={handleDeleteMsg}>Delete Message</MenuItem>
+                <MenuItem onClick={handleDeleteMsg}>
+                    {deleting ? "deleting..." : 'delete'}
+                </MenuItem>
             </Menu>
         </Box>
     )

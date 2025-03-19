@@ -143,7 +143,7 @@ export default function About() {
                 <IconButton component="a" href="https://www.linkedin.com/in/nikhil-sirsat-b49bb128a/" target="_blank" sx={{ color: '#0073e6' }}>
                     <LinkedIn fontSize="large" />
                 </IconButton>
-                <IconButton component="a" href="https://github.com/theAppleceo" target="_blank">
+                <IconButton component="a" href="https://github.com/Nikhil-Sirsat" target="_blank">
                     <GitHub fontSize="large" />
                 </IconButton>
                 <IconButton component="a" href="https://x.com/NikhilS27949297" target="_blank">

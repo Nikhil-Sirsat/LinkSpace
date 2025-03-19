@@ -25,6 +25,8 @@ export default function ViewStoryArr({ storys }) {
     const navigate = useNavigate();
     const showSnackbar = useSnackbar();
     const [errMsg, setErrMsg] = useState('');
+    const [sending, setSending] = useState(false);
+    const [deleting, setDeleting] = useState(false);
 
     useEffect(() => {
         const markView = async () => {
@@ -49,6 +51,7 @@ export default function ViewStoryArr({ storys }) {
     };
 
     const handleDeleteStory = async () => {
+        setDeleting(true);
         try {
             await axiosInstance.delete(`/api/story/${selectedStory}`);
             handleStoryMenuClose();
@@ -56,6 +59,8 @@ export default function ViewStoryArr({ storys }) {
             showSnackbar('Story Deleted successfully !');
         } catch (error) {
             console.error('Error deleting Story :', error);
+        } finally {
+            setDeleting(false);
         }
     };
 
@@ -64,22 +69,34 @@ export default function ViewStoryArr({ storys }) {
     };
 
     const handleSendReply = async () => {
-        if (!replyText) return;
+        setSending(true);
+        if (!replyText) {
+            setSending(false);
+            setErrMsg('no text to reply');
+            return;
+        };
 
         // Check Violent messages
         const messageTxT = await moderateText(replyText);
         if (messageTxT == true) {
             setErrMsg('message contains inappropriate or violent content.');
-            return
+            setSending(false);
+            return;
         }
 
         // check message for links
         if (containsLink(replyText)) {
             setErrMsg("Links are not allowed in the messages!");
-            return
+            setSending(false);
+            return;
         }
 
         let content = encryptMessage(replyText);
+        if (!content) {
+            setErrMsg('Error in Encryption, log in again');
+            setSending(false);
+            return;
+        }
 
         try {
             const messageData = {
@@ -89,26 +106,22 @@ export default function ViewStoryArr({ storys }) {
                 story: id ? id : storys[0]._id,
                 timestamp: new Date().toISOString()
             };
+            const response = await axiosInstance.post('/api/messages/newMessage', messageData);
 
-            try {
-                const response = await axiosInstance.post('/api/messages/newMessage', messageData);
-
-                // Ensure that the response contains the new message with its _id
-                if (response.data && response.data.newMsg) {
-                    const resMsg = response.data.newMsg;
-                    setErrMsg('');
-                    socket.emit('sendMessage', resMsg);
-                } else {
-                    console.error('Error: Response does not contain new message data');
-                }
-            } catch (error) {
-                console.error('An Error occurred while saving and sending Message:', error);
-                return;
+            // Ensure that the response contains the new message with its _id
+            if (response.data && response.data.newMsg) {
+                const resMsg = response.data.newMsg;
+                setErrMsg('');
+                socket.emit('sendMessage', resMsg);
+            } else {
+                console.error('Error: Response does not contain new message data');
             }
-
-            setReplyText('');
         } catch (error) {
             console.error('Error sending story reply:', error);
+            setErrMsg('error sending reply!');
+        } finally {
+            setReplyText('');
+            setSending(false);
         }
     };
 
@@ -184,7 +197,9 @@ export default function ViewStoryArr({ storys }) {
                                 open={Boolean(storyAnchorEl)}
                                 onClose={handleStoryMenuClose}
                             >
-                                <MenuItem onClick={handleDeleteStory}>Delete Story</MenuItem>
+                                <MenuItem onClick={handleDeleteStory}>
+                                    {deleting ? 'deleting...' : 'delete'}
+                                </MenuItem>
 
                             </Menu>
 
@@ -242,7 +257,7 @@ export default function ViewStoryArr({ storys }) {
                                         ml: 1
                                     }}
                                 >
-                                    Send
+                                    {sending ? "sending..." : 'send'}
                                 </Button>
                             </Box>
                         </Card>
