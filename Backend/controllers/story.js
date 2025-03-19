@@ -19,20 +19,22 @@ export const postStory = async (req, res) => {
         const owner = req.user._id;
         const { caption } = req.body;
 
+        // get url & fileName from cloudinary
+        let url = req.file.path;
+        let filename = req.file.filename;
+
         // caption Moderation
         const TXTcheck = await moderateText(caption);
         if (TXTcheck == true) {
+            await delImgFromCloud(url); // Delete the image from Cloudinary
             return res.status(400).json({ error: 'inappropriate or violent content detected' });
         }
 
         // check caption for links
         if (containsLink(caption)) {
+            await delImgFromCloud(url); // Delete the image from Cloudinary
             return res.status(400).json({ error: "Links are not allowed in the caption!" });
         }
-
-        // get url & fileName from cloudinary
-        let url = req.file.path;
-        let filename = req.file.filename;
 
         // Analyze if the Image is SAFE || NOT
         const nsfwScore = await analyzeImage(url);

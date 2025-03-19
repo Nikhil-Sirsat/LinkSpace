@@ -16,20 +16,22 @@ export const signUp = async (req, res) => {
 
         const { username, name, email, age, gender, bio, password } = req.body;
 
+        // get url & fileName from cloudinary
+        let url = req.file.path;
+        let filename = req.file.filename;
+
         // TXT Moderation
         const TXTcheck = await moderateText(username + " " + name + " " + bio);
         if (TXTcheck == true) {
+            await delImgFromCloud(url); // Delete the image from Cloudinary
             return res.status(400).json({ error: 'inappropriate or violent content detected' });
         }
 
         // check TXT for Links
         if (containsLink(username + " " + name + " " + bio)) {
+            await delImgFromCloud(url); // Delete the image from Cloudinary
             return res.status(400).json({ error: "Links are not allowed!" });
         }
-
-        // get url & fileName from cloudinary
-        let url = req.file.path;
-        let filename = req.file.filename;
 
         // Analyze if the Image is SAFE || NOT
         const nsfwScore = await analyzeImage(url);
