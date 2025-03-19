@@ -7,7 +7,7 @@ function initializeSocket(server, sessionMiddleware) {
     // Initialize Socket.IO with CORS configuration
     const io = new Server(server, {
         cors: {
-            origin: "https://linkspace-wd0q.onrender.com",
+            origin: "https://linkspacex.onrender.com",
             methods: ["GET", "POST"],
             credentials: true,
         }
