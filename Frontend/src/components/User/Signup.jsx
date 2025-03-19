@@ -234,7 +234,7 @@ export default function SignUp() {
                                             <CustomTextField fullWidth label="Bio" variant="outlined" name="bio" multiline rows={2} value={formData.bio} onChange={handleChange} required />
                                         </Grid>
                                         <Grid item xs={12}>
-                                            <CustomTextField fullWidth type="file" variant="outlined" name="image" onChange={handleChange} />
+                                            <CustomTextField fullWidth type="file" variant="outlined" name="image" onChange={handleChange} required />
                                         </Grid>
                                         <Grid item xs={12} sx={{ textAlign: 'center', mt: 2 }}>
                                             <Button type="submit" variant="contained" sx={{ backgroundColor: '#00adb5', color: '#fff', padding: '10px 20px', borderRadius: '8px', fontSize: '1rem', ':hover': { backgroundColor: '#007f8b' } }}>

@@ -9,7 +9,7 @@ export const userSchema = Joi.object({
     age: Joi.number().min(10).required(),
     gender: Joi.string().valid('male', 'female', 'other').required(),
     bio: Joi.string().max(500).optional(),
-    image: Joi.string().uri().allow("", null),
+    image: Joi.string().uri().required(),
     password: Joi.string().min(5).max(20)
         .pattern(new RegExp(/^[a-zA-Z0-9@#$%^&*()_+!~\-]{5,20}$/))
         .required(),

@@ -12,7 +12,7 @@ export const validateUser = async (req, res, next) => {
 
     let { error } = userSchema.validate(userData);
     if (error) {
-        if (req.file.path) {
+        if (req.file && req.file.path) {
             const imgUrl = req.file.path;
             await delImgFromCloud(imgUrl); // Delete the image from Cloudinary
         }
@@ -31,7 +31,7 @@ export const validatePost = async (req, res, next) => {
 
     let { error } = PostSchema.validate(postData);
     if (error) {
-        if (req.file.path) {
+        if (req.file && req.file.path) {
             const imgUrl = req.file.path;
             await delImgFromCloud(imgUrl); // Delete the image from Cloudinary
         }
@@ -50,7 +50,7 @@ export const validateStory = async (req, res, next) => {
 
     let { error } = storySchema.validate(storyData);
     if (error) {
-        if (req.file.path) {
+        if (req.file && req.file.path) {
             const imgUrl = req.file.path;
             await delImgFromCloud(imgUrl); // Delete the image from Cloudinary
         }
