@@ -12,8 +12,10 @@ export const validateUser = async (req, res, next) => {
 
     let { error } = userSchema.validate(userData);
     if (error) {
-        console.log('error in user schema : ', error);
-        await delImgFromCloud(req.file.path); // Delete the image from Cloudinary
+        if (req.file.path) {
+            const imgUrl = req.file.path;
+            await delImgFromCloud(imgUrl); // Delete the image from Cloudinary
+        }
         return res.status(400).json({ error: error.details[0].message });
     } else {
         next();
@@ -22,7 +24,6 @@ export const validateUser = async (req, res, next) => {
 
 // validate post
 export const validatePost = async (req, res, next) => {
-    // Add `imageUrl` validation based on `req.file`
     const postData = {
         ...req.body,
         imageUrl: req.file ? req.file.path : undefined, // Use `req.file.path` for validation
@@ -30,7 +31,10 @@ export const validatePost = async (req, res, next) => {
 
     let { error } = PostSchema.validate(postData);
     if (error) {
-        await delImgFromCloud(req.file.path); // Delete the image from Cloudinary
+        if (req.file.path) {
+            const imgUrl = req.file.path;
+            await delImgFromCloud(imgUrl); // Delete the image from Cloudinary
+        }
         return res.status(400).json({ error: error.details[0].message });
     } else {
         next();
@@ -46,7 +50,10 @@ export const validateStory = async (req, res, next) => {
 
     let { error } = storySchema.validate(storyData);
     if (error) {
-        await delImgFromCloud(req.file.path); // Delete the image from Cloudinary
+        if (req.file.path) {
+            const imgUrl = req.file.path;
+            await delImgFromCloud(imgUrl); // Delete the image from Cloudinary
+        }
         return res.status(400).json({ error: error.details[0].message });
     } else {
         next();

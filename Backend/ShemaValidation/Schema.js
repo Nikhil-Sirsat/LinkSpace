@@ -11,7 +11,7 @@ export const userSchema = Joi.object({
     bio: Joi.string().max(500).optional(),
     image: Joi.string().uri().allow("", null),
     password: Joi.string().min(5).max(20)
-        .pattern(new RegExp('^[a-zA-Z0-9]{5,20}$'))
+        .pattern(new RegExp(/^[a-zA-Z0-9@#$%^&*()_+!~\-]{5,20}$/))
         .required(),
 });
 
