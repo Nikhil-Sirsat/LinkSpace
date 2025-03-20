@@ -34,10 +34,14 @@ export const decryptMessage = (encryptedMessage) => {
     }
 
     const salt = encryptedMessage.slice(0, 32);
+    console.log('salt : ', salt);
     const ciphertext = encryptedMessage.slice(32);
+    console.log('ciphertext : ', ciphertext);
     const key = generateEncryptionKey(password, salt);
+    console.log('key : ', key);
     const bytes = CryptoJS.AES.decrypt(ciphertext, key);
-
+    console.log('bytes', bytes);
+    console.log(bytes.toString(CryptoJS.enc.Utf8));
     return bytes.toString(CryptoJS.enc.Utf8);
 };
 
