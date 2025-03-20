@@ -5,9 +5,12 @@ import { delImgFromCloud } from '../Utils/Del-Img-from-Cloud.js';
 
 // validate user
 export const validateUser = async (req, res, next) => {
+
+    let imageUrl = req.file ? req.file.path : req.body.image?.url; // Safe optional chaining
+
     const userData = {
         ...req.body,
-        image: req.file ? req.file.path : undefined, // Use `req.file.path` for validation
+        image: imageUrl, // Ensure valid image path
     };
 
     let { error } = userSchema.validate(userData);

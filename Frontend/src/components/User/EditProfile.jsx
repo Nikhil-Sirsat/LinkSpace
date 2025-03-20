@@ -93,7 +93,7 @@ export default function EditeProfile() {
         data.append('gender', formData.gender);
         data.append('bio', formData.bio);
 
-        if (formData.image) {
+        if (formData.image && formData.image.url) {
             data.append('image', formData.image);
         }
 
