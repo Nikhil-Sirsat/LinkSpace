@@ -73,7 +73,6 @@ export default function ChatBox() {
                     ...msg,
                     content: msg.content ? decryptMessage(msg.content) : null,
                 }));
-                console.log(decryptedMessages);
                 setMessages(decryptedMessages);
                 setTimeout(scrollToBottom, 100);
             } catch (error) {
