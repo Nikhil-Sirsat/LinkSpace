@@ -38,6 +38,13 @@ export const postStory = async (req, res) => {
 
         // Analyze if the Image is SAFE || NOT
         const nsfwScore = await analyzeImage(url);
+
+        // for failed images analysis
+        if (!nsfwScore) {
+            await delImgFromCloud(url); // Delete the image from Cloudinary
+            return res.status(400).json({ error: 'Failed to analyze image.' });
+        }
+
         if (nsfwScore > 0.5) {
             await delImgFromCloud(url); // Delete the image from Cloudinary
             return res.status(400).json({ error: 'Image contains inappropriate or violent content.' });

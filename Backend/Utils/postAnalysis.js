@@ -50,8 +50,8 @@ export const analyzeImage = async (imageUrl) => {
 
         return nsfwScore;
     } catch (error) {
-        console.error('Error analyzing image:', error.response?.data || error.message);
-        throw new Error('Failed to analyze image.');
+        console.log('Error analyzing image:', error.response?.data || error.message);
+        return null;
     }
 }
 
