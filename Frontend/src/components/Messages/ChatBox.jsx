@@ -68,18 +68,24 @@ export default function ChatBox() {
             try {
                 const response = await axiosInstance.get(`/api/messages/${selectedUser._id}`);
                 const chatHistory = response.data.messages;
-                console.log('chat-history : ', chatHistory);
-                const decryptedMessages = chatHistory.map((msg) => ({
-                    ...msg,
-                    content: msg.content ? decryptMessage(msg.content) : null,
-                }));
+                console.log('chat-history:', chatHistory);
+
+                const decryptedMessages = chatHistory.map((msg) => {
+                    const decryptedContent = msg.content ? decryptMessage(msg.content) : null;
+                    return {
+                        ...msg,
+                        content: decryptedContent,
+                    };
+                });
+
                 setMessages(decryptedMessages);
                 setTimeout(scrollToBottom, 100);
             } catch (error) {
                 console.error('Error fetching messages:', error.response ? error.response.data : error);
-                setErrMsg(error.response.data.message || 'Something went wrong');
+                setErrMsg(error.response?.data?.message || 'Something went wrong');
             }
         };
+
         fetchMessages();
     }, [selectedUser]);
 
