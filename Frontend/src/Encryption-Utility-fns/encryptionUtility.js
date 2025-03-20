@@ -10,17 +10,17 @@ const generateEncryptionKey = (password, salt) => {
 
 // Encrypt a message
 export const encryptMessage = (message) => {
-    const password = localStorage.getItem("password"); // Get user password
+    const password = localStorage.getItem("password");
     if (!password) {
         console.error("No password found for encryption!");
         return null;
     }
 
-    const salt = CryptoJS.lib.WordArray.random(16).toString(CryptoJS.enc.Hex); // 16-byte salt in hex
+    const salt = CryptoJS.lib.WordArray.random(16).toString(CryptoJS.enc.Hex);
     const key = generateEncryptionKey(password, salt);
     const encrypted = CryptoJS.AES.encrypt(message, key).toString();
 
-    return salt + encrypted; // Store salt with the message
+    return salt + encrypted;
 };
 
 // Decrypt a message
@@ -31,19 +31,16 @@ export const decryptMessage = (encryptedMessage) => {
         return null;
     }
 
-    const salt = encryptedMessage.slice(0, 32); // Extract 32-character hex salt
+    const salt = encryptedMessage.slice(0, 32);
     const ciphertext = encryptedMessage.slice(32);
 
     try {
         const key = generateEncryptionKey(password, salt);
-
-        const bytes = CryptoJS.AES.decrypt(ciphertext, key, {
-            format: CryptoJS.format.OpenSSL // Ensure correct format handling
-        });
-
+        const bytes = CryptoJS.AES.decrypt(ciphertext, key); // Removed format option
         const decryptedMessage = bytes.toString(CryptoJS.enc.Utf8);
+
         if (!decryptedMessage) {
-            throw new Error("Decryption failed! Possibly incorrect key or corrupted data.");
+            throw new Error("Decryption failed! Incorrect key or corrupted data.");
         }
 
         return decryptedMessage;
@@ -52,5 +49,3 @@ export const decryptMessage = (encryptedMessage) => {
         return null;
     }
 };
-
-
