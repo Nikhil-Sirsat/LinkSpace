@@ -24,13 +24,13 @@ export const signUp = async (req, res) => {
         const existingUser = await User.findOne({ username });
         if (existingUser) {
             await delImgFromCloud(url); // Delete the image from Cloudinary
-            return res.status(400).json({ message: 'Username already exists' });
+            return res.status(400).json({ error: 'Username already exists' });
         }
 
         const existingEmail = await User.findOne({ email });
         if (existingEmail) {
             await delImgFromCloud(url); // Delete the image from Cloudinary
-            return res.status(400).json({ message: 'Email already exists' });
+            return res.status(400).json({ error: 'Email already exists' });
         }
 
         // TXT Moderation
