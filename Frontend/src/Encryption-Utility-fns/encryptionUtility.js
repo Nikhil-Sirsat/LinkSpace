@@ -11,6 +11,7 @@ const generateEncryptionKey = (password, salt) => {
 // Encrypt a message
 export const encryptMessage = (message) => {
     const password = localStorage.getItem("password"); // Get user password
+    console.log('enc pass : ', password);
     if (!password) {
         console.error("No password found for encryption!");
         return null;
@@ -26,6 +27,7 @@ export const encryptMessage = (message) => {
 // Decrypt a message
 export const decryptMessage = (encryptedMessage) => {
     const password = localStorage.getItem("password"); // Get user password
+    console.log("dec pass : ", password);
     if (!password) {
         console.error("No password found for decryption!");
         return null;

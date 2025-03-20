@@ -68,7 +68,7 @@ export default function ChatBox() {
             try {
                 const response = await axiosInstance.get(`/api/messages/${selectedUser._id}`);
                 const chatHistory = response.data.messages;
-                // console.log('chat-history : ', chatHistory);
+                console.log('chat-history : ', chatHistory);
                 const decryptedMessages = chatHistory.map((msg) => ({
                     ...msg,
                     content: msg.content ? decryptMessage(msg.content) : null,
