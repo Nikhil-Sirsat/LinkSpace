@@ -20,6 +20,19 @@ export const signUp = async (req, res) => {
         let url = req.file.path;
         let filename = req.file.filename;
 
+        // **Check if the username or email already exists (excluding the current user)**
+        const existingUser = await User.findOne({ username });
+        if (existingUser) {
+            await delImgFromCloud(url); // Delete the image from Cloudinary
+            return res.status(400).json({ message: 'Username already exists' });
+        }
+
+        const existingEmail = await User.findOne({ email });
+        if (existingEmail) {
+            await delImgFromCloud(url); // Delete the image from Cloudinary
+            return res.status(400).json({ message: 'Email already exists' });
+        }
+
         // TXT Moderation
         const TXTcheck = await moderateText(username + " " + name + " " + bio);
         if (TXTcheck == true) {
