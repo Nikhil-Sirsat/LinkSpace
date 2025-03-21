@@ -16,7 +16,6 @@
     "@mui/material": "^5.16.7",
     "@mui/system": "^6.1.6",
     "axios": "^1.7.3",
-    "crypto-js": "^4.2.0",
     "date-fns": "^3.6.0",
     "leo-profanity": "^1.7.0",
     "lodash": "^4.17.21",

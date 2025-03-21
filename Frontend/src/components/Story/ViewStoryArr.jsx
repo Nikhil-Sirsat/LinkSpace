@@ -12,7 +12,6 @@ import StoryViewers from "./StoryViewers";
 import { AuthContext } from "../../context/AuthContext";
 import { SocketContext } from '../../context/socketContext';
 import { useSnackbar } from "../../context/SnackBarContext";
-import { encryptMessage } from "../../Encryption-Utility-fns/encryptionUtility";
 import { containsLink, moderateText } from '../../TXT-Moderation/txtModeration.js';
 
 export default function ViewStoryArr({ storys }) {
@@ -91,18 +90,11 @@ export default function ViewStoryArr({ storys }) {
             return;
         }
 
-        let content = encryptMessage(replyText);
-        if (!content) {
-            setErrMsg('Error in Encryption, log in again');
-            setSending(false);
-            return;
-        }
-
         try {
             const messageData = {
                 sender: user._id,
                 receiver: storys[0].owner._id,
-                content: content,
+                content: replyText,
                 story: id ? id : storys[0]._id,
                 timestamp: new Date().toISOString()
             };

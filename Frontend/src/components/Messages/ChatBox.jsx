@@ -9,7 +9,6 @@ import ChatBoxSkeleton from '../Skeletons/chatBoxSkeleton';
 import MessageBubble from './MessageBubble';
 import PostBubble from './PostBubble';
 import MessageTimestamp from './MsgTimeStamp';
-import { encryptMessage, decryptMessage } from '../../Encryption-Utility-fns/encryptionUtility';
 import { ThemeContext } from "../../context/ThemeContext";
 import axiosInstance from '../../AxiosInstance.jsx';
 import { containsLink, moderateText } from '../../TXT-Moderation/txtModeration.js';
@@ -68,17 +67,7 @@ export default function ChatBox() {
             try {
                 const response = await axiosInstance.get(`/api/messages/${selectedUser._id}`);
                 const chatHistory = response.data.messages;
-                console.log('chat-history:', chatHistory);
-
-                const decryptedMessages = chatHistory.map((msg) => {
-                    const decryptedContent = msg.content ? decryptMessage(msg.content) : null;
-                    return {
-                        ...msg,
-                        content: decryptedContent,
-                    };
-                });
-
-                setMessages(decryptedMessages);
+                setMessages(chatHistory);
                 setTimeout(scrollToBottom, 100);
             } catch (error) {
                 console.error('Error fetching messages:', error.response ? error.response.data : error);
@@ -114,12 +103,6 @@ export default function ChatBox() {
             // check Authorization
             if (selectedUser && messageData.sender) {
                 if (messageData.sender === selectedUser?._id && messageData.receiver === user._id) {
-
-                    // decrypt the message
-                    if (messageData.content) {
-                        let decryptedMsg = decryptMessage(messageData.content);
-                        messageData.content = decryptedMsg;
-                    }
 
                     // update the messages array
                     setMessages((prevMessages) => [...prevMessages, messageData]);
@@ -202,18 +185,10 @@ export default function ChatBox() {
             return
         }
 
-        // Encrypt the message
-        const encryptedData = encryptMessage(newMessage);
-        if (!encryptedData) {
-            setErrMsg('Error in Encryption, log in again');
-            setSending(false);
-            return
-        }
-
         const messageData = {
             sender: user._id,
             receiver: selectedUser._id,
-            content: encryptedData,
+            content: newMessage,
             timestamp: new Date().toISOString()
         };
 
@@ -232,13 +207,11 @@ export default function ChatBox() {
             setSending(false);
         }
 
-        messageData.content = newMessage;
         if (messageData.sender === user._id && messageData.receiver === selectedUser?._id) {
             setMessages((prevMessages) => [...prevMessages, messageData]);
             setNewMessage('');
             setErrMsg('');
             setTimeout(scrollToBottom, 100);
-            // console.log('Msg Send');
         }
     };
 

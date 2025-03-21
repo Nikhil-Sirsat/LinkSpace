@@ -1,5 +1,6 @@
 
 import Message from '../models/messages.js';
+import { encrypt, decrypt } from '../Encrypt&Decrypt/encryption.js';
 
 export const getUserHistory = async (req, res) => {
     try {
@@ -146,7 +147,13 @@ export const getChatHistory = async (req, res) => {
             ])
             .sort({ timestamp: 1 });
 
-        res.json({ messages: messages });
+        // Decrypt content only if it exists, otherwise keep it null
+        const decryptedMessages = messages.map((msg) => ({
+            ...msg.toObject(), // Convert Mongoose document to plain JavaScript object
+            content: msg.content ? decrypt(msg.content) : null, // Decrypt if content exists, else keep it null
+        }));
+
+        res.json({ messages: decryptedMessages });
     } catch (error) {
         console.error('Error fetching messages:', err);
         res.status(500).json({ message: 'Error Fetching Messages', error: error.message });
@@ -157,8 +164,22 @@ export const postMsg = async (req, res) => {
     try {
         const { sender, receiver, content, post, story, timestamp } = req.body;
 
+        // Validate the request body
+        if (!content || !sender || !receiver) {
+            return res.status(400).json({ message: 'Invalid request. Sender, receiver, and content are required.' });
+        }
+
+        const encryptedContent = encrypt(content);
+
         // Create and save the new message
-        const newMsg = new Message({ sender, receiver, content, post: post || null, story: story || null, timestamp });
+        const newMsg = new Message({
+            sender,
+            receiver,
+            content: encryptedContent,
+            post: post || null,
+            story: story || null,
+            timestamp,
+        });
         await newMsg.save();
 
         // Populate based on what exist (post or story)
@@ -172,6 +193,9 @@ export const postMsg = async (req, res) => {
                 select: 'mediaUrl owner',
                 populate: { path: 'owner', select: 'username image' }
             });
+
+        // Decrypt the content before sending back (for response purposes)
+        populatedMessage.content = decrypt(encryptedContent);
 
         res.status(201).json({ newMsg: populatedMessage, message: 'Message Saved Successfully' });
     } catch (error) {
