@@ -1,0 +1,16 @@
+@keyframes loadingAnimation {
+    0% {
+        left: -20%;
+        /* Start off-screen */
+    }
+
+    50% {
+        left: 40%;
+        /* Center movement */
+    }
+
+    100% {
+        left: 100%;
+        /* Move completely off-screen */
+    }
+}

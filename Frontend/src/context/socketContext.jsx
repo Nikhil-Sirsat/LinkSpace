@@ -14,6 +14,7 @@ const SocketProvider = ({ children }) => {
 
     useEffect(() => {
         const newSocket = io('https://linkspace-backend.onrender.com', {
+
             withCredentials: true,
         });
         setSocket(newSocket);

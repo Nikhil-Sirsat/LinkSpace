@@ -2,14 +2,8 @@ import StoryList from '../Story/StoryList';
 import HomePostFeedCard from "./HomePostsFeed";
 import HomeSuggest from '../Suggestions/HomeSuggest';
 import { Box } from '@mui/material';
-import { AuthContext } from '../../context/AuthContext';
-import { useContext } from 'react';
-import { CircularProgress } from '@mui/material';
 
 export default function Home() {
-    const { loading } = useContext(AuthContext);
-
-    if (loading) { return (<CircularProgress />) }
 
     return (
         <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, width: '100%' }}>

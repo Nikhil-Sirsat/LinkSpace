@@ -1,6 +1,7 @@
 
 import { createContext, useState, useEffect } from 'react';
 import axiosInstance from '../AxiosInstance.jsx';
+import InitialLoading from '../components/Skeletons/InitialLoadingIndicator.jsx';
 
 const AuthContext = createContext();
 
@@ -14,11 +15,11 @@ function AuthProvider({ children }) {
                 const response = await axiosInstance.get('/api/user/protected', { withCredentials: true });
                 setUser(response.data.user);
                 console.log("User set in useEffect:", response.data.user);
-                setLoading(false);
             } catch (err) {
                 setUser(null);
-                setLoading(false);
                 console.log("Error in useEffect:", err.response ? err.response.data : err.message);
+            } finally {
+                setLoading(false);
             }
         };
         checkUser();
@@ -27,7 +28,6 @@ function AuthProvider({ children }) {
         try {
             const response = await axiosInstance.post('/api/user/Login', { username, password }, { withCredentials: true });
             setUser(response.data.user);
-            localStorage.setItem("password", password); // Store TEMPORARILY for encryption
             console.log("User set in login:", response.data.user.username);
             return true;
         } catch (err) {
@@ -39,7 +39,6 @@ function AuthProvider({ children }) {
         try {
             await axiosInstance.get('/api/user/Logout', { withCredentials: true });
             setUser(null);
-            localStorage.removeItem("password"); // Remove password
             console.log("User logged out");
         } catch (err) {
             console.log("Error in logout:", err.response ? err.response.data : err.message);
@@ -47,7 +46,7 @@ function AuthProvider({ children }) {
     };
 
     if (loading) {
-        return (null);
+        return <InitialLoading />;
     }
 
     return (

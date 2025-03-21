@@ -32,7 +32,7 @@ export default function About() {
             </Typography>
             <Grid container spacing={3} justifyContent="center">
                 {[
-                    { title: "Real-Time Messaging & Notifications", desc: "Chat with friends instantly using Socket.io-powered messaging, with end-to-end Encryption." },
+                    { title: "Real-Time Messaging & Notifications", desc: "Chat with friends instantly using Socket.io-powered messaging, with Advanced Encryption." },
                     { title: "Post & Share", desc: "Create posts, like, comment, and share engaging content." },
                     { title: "Explore Page", desc: "Discover trending posts and new connections." },
                     { title: "Secure Authentication", desc: "Protected by Passport for a safe login experience." },
@@ -59,7 +59,7 @@ export default function About() {
             </Typography>
             <Grid container spacing={3} justifyContent="center">
                 {[
-                    { title: "End-to-End Encryption", desc: "Your private messages are encrypted using AES, ensuring that only you and the recipient can read them—not even LinkSpace." },
+                    { title: "Advanced Encryption", desc: "Your private messages are encrypted using AES, ensuring high privacy and security." },
                     { title: "Secure Password Storage", desc: "We use salted hashing techniques to store passwords securely, making them resistant to breaches." },
                     { title: "Advanced Encryption Algorithms", desc: "Sensitive data is encrypted using AES-256 to prevent unauthorized access." },
                     { title: "Cloud Security", desc: "Our database is securely hosted on MongoDB Atlas, ensuring data protection and compliance with security best practices." },
