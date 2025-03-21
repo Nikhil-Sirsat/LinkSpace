@@ -169,13 +169,17 @@ export const postMsg = async (req, res) => {
             return res.status(400).json({ message: 'Invalid request. Sender & receiver are required.' });
         }
 
-        const encryptedContent = encrypt(content);
+        let encryptedContent;
+        if (content) {
+            encryptedContent = encrypt(content);
+        }
+
 
         // Create and save the new message
         const newMsg = new Message({
             sender,
             receiver,
-            content: encryptedContent,
+            content: encryptedContent || null,
             post: post || null,
             story: story || null,
             timestamp,
