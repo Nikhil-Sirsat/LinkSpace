@@ -169,17 +169,13 @@ export const postMsg = async (req, res) => {
             return res.status(400).json({ message: 'Invalid request. Sender & receiver are required.' });
         }
 
-        let encryptedContent;
-        if (content) {
-            encryptedContent = encrypt(content);
-        }
-
+        const encryptedContent = content ? encrypt(content) : null;
 
         // Create and save the new message
         const newMsg = new Message({
             sender,
             receiver,
-            content: encryptedContent || null,
+            content: encryptedContent,
             post: post || null,
             story: story || null,
             timestamp,
@@ -198,8 +194,10 @@ export const postMsg = async (req, res) => {
                 populate: { path: 'owner', select: 'username image' }
             });
 
-        // Decrypt the content before sending back (for response purposes)
-        populatedMessage.content = decrypt(encryptedContent);
+        // Decrypt the content only if it exists to prevent undefined errors
+        if (populatedMessage.content) {
+            populatedMessage.content = decrypt(populatedMessage.content);
+        }
 
         res.status(201).json({ newMsg: populatedMessage, message: 'Message Saved Successfully' });
     } catch (error) {
