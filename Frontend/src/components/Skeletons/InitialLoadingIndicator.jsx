@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import logo from '../../assets/logo-3-2.jpg'; // Add your logo path here
-import './initialLoading.css';
+import './InitialLoading.css';
 
 export default function LoadingScreen() {
     return (
