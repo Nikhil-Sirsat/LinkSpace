@@ -1,5 +1,5 @@
 import CryptoJS from 'crypto-js';
-secretKey = import.meta.env.VITE_CRYPTO_SECRET_KEY;
+const secretKey = import.meta.env.VITE_CRYPTO_SECRET_KEY;
 
 // Encrypt a message
 export const encryptMessage = (message) => {
