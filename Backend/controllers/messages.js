@@ -165,8 +165,8 @@ export const postMsg = async (req, res) => {
         const { sender, receiver, content, post, story, timestamp } = req.body;
 
         // Validate the request body
-        if (!content || !sender || !receiver) {
-            return res.status(400).json({ message: 'Invalid request. Sender, receiver, and content are required.' });
+        if (!sender || !receiver) {
+            return res.status(400).json({ message: 'Invalid request. Sender & receiver are required.' });
         }
 
         const encryptedContent = encrypt(content);
