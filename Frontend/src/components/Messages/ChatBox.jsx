@@ -47,8 +47,8 @@ export default function ChatBox() {
         const fetchUserData = async () => {
             try {
                 const response = await axiosInstance.get(`/api/user/${username}`);
-                const { user: fetchedUser } = response.data;
-                setSelectedUser(fetchedUser);
+                const profile = response.data.profile;
+                setSelectedUser(profile.user);
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching selected-Chats :', error.response ? error.response.data.message : error.message);
