@@ -114,6 +114,9 @@ export const createPost = async (req, res) => {
             }
         }
 
+        // clear profiles cache
+        await redisClient.del(`Profile${req.user.username}`);
+
         res.status(201).json({ post: savedPost, message: 'Post created successfully' });
     } catch (error) {
         console.error(error);
@@ -245,8 +248,10 @@ export const delPost = async (req, res) => {
 
         await Post.findOneAndDelete({ _id: id });
 
-        // clear cache
-        redisClient.del(`${req.params.id}`);
+        // clear post cache
+        await redisClient.del(`${req.params.id}`);
+        // clear profile cache
+        await redisClient.del(`Profile${req.user.username}`);
 
         res.status(200).json({ message: 'Post Deleted Successfully' });
     } catch (error) {

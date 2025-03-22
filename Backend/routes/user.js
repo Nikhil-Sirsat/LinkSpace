@@ -31,6 +31,6 @@ router.get('/search-users', auth, search);
 router.get('/suggestions', auth, checkCacheData((req) => `get-suggestions:${req.user._id}`, 'suggestions'), suggested);
 
 // get any user profile
-router.get('/:username', auth, getUserProfile);
+router.get('/:username', auth, checkCacheData((req) => `Profile:${req.params.username}`, 'profile'), getUserProfile);
 
 export default router;

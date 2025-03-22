@@ -33,13 +33,14 @@ export default function Profile() {
             console.log('profile re-render');
             try {
                 const response = await axiosInstance.get(`/api/user/${username}`);
-                const { user: fetchedUser, posts: fetchedPosts, isFollowing, followersCount, followingCount } = response.data;
 
-                setProfileUser(fetchedUser || {});
-                setPosts(fetchedPosts || []);
-                setIsFollowing(isFollowing || false);
-                setFollowersCount(followersCount || 0);
-                setFollowingCount(followingCount || 0);
+                const profile = response.data.profile;
+
+                setProfileUser(profile.user || {});
+                setPosts(profile.posts || []);
+                setIsFollowing(profile.isFollowing || false);
+                setFollowersCount(profile.followersCount || 0);
+                setFollowingCount(profile.followingCount || 0);
             } catch (error) {
                 console.error('Error fetching user and user posts:', error);
             } finally {

@@ -21,7 +21,8 @@ export const like = async (req, res) => {
         // update the like count in the post
         await Post.findByIdAndUpdate(postId, { $inc: { likeCount: 1 } });
 
-        redisClient.del(`${req.params.id}:LikedUsers`);
+        // clear liked-users cache
+        await redisClient.del(`${req.params.id}:LikedUsers`);
 
         res.status(201).json({ message: 'Post liked successfully', like });
     } catch (error) {
@@ -47,7 +48,7 @@ export const unlike = async (req, res) => {
         // decrement the like count in the post
         await Post.findByIdAndUpdate(postId, { $inc: { likeCount: -1 } });
 
-        redisClient.del(`${req.params.id}:LikedUsers`);
+        await redisClient.del(`${req.params.id}:LikedUsers`);
 
         res.status(200).json({ message: 'Post unliked successfully' });
     } catch (error) {

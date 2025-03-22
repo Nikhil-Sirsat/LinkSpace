@@ -208,6 +208,9 @@ export const editUser = async (req, res) => {
         // **Update the user**
         const updatedUser = await User.findByIdAndUpdate(id, updateData, { new: true });
 
+        // clear profile cache
+        await redisClient.del(`Profile${req.user.username}`);
+
         return res.status(200).json({ message: 'User information updated successfully', user: updatedUser });
 
     } catch (error) {
@@ -324,12 +327,20 @@ export const getUserProfile = async (req, res) => {
         // Check if the current user is following this user
         const isFollowing = await Follow.exists({ follower: currentUserId, following: user._id });
 
-        res.status(200).json({
+        const profile = {
             user: user,
             posts: posts,
             followersCount: followersCount,
             followingCount: followingCount,
-            isFollowing: !!isFollowing,  // Convert to boolean
+            isFollowing: !!isFollowing  // Convert to boolean
+        };
+
+        // Cache the data in Redis
+        const cacheKey = res.locals.cacheKey;
+        await redisClient.setEx(cacheKey, 120, JSON.stringify(profile));
+
+        res.status(200).json({
+            profile: profile,
             message: 'User fetched successfully'
         });
     } catch (error) {

@@ -17,7 +17,7 @@ export const save = async (req, res) => {
         await savedPost.save();
 
         // clear cache
-        redisClient.del(`saved-posts:${req.user._id}`);
+        await redisClient.del(`saved-posts:${req.user._id}`);
 
         res.status(200).json({ message: 'Post saved successfully' });
     } catch (error) {
@@ -39,7 +39,7 @@ export const unSave = async (req, res) => {
         await SavedPost.findOneAndDelete({ user: userId, post: postId });
 
         // clear cache
-        redisClient.del(`saved-posts:${req.user._id}`);
+        await redisClient.del(`saved-posts:${req.user._id}`);
 
         res.status(200).json({ message: 'Post unsaved successfully' });
     } catch (error) {
