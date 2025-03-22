@@ -25,7 +25,7 @@ export default function ChatBox() {
     const [chatAnchorE1, setChatAnchorE1] = useState(null);
     const [msgAnchorE1, setMsgAnchorE1] = useState(null);
     const [msgToDelete, setMsgToDelete] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [errMsg, setErrMsg] = useState('');
     const [sending, setSending] = useState(false);
     const [deleting, setDeleting] = useState(false);
@@ -40,20 +40,15 @@ export default function ChatBox() {
 
     // fetch the data of the selected user
     useEffect(() => {
-        if (!username) {
-            setLoading(false);
-            return;
-        }
+        if (!username) return;
         const fetchUserData = async () => {
             try {
                 const response = await axiosInstance.get(`/api/user/${username}`);
                 const profile = response.data.profile;
                 setSelectedUser(profile.user);
-                setLoading(false);
             } catch (error) {
                 console.error('Error fetching selected-Chats :', error.response ? error.response.data.message : error.message);
                 setErrMsg(error.response.data.message || 'Something went wrong');
-                setLoading(false);
             }
         };
         fetchUserData();
@@ -61,7 +56,12 @@ export default function ChatBox() {
 
     // fetch messages history
     useEffect(() => {
-        if (!selectedUser?._id) return;
+        setLoading(true);
+
+        if (!selectedUser?._id) {
+            setLoading(false);
+            return;
+        }
 
         const fetchMessages = async () => {
             try {
@@ -72,6 +72,8 @@ export default function ChatBox() {
             } catch (error) {
                 console.error('Error fetching messages:', error.response ? error.response.data : error);
                 setErrMsg(error.response?.data?.message || 'Something went wrong');
+            } finally {
+                setLoading(false);
             }
         };
 
