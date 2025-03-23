@@ -292,7 +292,7 @@ export default function ChatBox() {
             {/* Messages Display */}
             <Box sx={{ padding: '16px', flexGrow: 1, overflowY: 'auto' }}>
 
-                <Typography variant="body2" sx={{ color: 'gray', backgroundColor: 'aliceblue', pt: 1, pb: 1, pl: 5, pr: 5, mb: 1 }}> Messages are encrypted securely by AES standards. </Typography>
+                <Typography variant="body2" sx={{ color: 'gray', backgroundColor: 'aliceblue', pt: 1, pb: 1, pl: 5, pr: 5, mb: 1, display: 'flex', justifyContent: 'center' }}> Messages are encrypted securely by AES standards. </Typography>
 
                 {messages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp)).map((message, idx) => (
                     <Box key={idx} sx={{ display: 'flex', justifyContent: message.sender === user._id ? 'flex-end' : 'flex-start', mb: 2, alignItems: 'center' }}>
