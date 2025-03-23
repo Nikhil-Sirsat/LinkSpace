@@ -34,10 +34,7 @@ export default function EditeProfile() {
         age: `${user.age}`,
         gender: `${user.gender}`,
         bio: `${user.bio}`,
-        image: `${{
-            url: user.image.url,
-            filename: user.image.filename,
-        }}`,
+        image: null,
     });
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
@@ -92,10 +89,7 @@ export default function EditeProfile() {
         data.append('age', formData.age);
         data.append('gender', formData.gender);
         data.append('bio', formData.bio);
-
-        if (formData.image && formData.image.url) {
-            data.append('image', formData.image);
-        }
+        data.append('image', formData.image);
 
         try {
             // **Send update request including password**
