@@ -34,7 +34,7 @@ const app = express();
 const PORT = process.env.PORT || 5050;
 const server = createServer(app);
 
-app.set("trust proxy", 1);
+app.set("trust proxy", true);
 
 // Middleware
 app.use(cors({
