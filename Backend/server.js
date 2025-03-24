@@ -13,6 +13,8 @@ import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import MongoStore from 'connect-mongo';
 
+import cookieParser from 'cookie-parser';
+
 import User from './models/user.js';
 
 // require routes
@@ -44,6 +46,7 @@ app.use(cors({
 }));
 app.use(json());
 app.use(urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // Session Setup
 const store = MongoStore.create({
