@@ -45,17 +45,7 @@ app.use(cors({
 app.use(json());
 app.use(urlencoded({ extended: true }));
 
-// session proxy testing 
-app.use((req, res, next) => {
-    console.log("Incoming request cookies:", req.cookies);  // Log cookies received
-    console.log("Request protocol:", req.protocol);        // Should show "https"
-    console.log("Headers:", req.headers);                  // Look for 'x-forwarded-proto'
-    next();
-});
-
-
 // Session Setup
-
 const store = MongoStore.create({
     mongoUrl: process.env.MONGO_URL,
     crypto: { secret: process.env.SECRET_SESSION_KEY },
@@ -79,6 +69,14 @@ const sessionMiddleware = session({
     }
 });
 app.use(sessionMiddleware);
+
+// session proxy testing 
+app.use((req, res, next) => {
+    console.log("Incoming request cookies:", req.cookies);  // Log cookies received
+    console.log("Request protocol:", req.protocol);        // Should show "https"
+    console.log("Headers:", req.headers);                  // Look for 'x-forwarded-proto'
+    next();
+});
 
 // Passport Setup
 app.use(passport.initialize());
