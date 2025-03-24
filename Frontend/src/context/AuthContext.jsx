@@ -12,7 +12,7 @@ function AuthProvider({ children }) {
     useEffect(() => {
         const checkUser = async () => {
             try {
-                const response = await axiosInstance.get('/api/user/protected', { withCredentials: true });
+                const response = await axiosInstance.get('/api/user/protected');
                 setUser(response.data.user);
                 console.log("User set in useEffect:", response.data.user);
             } catch (err) {
@@ -26,7 +26,7 @@ function AuthProvider({ children }) {
     }, []);
     const login = async (username, password) => {
         try {
-            const response = await axiosInstance.post('/api/user/Login', { username, password }, { withCredentials: true });
+            const response = await axiosInstance.post('/api/user/Login', { username, password });
             setUser(response.data.user);
             console.log("User set in login:", response.data.user.username);
             return true;
@@ -37,7 +37,7 @@ function AuthProvider({ children }) {
     };
     const logout = async () => {
         try {
-            await axiosInstance.get('/api/user/Logout', { withCredentials: true });
+            await axiosInstance.get('/api/user/Logout');
             setUser(null);
             console.log("User logged out");
         } catch (err) {

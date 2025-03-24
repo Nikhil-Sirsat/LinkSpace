@@ -45,6 +45,15 @@ app.use(cors({
 app.use(json());
 app.use(urlencoded({ extended: true }));
 
+// session proxy testing 
+app.use((req, res, next) => {
+    console.log("Incoming request cookies:", req.cookies);  // Log cookies received
+    console.log("Request protocol:", req.protocol);        // Should show "https"
+    console.log("Headers:", req.headers);                  // Look for 'x-forwarded-proto'
+    next();
+});
+
+
 // Session Setup
 
 const store = MongoStore.create({
@@ -65,7 +74,7 @@ const sessionMiddleware = session({
     cookie: {
         maxAge: 7 * 24 * 60 * 60 * 1000,
         httpOnly: true,
-        // secure: true,
+        secure: true,
         sameSite: "none",
     }
 });
