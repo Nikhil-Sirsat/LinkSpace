@@ -36,7 +36,7 @@ const app = express();
 const PORT = process.env.PORT || 5050;
 const server = createServer(app);
 
-app.set("trust proxy", true);
+app.set("trust proxy", 1);
 
 // Middleware
 app.use(cors({
@@ -67,8 +67,8 @@ const sessionMiddleware = session({
     cookie: {
         maxAge: 7 * 24 * 60 * 60 * 1000,
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production', // Set secure to true only in production
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Set sameSite to 'none' for cross-site requests in production
+        secure: true,
+        sameSite: 'none',
     }
 });
 app.use(sessionMiddleware);
