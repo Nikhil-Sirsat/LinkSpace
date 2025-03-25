@@ -73,14 +73,6 @@ const sessionMiddleware = session({
 });
 app.use(sessionMiddleware);
 
-// session proxy testing 
-app.use((req, res, next) => {
-    console.log("Incoming request cookies:", req.cookies);  // Log cookies received
-    console.log("Request protocol:", req.protocol);        // Should show "https"
-    console.log("Headers:", req.headers);                  // Look for 'x-forwarded-proto'
-    next();
-});
-
 // Passport Setup
 app.use(passport.initialize());
 app.use(passport.session());
