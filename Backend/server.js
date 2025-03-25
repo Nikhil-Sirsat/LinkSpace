@@ -67,8 +67,8 @@ const sessionMiddleware = session({
     cookie: {
         maxAge: 7 * 24 * 60 * 60 * 1000,
         httpOnly: true,
-        secure: true,
-        sameSite: "none",
+        secure: process.env.NODE_ENV === 'production', // Set secure to true only in production
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Set sameSite to 'none' for cross-site requests in production
     }
 });
 app.use(sessionMiddleware);
