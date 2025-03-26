@@ -109,7 +109,7 @@ export default function About() {
             </Grid>
 
             {/* Team Section */}
-            {/* <Typography variant="h4" align="center" gutterBottom sx={{ mt: 5 }}>
+            <Typography variant="h4" align="center" gutterBottom sx={{ mt: 5 }}>
                 About the Developer
             </Typography>
             <Card sx={{ maxWidth: "80vw", mx: "auto", boxShadow: 3 }}>
@@ -131,7 +131,7 @@ export default function About() {
                         Hi, I'm <strong>Nikhil Sirsat</strong>, A passionate MERN stack developer dedicated to crafting high-performance, scalable, and intuitive applications. With a deep interest in cutting-edge web technologies and real-time applications. My focus lies in enhancing user experience, and implementing efficient backend solutions.
                     </Typography>
                 </CardContent>
-            </Card> */}
+            </Card>
             {/* Get in Touch Section */}
             <Typography variant="h4" align="center" gutterBottom sx={{ mt: 5 }}>
                 Get in Touch

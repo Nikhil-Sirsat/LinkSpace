@@ -14,7 +14,7 @@ function AuthProvider({ children }) {
             try {
                 const response = await axiosInstance.get('/api/user/protected');
                 setUser(response.data.user);
-                console.log("User set in useEffect:", response.data.user);
+                console.log("User set in useEffect:", response.data.user.username);
             } catch (err) {
                 setUser(null);
                 console.log("Error in useEffect:", err.response ? err.response.data : err.message);

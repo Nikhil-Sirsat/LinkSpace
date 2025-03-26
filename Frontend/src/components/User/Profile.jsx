@@ -30,7 +30,6 @@ export default function Profile() {
 
         const fetchUserData = async () => {
             setLoading(true);
-            console.log('profile re-render');
             try {
                 const response = await axiosInstance.get(`/api/user/${username}`);
 

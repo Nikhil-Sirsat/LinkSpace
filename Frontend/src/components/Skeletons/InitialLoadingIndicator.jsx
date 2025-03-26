@@ -45,9 +45,9 @@ export default function LoadingScreen() {
             </Box>
 
             <Typography variant="h6" sx={{ fontWeight: 600, color: '#333' }}>
-                {/* Nikhil Sirsat Production */}
-                Welcome to LinkSpace
+                NIKHIL SIRSAT PRODUCTION
             </Typography>
+
         </Box>
     );
 }
