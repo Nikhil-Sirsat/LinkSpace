@@ -68,7 +68,10 @@ export default function Login() {
         setLoading(true);
         setMessage('');
 
-        const success = await login(formData.username, formData.password);
+        const trimmedUsername = formData.username.trim();
+        const trimmedPassword = formData.password.trim();
+
+        const success = await login(trimmedUsername, trimmedPassword);
         if (success) {
             navigate('/');
         } else {
