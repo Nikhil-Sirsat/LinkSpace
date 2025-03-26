@@ -31,7 +31,7 @@ function AuthProvider({ children }) {
             console.log("User set in login:", response.data.user.username);
             return true;
         } catch (err) {
-            console.log("Error in login:", err.response ? err.response.data : err.message);
+            console.log("Error in login:", err);
             return false;
         }
     };

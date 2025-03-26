@@ -65,15 +65,16 @@ export default function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            setLoading(true);
-            const success = await login(formData.username, formData.password);
-            if (success) navigate('/');
-        } catch (error) {
-            setMessage('Invalid credentials', error.message);
-        } finally {
-            setLoading(false);
+        setLoading(true);
+        setMessage('');
+
+        const success = await login(formData.username, formData.password);
+        if (success) {
+            navigate('/');
+        } else {
+            setMessage("Invalid Credentials");
         }
+        setLoading(false);
     };
 
     return (
