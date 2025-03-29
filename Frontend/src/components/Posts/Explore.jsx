@@ -64,7 +64,7 @@ export default function Explore() {
     }, [handleScroll]);
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100vw', }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: { xs: '100vw', md: '80vw' }, }}>
 
             <Box sx={{ width: { xs: '90%', md: '40%' }, display: 'flex', justifyContent: 'center' }}>
                 <Search route={'user'} />
@@ -80,7 +80,7 @@ export default function Explore() {
                 className="masonry-grid"
                 columnClassName="masonry-column"
                 style={{
-                    width: '90vw',
+                    width: '100%',
                 }}
             >
                 {posts.map((post) => (
