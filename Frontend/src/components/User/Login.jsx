@@ -17,6 +17,7 @@ import {
     FormControl,
     Typography,
     Box,
+    Snackbar,
 } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -56,6 +57,7 @@ export default function Login() {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [showCookieAlert, setShowCookieAlert] = useState(true);
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -80,9 +82,58 @@ export default function Login() {
         setLoading(false);
     };
 
+    const handleCloseAlert = () => setShowCookieAlert(false);
+
     return (
         <Box sx={{ height: '100vh', width: '100vw', backgroundColor: 'black', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Container maxWidth="xs">
+
+                {/* cookies Alert */}
+                {showCookieAlert && (
+                    <Snackbar
+                        open={showCookieAlert}
+                        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                    >
+                        <Alert
+                            action={
+                                <IconButton size="small" aria-label="close" color="inherit" onClick={handleCloseAlert}>
+                                    ✕
+                                </IconButton>
+                            }
+                            severity="warning"
+                            sx={{ borderRadius: '8px' }}
+                        >
+                            <Typography variant="body2" sx={{ fontWeight: 'bold', mb: 1 }}>
+                                Important Notice: Enable Third-Party Cookies
+                            </Typography>
+                            <Typography variant="body2">
+                                To ensure a seamless login experience and full functionality of the application, please allow third-party cookies in your browser. Blocking third-party cookies may prevent login or other features from working properly.
+                            </Typography>
+
+                            <Typography variant="body2" sx={{ mt: 2, fontWeight: 'bold' }}>
+                                For Google Chrome:
+                            </Typography>
+                            <Typography variant="body2">
+                                1. Open <b>Settings</b> → <b>Privacy and Security</b> → <b>Cookies and other site data</b>.<br />
+                                2. Select <b>Allow all cookies</b> or <b>Block third-party cookies in incognito</b> for optimal performance.
+                            </Typography>
+
+                            <Typography variant="body2" sx={{ mt: 2, fontWeight: 'bold' }}>
+                                For Safari (Apple Devices):
+                            </Typography>
+                            <Typography variant="body2">
+                                1. Open <b>Settings</b> → <b>Safari</b> → <b>Privacy & Security</b>.<br />
+                                2. Disable <b>Prevent Cross-Site Tracking</b> and ensure <b>Block All Cookies</b> is turned off.
+                            </Typography>
+
+                            <Typography variant="body2" sx={{ mt: 2, fontWeight: 'bold', color: '#ff9800' }}>
+                                Recommendation: After updating settings, restart your browser to apply the changes.
+                            </Typography>
+                        </Alert>
+                    </Snackbar>
+
+                )}
+
                 <Card sx={{ borderRadius: '16px', backgroundColor: '#1e1e1e', boxShadow: '0px 8px 30px rgba(0, 0, 0, 0.3)', padding: '2rem' }}>
                     <CardContent>
                         <Typography variant="h4" sx={{ color: '#00adb5', textAlign: 'center', fontWeight: 'bold' }}>Log in</Typography>
