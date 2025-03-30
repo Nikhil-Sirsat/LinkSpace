@@ -4,18 +4,11 @@ import Follow from '../models/Follow.js';
 import User from '../models/user.js';
 import Notification from '../models/Notification.js';
 import redisClient from '../config/redisClient.js';
-import { analyzeImage, extractTextFromImage, moderateText, containsLink } from '../Utils/postAnalysis.js';
+import { analyzeImage, moderateText } from '../Utils/postAnalysis.js';
 import { v2 as cloudinary } from 'cloudinary';
 import { delImgFromCloud } from '../Utils/Del-Img-from-Cloud.js';
 
 export const createPost = async (req, res) => {
-    if (!req.file) {
-        return res.status(400).json({ error: 'File not uploaded' });
-    }
-
-    if (!req.body || Object.keys(req.body).length === 0) {
-        return res.status(400).json({ error: 'Form data is empty' });
-    }
 
     const { caption, taggedUsers } = req.body;
     const io = req.app.get('io'); // Get the io instance from the app
@@ -32,51 +25,19 @@ export const createPost = async (req, res) => {
         let url = req.file.path;
         let filename = req.file.filename;
 
-        // Analyze if the Image is SAFE || NOT
-        const nsfwScore = await analyzeImage(url);
+        // image analysis
+        const { status, message } = await analyzeImage(url);
 
-        // for failed images analysis
-        if (!nsfwScore) {
+        if (status === false) {
             await delImgFromCloud(url); // Delete the image from Cloudinary
-            return res.status(400).json({ error: 'Failed to analyze image.' });
+            return res.status(400).json({ error: message });
         }
 
-        if (nsfwScore > 0.5) {
+        // TXT Moderation
+        const { isClean, msg } = await moderateText(caption);
+        if (isClean === false) {
             await delImgFromCloud(url); // Delete the image from Cloudinary
-            return res.status(400).json({ error: 'Image contains inappropriate or violent content.' });
-        }
-
-        // Caption TXT Moderation
-        const captionTxT = await moderateText(caption);
-        if (captionTxT == true) {
-            await delImgFromCloud(url); // Delete the image from Cloudinary
-            return res.status(400).json({ error: 'Caption contains inappropriate or violent content.' });
-        }
-
-        // check caption for links
-        if (containsLink(caption)) {
-            await delImgFromCloud(url); // Delete the image from Cloudinary
-            return res.status(400).json({ error: "Links are not allowed in caption!" });
-        }
-
-        // Extract Text from Image 
-        const extractedTXT = await extractTextFromImage(url);
-
-        if (!extractedTXT || extractedTXT.trim() === '') {
-            console.log("No text extracted from image.");
-        } else {
-            // extracted txt moderation
-            const imgTXT = await moderateText(extractedTXT);
-            if (imgTXT == true) {
-                await delImgFromCloud(url); // Delete the image from Cloudinary
-                return res.status(400).json({ error: 'Image contains inappropriate or violent content.' });
-            }
-
-            // check caption for links
-            if (containsLink(extractedTXT)) {
-                await delImgFromCloud(url); // Delete the image from Cloudinary
-                return res.status(400).json({ error: "Links are not allowed on the post!" });
-            }
+            return res.status(400).json({ error: msg });
         }
 
         // Add Image

@@ -3,8 +3,7 @@ import User from '../models/user.js';
 import Post from '../models/posts.js';
 import Follow from '../models/Follow.js';
 import redisClient from '../config/redisClient.js';
-import { moderateText, analyzeImage, extractTextFromImage, containsLink } from '../Utils/postAnalysis.js';
-import { v2 as cloudinary } from 'cloudinary';
+import { moderateText, analyzeImage } from '../Utils/postAnalysis.js';
 import { delImgFromCloud } from '../Utils/Del-Img-from-Cloud.js';
 
 export const signUp = async (req, res) => {
@@ -33,51 +32,19 @@ export const signUp = async (req, res) => {
             return res.status(400).json({ error: 'Email already exists' });
         }
 
+        // image analysis
+        const { status, message } = await analyzeImage(url);
+
+        if (status === false) {
+            await delImgFromCloud(url); // Delete the image from Cloudinary
+            return res.status(400).json({ error: message });
+        }
+
         // TXT Moderation
-        const TXTcheck = await moderateText(username + " " + name + " " + bio);
-        if (TXTcheck == true) {
+        const { isClean, msg } = await moderateText(username + " " + name + " " + bio);
+        if (isClean === false) {
             await delImgFromCloud(url); // Delete the image from Cloudinary
-            return res.status(400).json({ error: 'inappropriate or violent content detected' });
-        }
-
-        // check TXT for Links
-        if (containsLink(username + " " + name + " " + bio)) {
-            await delImgFromCloud(url); // Delete the image from Cloudinary
-            return res.status(400).json({ error: "Links are not allowed!" });
-        }
-
-        // Analyze if the Image is SAFE || NOT
-        const nsfwScore = await analyzeImage(url);
-
-        // for failed images analysis
-        if (!nsfwScore) {
-            await delImgFromCloud(url); // Delete the image from Cloudinary
-            return res.status(400).json({ error: 'Failed to analyze image.' });
-        }
-
-        if (nsfwScore > 0.5) {
-            await delImgFromCloud(url); // Delete the image from Cloudinary
-            return res.status(400).json({ error: 'Image contains inappropriate or violent content.' });
-        }
-
-        // Extract Text from Image 
-        const extractedTXT = await extractTextFromImage(url);
-
-        if (!extractedTXT || extractedTXT.trim() === '') {
-            console.log("No text extracted from image.");
-        } else {
-            // extracted txt moderation
-            const imgTXT = await moderateText(extractedTXT);
-            if (imgTXT == true) {
-                await delImgFromCloud(url); // Delete the image from Cloudinary
-                return res.status(400).json({ error: 'Image contains inappropriate or violent content.' });
-            }
-
-            // check for links
-            if (containsLink(extractedTXT)) {
-                await delImgFromCloud(url); // Delete the image from Cloudinary
-                return res.status(400).json({ error: "Links are not allowed on the Profile Picture!" });
-            }
+            return res.status(400).json({ error: msg });
         }
 
         // new user
@@ -87,8 +54,8 @@ export const signUp = async (req, res) => {
         await User.register(newUser, password);
         res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
-        res.status(500).json({ error: error });
         console.log(error);
+        res.status(500).json({ error: error });
     }
 };
 
@@ -115,37 +82,37 @@ export const editUser = async (req, res) => {
         const { name, username, email, password, age, gender, bio } = req.body;
 
         // TXT Moderation
-        const TXTcheck = await moderateText(username + " " + name + " " + bio);
-        if (TXTcheck == true) {
-            return res.status(400).json({ message: 'inappropriate or violent content detected' });
-        }
-
-        // check TXT for Links
-        if (containsLink(username + " " + name + " " + bio)) {
-            return res.status(400).json({ error: "Links are not allowed!" });
+        const { isClean, msg } = await moderateText(username + " " + name + " " + bio);
+        if (isClean === false) {
+            if (req.file?.path) { await delImgFromCloud(req.file.path) } // Delete the image from Cloudinary
+            return res.status(400).json({ error: msg });
         }
 
         // Find user before update
         const user = await User.findById(id);
         if (!user) {
-            return res.status(404).json({ message: 'User Not Found' });
+            if (req.file?.path) { await delImgFromCloud(req.file.path) } // Delete the image from Cloudinary
+            return res.status(404).json({ error: 'User Not Found' });
         }
 
         // **Check if the username or email already exists (excluding the current user)**
         const existingUser = await User.findOne({ username });
         if (existingUser && existingUser._id.toString() !== id) {
-            return res.status(400).json({ message: 'Username already exists' });
+            if (req.file?.path) { await delImgFromCloud(req.file.path) } // Delete the image from Cloudinary
+            return res.status(400).json({ error: 'Username already exists' });
         }
 
         const existingEmail = await User.findOne({ email });
         if (existingEmail && existingEmail._id.toString() !== id) {
-            return res.status(400).json({ message: 'Email already exists' });
+            if (req.file?.path) { await delImgFromCloud(req.file.path) } // Delete the image from Cloudinary
+            return res.status(400).json({ error: 'Email already exists' });
         }
 
         // **Verify password before allowing update**
         const isPasswordValid = await user.authenticate(password);
         if (!isPasswordValid.user) {
-            return res.status(401).json({ message: 'Incorrect password' });
+            if (req.file?.path) { await delImgFromCloud(req.file.path) } // Delete the image from Cloudinary
+            return res.status(401).json({ error: 'Incorrect password' });
         }
 
         // **Prepare update object**
@@ -158,47 +125,18 @@ export const editUser = async (req, res) => {
             let url = req.file.path;
             let filename = req.file.filename;
 
-            // Analyze if the Image is SAFE || NOT
-            const nsfwScore = await analyzeImage(url);
+            // image analysis
+            const { status, message } = await analyzeImage(url);
 
-            // for failed images analysis
-            if (!nsfwScore) {
+            if (status === false) {
                 await delImgFromCloud(url); // Delete the image from Cloudinary
-                return res.status(400).json({ error: 'Failed to analyze image.' });
-            }
-
-            if (nsfwScore > 0.5) {
-                await delImgFromCloud(url); // Delete the image from Cloudinary
-                return res.status(400).json({ message: 'Image contains inappropriate or violent content.' });
-            }
-
-            // Extract Text from Image 
-            const extractedTXT = await extractTextFromImage(url);
-
-            if (!extractedTXT || extractedTXT.trim() === '') {
-                console.log("No text extracted from image.");
-            } else {
-                // extracted txt moderation
-                const imgTXT = await moderateText(extractedTXT);
-                if (imgTXT == true) {
-                    await delImgFromCloud(url); // Delete the image from Cloudinary
-                    return res.status(400).json({ message: 'Image contains inappropriate or violent content.' });
-                }
-
-                // check for links
-                if (containsLink(extractedTXT)) {
-                    await delImgFromCloud(url); // Delete the image from Cloudinary
-                    return res.status(400).json({ error: "Links are not allowed on the Profile Picture!" });
-                }
+                return res.status(400).json({ error: message });
             }
 
             // delete previous image from cloudinary
             if (user.image && user.image.url) {
                 const prevImgUrl = user.image.url;
-                const publicId = prevImgUrl.split('/').pop().split('.')[0]; // Extract public_id from URL
-
-                // Delete image from Cloudinary
-                await cloudinary.uploader.destroy(`LinkSpace_Posts/${publicId}`);
+                await delImgFromCloud(prevImgUrl); // Delete the image from Cloudinary
             }
 
             // update image
@@ -211,11 +149,11 @@ export const editUser = async (req, res) => {
         // clear profile cache
         await redisClient.del(`Profile${req.user.username}`);
 
-        return res.status(200).json({ message: 'User information updated successfully', user: updatedUser });
+        return res.status(200).json({ message: 'User information updated successfully' });
 
     } catch (error) {
         console.error('Error updating user:', error);
-        res.status(500).json({ message: 'An error occurred while updating user information', error: error.message });
+        res.status(500).json({ error: 'An error occurred while updating user information', error: error.message });
     }
 };
 

@@ -14,8 +14,7 @@ export const validateUser = async (req, res, next) => {
     let { error } = userSchema.validate(userData);
     if (error) {
         if (req.file && req.file.path) {
-            const imgUrl = req.file.path;
-            await delImgFromCloud(imgUrl); // Delete the image from Cloudinary
+            await delImgFromCloud(req.file.path); // Delete the image from Cloudinary
         }
         return res.status(400).json({ error: error.details[0].message });
     } else {
@@ -25,17 +24,20 @@ export const validateUser = async (req, res, next) => {
 
 // validate post
 export const validatePost = async (req, res, next) => {
+
+    if (!req.file.path) {
+        return res.status(400).json({ error: 'File not uploaded' });
+    }
+
+    // validate post data
     const postData = {
         ...req.body,
-        imageUrl: req.file ? req.file.path : undefined, // Use `req.file.path` for validation
+        imageUrl: req.file.path, // Use `req.file.path` for validation
     };
 
     let { error } = PostSchema.validate(postData);
     if (error) {
-        if (req.file && req.file.path) {
-            const imgUrl = req.file.path;
-            await delImgFromCloud(imgUrl); // Delete the image from Cloudinary
-        }
+        await delImgFromCloud(req.file.path); // Delete the image from Cloudinary
         return res.status(400).json({ error: error.details[0].message });
     } else {
         next();
@@ -44,17 +46,19 @@ export const validatePost = async (req, res, next) => {
 
 // validate Story
 export const validateStory = async (req, res, next) => {
+
+    if (!req.file.path) {
+        return res.status(400).json({ error: 'File not uploaded' });
+    }
+
     const storyData = {
         ...req.body,
-        mediaUrl: req.file ? req.file.path : undefined, // Use `req.file.path` for validation
+        mediaUrl: req.file.path, // Use `req.file.path` for validation
     };
 
     let { error } = storySchema.validate(storyData);
     if (error) {
-        if (req.file && req.file.path) {
-            const imgUrl = req.file.path;
-            await delImgFromCloud(imgUrl); // Delete the image from Cloudinary
-        }
+        await delImgFromCloud(req.file.path); // Delete the image from Cloudinary
         return res.status(400).json({ error: error.details[0].message });
     } else {
         next();

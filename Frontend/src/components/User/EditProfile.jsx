@@ -108,13 +108,8 @@ export default function EditeProfile() {
 
         } catch (error) {
             console.error('Error updating profile:', error);
+            setMessage(error.response?.data?.error || 'Error Updating user information');
 
-            // **Display specific error messages**
-            if (error.response) {
-                setMessage(error.response.data.message || 'Something went wrong');
-            } else {
-                setMessage('An error occurred. Please try again.');
-            }
         }
 
         setLoading(false);

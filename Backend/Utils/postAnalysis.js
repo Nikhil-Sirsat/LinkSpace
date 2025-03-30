@@ -17,7 +17,7 @@ leoProfanity.clearList();
 leoProfanity.add(badWords);
 
 // Function to analyze the image
-export const analyzeImage = async (imageUrl) => {
+export const getNSFW = async (imageUrl) => {
     try {
         const response = await axios.post(
             `https://api.clarifai.com/v2/models/${MODEL_ID}/versions/${MODEL_VERSION_ID}/outputs`,
@@ -68,14 +68,6 @@ export const extractTextFromImage = async (imageUrl) => {
     }
 }
 
-export const moderateText = async (text) => {
-    const cleanedTXT = await normalizeText(text);
-    if (leoProfanity.check(cleanedTXT)) {
-        return true;  // Reject image
-    }
-    return false;  // Allow image
-}
-
 const normalizeText = async (text) => {
     return text.toLowerCase()
         .replace(/0/g, 'o') // Replace zero with 'o'
@@ -91,4 +83,47 @@ const normalizeText = async (text) => {
 export const containsLink = (text) => {
     const urlRegex = /(https?:\/\/[^\s]+)|www\.[^\s]+/g;
     return urlRegex.test(text);
+};
+
+export const moderateText = async (text) => {
+
+    const cleanedTXT = await normalizeText(text);
+
+    // profanity check
+    if (leoProfanity.check(cleanedTXT)) {
+        return { isClean: false, msg: "profanity detected" };
+    }
+
+    // links check
+    if (containsLink(cleanedTXT)) {
+        return { isClean: false, msg: "Links are not allowed" };
+    }
+
+    return { isClean: true, msg: "text is clean" };
+}
+
+export const analyzeImage = async (imageUrl) => {
+
+    // get NSFW score
+    const nsfwScore = await getNSFW(imageUrl);
+
+    if (!nsfwScore) {
+        return { status: false, message: "Error analyzing image" };
+    }
+
+    // Check NSFW score
+    if (nsfwScore > 0.5) {
+        return { status: false, message: "NSFW content detected" };
+    }
+
+    // exptract text from Image and analyze
+    const text = await extractTextFromImage(imageUrl);
+    if (text) {
+        const { isClean, msg } = await moderateText(text);
+        if (isClean === false) {
+            return { status: false, message: msg };
+        }
+    }
+
+    return { status: true, message: "Image is clean" };
 };
