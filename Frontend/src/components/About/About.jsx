@@ -2,7 +2,7 @@ import React from "react";
 import { Container, Typography, Grid, Card, CardContent, IconButton, Stack, Avatar } from "@mui/material";
 import { LinkedIn, GitHub, X } from "@mui/icons-material";
 import DeveloperImg from '../../assets/Developer-Img.jpg'
-import Logo from '../../assets/logo-3-2.jpg';
+import Logo from '../../assets/logo.png';
 
 export default function About() {
     return (

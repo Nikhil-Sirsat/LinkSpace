@@ -12,7 +12,7 @@ import BackButton from '../BackButton';
 import InfoIcon from '@mui/icons-material/Info';
 import { ThemeContext } from "../../context/ThemeContext";
 import { Brightness4, Brightness7 } from "@mui/icons-material";
-import navLogo from '../../assets/logo-3-2.jpg';
+import navLogo from '../../assets/logo.png';
 
 export default function PrimarySearchAppBar() {
     const { user } = useContext(AuthContext);
