@@ -119,7 +119,7 @@ export default function CommentBoxForMob({ caption, comments, user, setComments,
                 </StyledBox>
                 <StyledBox sx={{ px: 2, pb: 2, height: '100%', overflow: 'auto' }}>
 
-                    <Box sx={{ mb: 2, mt: 6 }}>
+                    <Box sx={{ mb: 2, mt: 8 }}>
                         {caption}
                         <ul style={{ marginLeft: '15px' }}>
                             {post.taggedUsers.map((tagUser) => (

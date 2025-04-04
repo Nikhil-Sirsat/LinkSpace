@@ -68,7 +68,7 @@ const Search = forwardRef(({ route }, ref) => {
     };
 
     return (
-        <Box ref={ref} sx={{ width: '90%', height: 'auto', borderRadius: 5, m: 4, zIndex: 10, boxShadow: { xs: 0, md: 5 } }}>
+        <Box ref={ref} sx={{ width: '90%', height: 'auto', m: 4, zIndex: 10, boxShadow: { xs: 0, md: 5 }, backgroundColor: mode === 'dark' ? '#1a1a1a' : 'white' }}>
             <Box>
                 <TextField
                     fullWidth

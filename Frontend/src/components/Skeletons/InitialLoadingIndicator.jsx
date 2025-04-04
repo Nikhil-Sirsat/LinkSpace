@@ -45,7 +45,7 @@ export default function LoadingScreen() {
             </Box>
 
             <Typography variant="h6" sx={{ fontWeight: 600, color: '#333' }}>
-                NIKHIL SIRSAT PRODUCTION
+                Welcome to LinkSpacex
             </Typography>
 
         </Box>
