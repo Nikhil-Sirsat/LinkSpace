@@ -15,7 +15,7 @@ import { containsLink, moderateText } from '../../TXT-Moderation/txtModeration.j
 
 export default function ChatBox() {
     const { mode } = useContext(ThemeContext);
-    const { socket, reFetchMsgNotify, setReFetchMsgNotify } = useContext(SocketContext);
+    const { socket, setReFetchMsgNotify } = useContext(SocketContext);
     const { handleChildChange } = useOutletContext();
     const { username } = useParams();
     const { user } = useContext(AuthContext);
@@ -38,47 +38,56 @@ export default function ChatBox() {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
-    // fetch the data of the selected user
+    // fetch the data of the selected chat
     useEffect(() => {
         if (!username) return;
+
+        setLoading(true);
+
         const fetchUserData = async () => {
             try {
-                const response = await axiosInstance.get(`/api/user/${username}`);
-                const profile = response.data.profile;
-                setSelectedUser(profile.user);
+                const userResponse = await axiosInstance.get(`/api/user/${username}`);
+                setSelectedUser(userResponse.data.profile.user);
+
+                const response = await axiosInstance.get(`/api/messages/${userResponse.data.profile.user._id}`);
+                setMessages(response.data.messages);
+                setTimeout(scrollToBottom, 100);
+
             } catch (error) {
                 console.error('Error fetching selected-Chats :', error.response ? error.response.data.message : error.message);
                 setErrMsg(error.response.data.message || 'Something went wrong');
+            } finally {
+                setLoading(false);
             }
         };
         fetchUserData();
     }, [username]);
 
     // fetch messages history
-    useEffect(() => {
-        setLoading(true);
+    // useEffect(() => {
+    //     setLoading(true);
 
-        if (!selectedUser?._id) {
-            setLoading(false);
-            return;
-        }
+    //     if (!selectedUser?._id) {
+    //         setLoading(false);
+    //         return;
+    //     }
 
-        const fetchMessages = async () => {
-            try {
-                const response = await axiosInstance.get(`/api/messages/${selectedUser._id}`);
-                const chatHistory = response.data.messages;
-                setMessages(chatHistory);
-                setTimeout(scrollToBottom, 100);
-            } catch (error) {
-                console.error('Error fetching messages:', error.response ? error.response.data : error);
-                setErrMsg(error.response?.data?.message || 'Something went wrong');
-            } finally {
-                setLoading(false);
-            }
-        };
+    //     const fetchMessages = async () => {
+    //         try {
+    //             const response = await axiosInstance.get(`/api/messages/${selectedUser._id}`);
+    //             const chatHistory = response.data.messages;
+    //             setMessages(chatHistory);
+    //             setTimeout(scrollToBottom, 100);
+    //         } catch (error) {
+    //             console.error('Error fetching messages:', error.response ? error.response.data : error);
+    //             setErrMsg(error.response?.data?.message || 'Something went wrong');
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
 
-        fetchMessages();
-    }, [selectedUser]);
+    //     fetchMessages();
+    // }, [selectedUser]);
 
     // socket.join event
     useEffect(() => {

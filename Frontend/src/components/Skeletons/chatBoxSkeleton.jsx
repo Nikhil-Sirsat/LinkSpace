@@ -14,6 +14,7 @@ export default function ChatBoxSkeleton() {
             <Box width="100%" height="100%" display="flex" flexDirection="column" sx={{
                 backgroundSize: 'contain',
                 backgroundPosition: 'center',
+                backgroundColor: 'black',
             }}>
                 {/* Header Skeleton */}
                 <AppBar position="static" color="transparent" elevation={1} sx={{ borderBottom: '1px solid #ddd', borderTop: '1px solid #ddd', backgroundColor: '#ffffffbf' }}>
