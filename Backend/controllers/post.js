@@ -5,7 +5,6 @@ import User from '../models/user.js';
 import Notification from '../models/Notification.js';
 import redisClient from '../config/redisClient.js';
 import { analyzeImage, moderateText } from '../Utils/postAnalysis.js';
-import { v2 as cloudinary } from 'cloudinary';
 import { delImgFromCloud } from '../Utils/Del-Img-from-Cloud.js';
 
 export const createPost = async (req, res) => {
@@ -76,7 +75,7 @@ export const createPost = async (req, res) => {
         }
 
         // clear profiles cache
-        await redisClient.del(`Profile${req.user.username}`);
+        await redisClient.del(`Profile:${req.user.username}`);
 
         res.status(201).json({ post: savedPost, message: 'Post created successfully' });
     } catch (error) {
@@ -198,13 +197,9 @@ export const delPost = async (req, res) => {
             return res.status(404).json({ message: 'Post Not Found' });
         }
 
-        // Extract the public_id from the image URL & delete
+        // delete image from cloudinary if it exists
         if (post.imageUrl && post.imageUrl.url) {
-            const delImgUrl = post.imageUrl.url;
-            const publicId = delImgUrl.split('/').pop().split('.')[0]; // Extract public_id from URL
-
-            // Delete image from Cloudinary
-            await cloudinary.uploader.destroy(`LinkSpace_Posts/${publicId}`);
+            await delImgFromCloud(post.imageUrl.url); // Delete the image from Cloudinary
         }
 
         await Post.findOneAndDelete({ _id: id });
@@ -212,11 +207,11 @@ export const delPost = async (req, res) => {
         // clear post cache
         await redisClient.del(`${req.params.id}`);
         // clear profile cache
-        await redisClient.del(`Profile${req.user.username}`);
+        await redisClient.del(`Profile:${req.user.username}`);
 
         res.status(200).json({ message: 'Post Deleted Successfully' });
     } catch (error) {
-        console.error('An Error occured while deleting a post : ', error.message);
+        console.log('An Error occured while deleting a post : ', error.message);
         res.status(500).json({ message: `Error Deleting Post : ${error.message}` });
     }
 };

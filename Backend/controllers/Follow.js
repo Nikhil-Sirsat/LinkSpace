@@ -39,7 +39,7 @@ export const follow = async (req, res) => {
         await redisClient.del(`${req.user.username}:following`);
         // profiles
         await redisClient.del(`Profile:${req.params.username}`);
-        await redisClient.del(`Profile${req.user.username}`);
+        await redisClient.del(`Profile:${req.user.username}`);
 
         res.status(200).json({ message: "User followed successfully" });
     } catch (error) {
@@ -74,7 +74,7 @@ export const unfollow = async (req, res) => {
         await redisClient.del(`${req.user.username}:following`);
         // profiles
         await redisClient.del(`Profile:${req.params.username}`);
-        await redisClient.del(`Profile${req.user.username}`);
+        await redisClient.del(`Profile:${req.user.username}`);
 
         res.status(200).json({ message: "User unfollowed successfully" });
     } catch (error) {
